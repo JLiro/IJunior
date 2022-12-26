@@ -11,7 +11,7 @@
 
 namespace Task01_Variables
 {
-    internal class Variables
+    internal class Program
     {
         static void Main()
         {
