@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Общие сведения об этой сборке предоставляются следующим набором
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанные с этой сборкой.
-[assembly: AssemblyTitle("Task03_StringManipulation")]
+[assembly: AssemblyTitle("Task06CrystalShop")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Task03_StringManipulation")]
+[assembly: AssemblyProduct("Task06CrystalShop")]
 [assembly: AssemblyCopyright("Copyright ©  2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Следующий GUID представляет идентификатор typelib, если этот проект доступен из модели COM
-[assembly: Guid("7c2623d6-e4b7-4721-9328-a3b225830eea")]
+[assembly: Guid("6dc35e49-0327-4b9a-af84-b3f9403d554e")]
 
 // Сведения о версии сборки состоят из указанных ниже четырех значений:
 //

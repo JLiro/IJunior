@@ -1,6 +1,4 @@
-﻿using System;
-
-/*/ 
+﻿/*/ 
     - == === ЗАДАЧА === == -
         
         Вы задаете вопросы пользователю, по типу "как вас зовут", "какой ваш знак зодиака"
@@ -8,21 +6,23 @@
     "Вас зовут Алексей, вам 21 год, вы водолей и работаете на заводе."
 /*/
 
-namespace Task01_Variables
+using System;
+
+namespace Task03StringManipulation
 {
     internal class Program
     {
         static void Main()
         {
-            string stroke = "\n Интервьюер:";
+            string stroke = "\nИнтервьюер:";
 
-            Console.Write(" Интервьюер: Как Вас зовут?\n Вы: ");
+            Console.Write("Интервьюер: Как Вас зовут?\nВы: ");
             stroke += " Вас зовут " + Console.ReadLine();
 
-            Console.Write(" Интервьюер: Сколько Вам лет?\n Вы: ");
+            Console.Write("Интервьюер: Сколько Вам лет?\nВы: ");
             stroke += ", вам " + Console.ReadLine();
 
-            Console.Write(" Интервьюер: Из какого Вы города?\n Вы: ");
+            Console.Write("Интервьюер: Из какого Вы города?\nВы: ");
             stroke += " и вы из города " + Console.ReadLine();
 
             Console.WriteLine(stroke);

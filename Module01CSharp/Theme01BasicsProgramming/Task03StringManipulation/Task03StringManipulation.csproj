@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7C2623D6-E4B7-4721-9328-A3B225830EEA}</ProjectGuid>
+    <ProjectGuid>{2451B177-14E5-428C-A893-869E734A1DFE}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Task03_StringManipulation</RootNamespace>
-    <AssemblyName>Task03_StringManipulation</AssemblyName>
+    <RootNamespace>Task03StringManipulation</RootNamespace>
+    <AssemblyName>Task03StringManipulation</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

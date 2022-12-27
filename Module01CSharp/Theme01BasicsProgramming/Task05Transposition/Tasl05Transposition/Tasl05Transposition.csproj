@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{03D8A8F8-5A65-4BD4-BD50-D933E9AA0FAC}</ProjectGuid>
+    <ProjectGuid>{FA45FF28-A9D6-46B2-BCBB-4BDF97B1114B}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Task01_Variables</RootNamespace>
-    <AssemblyName>Task01_Variables</AssemblyName>
+    <RootNamespace>Tasl05Transposition</RootNamespace>
+    <AssemblyName>Tasl05Transposition</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
