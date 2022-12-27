@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Общие сведения об этой сборке предоставляются следующим набором
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанные с этой сборкой.
-[assembly: AssemblyTitle("Tasl05Transposition")]
+[assembly: AssemblyTitle("Task05Transposition")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Tasl05Transposition")]
+[assembly: AssemblyProduct("Task05Transposition")]
 [assembly: AssemblyCopyright("Copyright ©  2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Следующий GUID представляет идентификатор typelib, если этот проект доступен из модели COM
-[assembly: Guid("fa45ff28-a9d6-46b2-bcbb-4bdf97b1114b")]
+[assembly: Guid("f6757e9d-10cf-4a6a-a73f-3aa09d90f822")]
 
 // Сведения о версии сборки состоят из указанных ниже четырех значений:
 //
