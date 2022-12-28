@@ -11,17 +11,19 @@
 
 using System;
 
-namespace Task01_Variables
+namespace Task04Picture
 {
     internal class Program
     {
         static void Main()
         {
-            int numberOfImages = 52;
+            int countImages = 52;
             int rowSize = 3;
+            int filledRows = countImages / rowSize;
+            int excessCountImages = countImages % rowSize;
 
-            Console.WriteLine($"Полных рядов: {numberOfImages / rowSize}\n" +
-                              $"Картинок сверх меры: {numberOfImages % rowSize}");
+            Console.WriteLine($"Полных рядов: {filledRows}\n" +
+                              $"Картинок сверх меры: {excessCountImages}");
             Console.ReadKey();
         }
     }
