@@ -1,22 +1,4 @@
-﻿/*/ 
-    - == === ЗАДАЧА === == -
-        
-        При помощи всего, что вы изучили, создать приложение, которое может 
-    обрабатывать команды.Т.е.вы создаете меню, ожидаете ввода нужной команды, 
-    после чего выполняете действие, которое присвоено этой команде.
-
-        Примеры команд (Требуется 4 - 6 команд, придумать самим)
-        - SetName – установить имя
-        - ChangeConsoleColor - изменить цвет консоли
-        - SetPassword – установить пароль
-        - WriteName – вывести имя(после ввода пароля)
-        - Esc – выход из программы
-
-        Программа не должна завершаться после ввода, пользователь сам
-    должен выйти из программы при помощи команды.
-/*/
-
-using System;
+﻿using System;
 
 namespace Task06ConsoleMenu
 {
@@ -25,7 +7,7 @@ namespace Task06ConsoleMenu
         static void Main()
         {
             string userName = null,
-                    userPassword = null;
+                   userPassword = null;
 
             string userCommand = null;
 
@@ -121,8 +103,7 @@ namespace Task06ConsoleMenu
                         }
                         break;
 
-                    case "Esc":
-                        return;
+                    case "Esc": return;
 
                     default:
                         Console.Clear();
