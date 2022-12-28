@@ -18,14 +18,13 @@ namespace Tasko05Transposition
         {
             string name = "GoodMan";
             string lastName = "Soul";
-
             string temp = null;
 
             Console.Write(
-                              $"— В Вашей анкете указано имя {name}, фамилия {lastName}. Всё верно?\n" +
-                              $"- Наоборот.. фамилия {lastName}, имя {name}\n" +
-                              $"- Оу.. Прошу прощения, сейчас всё поправим!\n"
-                             );
+                          $"— В Вашей анкете указано имя {name}, фамилия {lastName}. Всё верно?\n" +
+                          $"- Наоборот.. фамилия {lastName}, имя {name}\n" +
+                          $"- Оу.. Прошу прощения, сейчас всё поправим!\n"
+                         );
 
             temp = name;
             name = lastName;
