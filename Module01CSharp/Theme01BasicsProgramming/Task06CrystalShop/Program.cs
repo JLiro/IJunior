@@ -13,7 +13,7 @@
     Пользователь вводит число и его золото конвертируется в кристаллы. Остаток золота и кристаллов
     выводится на экран.
 
-    Проверять на то, что у игрока достаточно денег ненужно.
+        Проверять на то, что у игрока достаточно денег ненужно.
 /*/
 
 using System;
@@ -24,17 +24,17 @@ namespace Task06CrystalShop
     {
         static void Main()
         {
-            int сrystalPrice = 10;
+            int сrystalStonesPrice = 10;
             int сrystalStonesCount;
             int goldenСoinsCount;
 
             Console.Write("Продавец: Сколько у Вас золота?\nВы: ");
             goldenСoinsCount = Convert.ToInt32(Console.ReadLine());
-            Console.Write($"\nПродавец: Один кристалл стоит {сrystalPrice} золота!" +
+            Console.Write($"\nПродавец: Один кристалл стоит {сrystalStonesPrice} золота!" +
                           $"\n          Сколько кристаллов Вы хотели бы купить?\nВы: ");
             сrystalStonesCount = Convert.ToInt32(Console.ReadLine());
 
-            goldenСoinsCount -= сrystalStonesCount * сrystalPrice; 
+            goldenСoinsCount -= сrystalStonesCount * сrystalStonesPrice; 
 
             Console.WriteLine($"\nБыло куплено {сrystalStonesCount} кристаллов" +
                               $"\nУ вас осталось {goldenСoinsCount} золота ");
