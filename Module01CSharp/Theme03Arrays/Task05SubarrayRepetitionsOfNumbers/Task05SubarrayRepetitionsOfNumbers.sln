@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Task05SubarrayRepetitionsOfNumbers", "Task05SubarrayRepetitionsOfNumbers.csproj", "{55BD1C21-D968-41BD-A0F4-332A86C7F92B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{55BD1C21-D968-41BD-A0F4-332A86C7F92B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55BD1C21-D968-41BD-A0F4-332A86C7F92B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55BD1C21-D968-41BD-A0F4-332A86C7F92B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55BD1C21-D968-41BD-A0F4-332A86C7F92B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A8134204-3FBB-4AF6-BFF1-533C42FE1748}
+	EndGlobalSection
+EndGlobal
