@@ -26,7 +26,7 @@ namespace Task01_Variables
             double earningsToday = 5.7; 
             char question = '?';       
             string welcomeText = "Привет, мир!";
-            bool IsRainingNow = false;
+            bool isRainingNow = false;
         }
     }
 }
