@@ -34,7 +34,6 @@ namespace Task07Polyclinic
             waitingTimeEndQueueInMinutes = waitingTimeEndQueue % 60;
 
             Console.WriteLine($"\nВы должны отстоять в очереди {waitingTimeEndQueueInHours} час(а/ов) и {waitingTimeEndQueueInMinutes} минут(ы)");
-
             Console.ReadKey();
         }
     }
