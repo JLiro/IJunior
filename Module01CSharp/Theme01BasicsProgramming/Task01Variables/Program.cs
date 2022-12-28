@@ -9,7 +9,7 @@
 
 using System;
 
-namespace Task01_Variables
+namespace Task01Variables
 {
     internal class Program
     {
