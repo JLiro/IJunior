@@ -1,14 +1,4 @@
-﻿/*/ 
-    - == === ЗАДАЧА === == -
-        
-        Даны две переменные. Поменять местами значения двух переменных.
-    Вывести на экран значения переменных до перестановки и после. К примеру,
-    есть две переменные имя и фамилия, они сразу инициализированные,
-    но данные не верные, перепутанные. Вот эти данные и надо поменять
-    местами через код.
-/*/
-
-using System;
+﻿using System;
 
 namespace Tasko05Transposition
 {
@@ -18,7 +8,7 @@ namespace Tasko05Transposition
         {
             string name = "GoodMan";
             string lastName = "Soul";
-            string temp = null;
+            string tempName = null;
 
             Console.Write(
                           $"— В Вашей анкете указано имя {name}, фамилия {lastName}. Всё верно?\n" +
@@ -26,9 +16,9 @@ namespace Tasko05Transposition
                           $"- Оу.. Прошу прощения, сейчас всё поправим!\n"
                          );
 
-            temp = name;
+            tempName = name;
             name = lastName;
-            lastName = temp;
+            lastName = tempName;
 
             Console.Write($"— Ну вот, всё готово, - имя {name}, а фамилия {lastName}!");
             Console.ReadKey();
