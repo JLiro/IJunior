@@ -6,18 +6,19 @@ namespace Task07Polyclinic
     {
         static void Main()
         {
+            int minutesInAnHour = 60;
             int peopleCount;
-            decimal patientAppointmentTime = 10;
-            decimal waitingTimeEndQueue;
-            decimal waitingTimeEndQueueInHours;
-            decimal waitingTimeEndQueueInMinutes;
+            int patientAppointmentTime = 10;
+            int waitingTimeEndQueue;
+            int waitingTimeEndQueueInHours;
+            int waitingTimeEndQueueInMinutes;
 
             Console.Write("Введите кол-во старушек: ");
             peopleCount = Convert.ToInt32(Console.ReadLine());
 
             waitingTimeEndQueue = peopleCount * patientAppointmentTime;
-            waitingTimeEndQueueInHours = Math.Round(waitingTimeEndQueue / 60, 0);
-            waitingTimeEndQueueInMinutes = waitingTimeEndQueue % 60;
+            waitingTimeEndQueueInHours = waitingTimeEndQueue / minutesInAnHour;
+            waitingTimeEndQueueInMinutes = waitingTimeEndQueue - (waitingTimeEndQueueInHours * minutesInAnHour);
 
             Console.WriteLine($"\nВы должны отстоять в очереди {waitingTimeEndQueueInHours} час(а/ов) и {waitingTimeEndQueueInMinutes} минут(ы)");
             Console.ReadKey();
