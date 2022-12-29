@@ -16,8 +16,8 @@ namespace Task04SumNumbers
             int sum = 0;
 
             Console.WriteLine(number);
+            
             sum += number;
-
             for (int i = 0; i < number; i++)
             {
                 if (i % firstDivider == 0 || i % secondDivider == 0)
