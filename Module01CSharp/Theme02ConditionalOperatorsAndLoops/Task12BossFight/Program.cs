@@ -45,7 +45,7 @@ namespace Task12BossFight
                   int songElementsHealthMagChangeNumber = -75;
                   int songElementsHealthBossChangeNumber = -25;
 
-            int useSpell;
+            int usedSpells;
             string tempEvent = string.Empty;
             string winner;
 
@@ -87,11 +87,11 @@ namespace Task12BossFight
                   "\n   Введите номер заклинания для атаки: "
                  );
                 try { 
-                    useSpell = Convert.ToInt32(Console.ReadLine());
+                    usedSpells = Convert.ToInt32(Console.ReadLine());
                     
                     Console.Clear();
                     
-                    switch (useSpell)
+                    switch (usedSpells)
                     {
                         case rashamonCommand:
                             tempEvent = "Вы использовали заклинание Рашамон!";

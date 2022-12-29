@@ -10,26 +10,29 @@ namespace Task01WorkingWithSpecificRowsAndColumns
                              { 3, 4, 5 },
                              { 5, 6, 6 } };
 
-            int sumOfNumbersFromRow = 0,
-                productOfNumbersFromColumn = 1;
+            int sumNumbersFromRow;
+            int productNumbersFromColumn;
 
+            int columnNumberForCalculatingAmount = 1;
             int columnNumber = 0;
 
+            productNumbersFromColumn = 1;
+            sumNumbersFromRow = 0;
             for (int column = 0; column < array.GetLength(0); column++)
             {
-                productOfNumbersFromColumn *= array[column, columnNumber];
+                productNumbersFromColumn *= array[column, columnNumber];
 
                 for (int row = 0; row < array.GetLength(1); row++)
                 {
-                    sumOfNumbersFromRow += column == 1 ? array[column, row] : 0;
+                    sumNumbersFromRow += column == columnNumberForCalculatingAmount ? array[column, row] : 0;
 
                     Console.Write(array[column, row] + " ");
                 }
                 Console.WriteLine();
             }
 
-            Console.WriteLine($"\nСумма второй строки: {sumOfNumbersFromRow}" +
-                              $"\nПроизведение первого столбца: {productOfNumbersFromColumn}");
+            Console.WriteLine($"\nСумма второй строки: {sumNumbersFromRow}" +
+                              $"\nПроизведение первого столбца: {productNumbersFromColumn}");
             Console.ReadKey();
         }
     }
