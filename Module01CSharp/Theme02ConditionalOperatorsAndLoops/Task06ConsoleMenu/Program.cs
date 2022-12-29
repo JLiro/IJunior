@@ -6,10 +6,10 @@ namespace Task06ConsoleMenu
     {
         static void Main()
         {
-            string userName = null,
-                   userPassword = null;
+            string userName = string.Empty,
+                   userPassword = string.Empty;
 
-            string userCommand = null;
+            string userCommand = string.Empty;
 
             string exitCommand = "Esc",
                    backCommand = "Back";

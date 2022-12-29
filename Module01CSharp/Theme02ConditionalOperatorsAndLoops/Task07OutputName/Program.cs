@@ -6,9 +6,9 @@ namespace Task07OutputName
     {
         static void Main()
         {
-            string userName = null;
-            string symbolFromBorder = null,
-                   borderRow = null;
+            string userName = string.Empty;
+            string symbolFromBorder = string.Empty,
+                   borderRow = string.Empty;
             int additionToLengthOfHorizontalBorder = 4;
 
             Console.Write("Введите Ваше имя: ");

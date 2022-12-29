@@ -7,7 +7,7 @@ namespace Task08PasswordProtectedProgram
         static void Main()
         {
             string password = "secret";
-            string userText = null;
+            string userText = string.Empty;
 
             for (int i = 3; i > 0; i--)
             {
@@ -21,7 +21,6 @@ namespace Task08PasswordProtectedProgram
                                      $"\nНажмите любую клавишу для завершения программы");
                     Console.ReadKey();
                     return;
-                    Console.Clear();
                 }
                 else
                 {

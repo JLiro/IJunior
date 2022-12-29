@@ -14,8 +14,8 @@ namespace Task05CurrencyConverter
                   eurToRub = 20f , eurToUsd = 2f  ,
                   rubToUsd = 0.1f, rubToEur = 0.2f;
 
-            string fromСurrency = null,
-                   intoСurrency = null;
+            string fromСurrency = string.Empty,
+                   intoСurrency = string.Empty;
             float  currencyCount;
 
             string userText = null;

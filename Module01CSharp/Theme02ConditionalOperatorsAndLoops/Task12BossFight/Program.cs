@@ -13,7 +13,7 @@ namespace Task12BossFight
             bool activateRamashonSpell = false;
             int cooldownSongElements = 3;
 
-            string tempEvent = null;
+            string tempEvent = string.Empty;
             string winner;
 
             Random random = new Random();

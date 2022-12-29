@@ -6,7 +6,7 @@ namespace Task02ExitControl
     {
         static void Main()
         {
-            string userText = null;
+            string userText = string.Empty;
             string exitСommand = "Exit";
 
             while (userText != exitСommand)
