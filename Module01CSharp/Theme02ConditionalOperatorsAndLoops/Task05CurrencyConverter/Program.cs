@@ -10,12 +10,15 @@ namespace Task05CurrencyConverter
             float eurBalance = 500;
             float rubBalance = 500;
 
-            float usdToRub = 10f , usdToEur = 0.5f,
-                  eurToRub = 20f , eurToUsd = 2f  ,
-                  rubToUsd = 0.1f, rubToEur = 0.2f;
+            float usdToRub = 10f;
+            float usdToEur = 0.5f;
+            float eurToRub = 20f;
+            float eurToUsd = 2f;
+            float rubToUsd = 0.1f;
+            float rubToEur = 0.2f;
 
-            string fromСurrency = string.Empty,
-                   intoСurrency = string.Empty;
+            string fromСurrency = string.Empty;
+            string intoСurrency = string.Empty;
             float  currencyCount;
 
             string userText = string.Empty;
