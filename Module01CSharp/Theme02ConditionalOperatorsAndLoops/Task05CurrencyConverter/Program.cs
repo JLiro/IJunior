@@ -6,9 +6,9 @@ namespace Task05CurrencyConverter
     {
         static void Main()
         {
-            float usdBalance = 500,
-                  eurBalance = 500,
-                  rubBalance = 500;
+            float usdBalance = 500;
+            float eurBalance = 500;
+            float rubBalance = 500;
 
             float usdToRub = 10f , usdToEur = 0.5f,
                   eurToRub = 20f , eurToUsd = 2f  ,
@@ -18,13 +18,16 @@ namespace Task05CurrencyConverter
                    intoСurrency = string.Empty;
             float  currencyCount;
 
-            string userText = null;
+            string userText = string.Empty;
 
-            string exitCommand0 = "Exit",
-                   exitCommand1 = "exit",
-                   exitCommand2 = "EXIT";
+            const string exitCommand = "exit";
+            const string RUB = "RUB";
+            const string EUR = "EUR";
+            const string USD = "USD";
 
-            while ((userText != exitCommand0) && (userText != exitCommand1) && (userText != exitCommand2))
+            bool isProgramRunning = true;
+
+            while (isProgramRunning)
             {
                 Console.WriteLine($"Ваш баланс счёта | {usdBalance} USD | {eurBalance} EUR | {rubBalance} RUB |\n");
 
@@ -35,13 +38,13 @@ namespace Task05CurrencyConverter
                 fromСurrency = userText;
                 switch (fromСurrency)
                 {
-                    case "USD":
+                    case USD:
                         Console.Write("Сконвертировать  в валюту: ");
                         userText = Console.ReadLine();
                         intoСurrency = userText;
                         Console.WriteLine();
 
-                        if (intoСurrency == "EUR")
+                        if (intoСurrency == EUR)
                         {
                             Console.Write($"Сколько {fromСurrency} сконвертировать в {intoСurrency}: ");
                             userText = Console.ReadLine();
@@ -68,7 +71,7 @@ namespace Task05CurrencyConverter
                                 Console.WriteLine("Ошибка: Не удалось считать число!\n");
                             }
                         }
-                        else if (intoСurrency == "RUB")
+                        else if (intoСurrency == RUB)
                         {
                             Console.Write($"Сколько {fromСurrency} сконвертировать в {intoСurrency}: ");
                             userText = Console.ReadLine();
@@ -102,13 +105,13 @@ namespace Task05CurrencyConverter
                         }
                         break;
 
-                    case "EUR":
+                    case EUR:
                         Console.Write("Сконвертировать  в валюту: ");
                         userText = Console.ReadLine();
                         intoСurrency = userText;
                         Console.WriteLine();
 
-                        if (intoСurrency == "USD")
+                        if (intoСurrency == USD)
                         {
                             Console.Write($"Сколько {fromСurrency} сконвертировать в {intoСurrency}: ");
                             userText = Console.ReadLine();
@@ -136,7 +139,7 @@ namespace Task05CurrencyConverter
                             }
 
                         }
-                        else if (intoСurrency == "RUB")
+                        else if (intoСurrency == RUB)
                         {
                             Console.Write($"Сколько {fromСurrency} сконвертировать в {intoСurrency}: ");
                             userText = Console.ReadLine();
@@ -170,13 +173,13 @@ namespace Task05CurrencyConverter
                         }
                         break;
 
-                    case "RUB":
+                    case RUB:
                         Console.Write("Сконвертировать  в валюту: ");
                         userText = Console.ReadLine();
                         intoСurrency = userText;
                         Console.WriteLine();
 
-                        if (intoСurrency == "EUR")
+                        if (intoСurrency == EUR)
                         {
                             Console.Write($"Сколько {fromСurrency} сконвертировать в {intoСurrency}: ");
                             userText = Console.ReadLine();
@@ -203,7 +206,7 @@ namespace Task05CurrencyConverter
                                 Console.WriteLine("Ошибка: Не удалось считать число!\n");
                             }
                         }
-                        else if (intoСurrency == "USD")
+                        else if (intoСurrency == USD)
                         {
                             Console.WriteLine($"Сколько {fromСurrency} сконвертировать в {intoСurrency}: ");
                             userText = Console.ReadLine();
@@ -242,7 +245,9 @@ namespace Task05CurrencyConverter
                         Console.WriteLine("Ошибка: Неверно введен буквенный код валюты!\n");
                         break;
                 }
-            }
+
+                isProgramRunning = userText.ToLower() != exitCommand;
+            } 
         }
     }
 }
