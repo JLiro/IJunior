@@ -22,9 +22,9 @@ namespace Task07OutputName
                 borderRow += symbolFromBorder;
             }
 
-            Console.WriteLine($"\n{symbolFromBorder}\n" +
-                              $"{symbolFromBorder} {userName} {symbolFromBorder}\n" +
-                              $"{symbolFromBorder}");
+            Console.WriteLine($"\n{borderRow}" +
+                              $"\n{symbolFromBorder} {userName} {symbolFromBorder}" +
+                              $"\n{borderRow}");
 
             Console.ReadKey();
         }
