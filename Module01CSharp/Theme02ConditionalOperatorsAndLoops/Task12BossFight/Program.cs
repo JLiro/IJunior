@@ -6,27 +6,58 @@ namespace Task12BossFight
     {
         static void Main()
         {
-            int healthBoss, damageBoss;
-            int healthMag , manaMag;
+            int healthBoss;
+            int healthBossMinimumValue = 250;
+            int healthBossMaximumValue = 500;
+            int healthBossValueFromFinishGame = 0;
+            int damageBoss;
+            int damageBossMinimumValue = 25;
+            int damageBossMaximumValue = 50;
+
+            int healthMag;
+            int healthMagMinimumValue = 100;
+            int healthMagMaximumValue = 250;
+            int healthMagValueFromFinishGame = 0;
+            int manaMag;
+            int manaMagMinimumValue = 100;
+            int manaMagMaximumValue = 500;
+
+            const int rashamonCommand = 1;
+                 bool isActivateRamashonSpell = false;
+                  int rashamonManaMagChangeNumber = -35;
+                  int rashamonHealthBossChangeNumber = -50;
+
+            const int huganzakuraCommand = 2;
+                  int huganzakuraManaMagChangeNumber = -10;
+                  int huganzakuraHealthBossChangeNumber = -100;
+
+            const int dimensionalCommand = 3;
+                 bool isCorrectHelthMagNumber = false;
+                  int requiredNumberHealthForSpell = 100;
+                  int dimensionalManaMagChangeNumber = -50;
+                  int dimensionalHealthMagChangeNumber = 250;
+
+            const int songElementsCommand = 4;
+                 bool isCanUseSongElements = false;
+                  int cooldownSongElementsNumberMoves = 3;
+                  int cooldownSongElementsNumberMovesCounter = 0;
+                  int songElementsManaMagChangeNumber = 250;
+                  int songElementsHealthMagChangeNumber = -75;
+                  int songElementsHealthBossChangeNumber = -25;
 
             int useSpell;
-            bool activateRamashonSpell = false;
-            int cooldownSongElements = 3;
-
             string tempEvent = string.Empty;
             string winner;
 
             Random random = new Random();
+            healthBoss = random.Next(healthBossMinimumValue, healthBossMaximumValue);
 
-            healthBoss = random.Next(250, 500);
+            healthMag = random.Next(healthMagMinimumValue, healthMagMaximumValue);
+            manaMag = random.Next(manaMagMinimumValue, manaMagMaximumValue);
 
-            healthMag = random.Next(100, 250);
-            manaMag   = random.Next(100, 500);
-
-            while (healthBoss > 0 && healthMag > 0)
+            bool isGameOn = true;
+            while (isGameOn)
             {
-                damageBoss = random.Next(25, 50);
-
                 Console.Write
                 (
                     "=====0 Последнее событие:" +
@@ -62,24 +93,24 @@ namespace Task12BossFight
                     
                     switch (useSpell)
                     {
-                        case 1:
+                        case rashamonCommand:
                             tempEvent = "Вы использовали заклинание Рашамон!";
 
-                            manaMag -= 35;
-                            healthBoss -= 50;
+                            manaMag += rashamonManaMagChangeNumber;
+                            healthBoss += rashamonHealthBossChangeNumber;
 
-                            activateRamashonSpell = true;
+                            isActivateRamashonSpell = true;
                             break;
 
-                        case 2:
-                            if (activateRamashonSpell)
+                        case huganzakuraCommand:
+                            if (isActivateRamashonSpell)
                             {
                                 tempEvent = "Вы использовали заклинание Хуганзакура!";
 
-                                manaMag -= 10;
-                                healthBoss -= 100;
+                                manaMag += huganzakuraManaMagChangeNumber;
+                                healthBoss += huganzakuraHealthBossChangeNumber;
 
-                                activateRamashonSpell = false;
+                                isActivateRamashonSpell = false;
                             }
                             else
                             {
@@ -88,13 +119,13 @@ namespace Task12BossFight
                             }
                             break;
 
-                        case 3:
-                            if (healthMag < 100)
+                        case dimensionalCommand:
+                            if (isCorrectHelthMagNumber)
                             {
                                 tempEvent = "Вы использовали заклинание Межпространственный разлом!";
 
-                                manaMag -= 50;
-                                healthMag += 250;
+                                manaMag += dimensionalManaMagChangeNumber;
+                                healthMag += dimensionalHealthMagChangeNumber;
                             }
                             else
                             {
@@ -103,16 +134,17 @@ namespace Task12BossFight
                             }
                             break;
 
-                        case 4:
-                            if (cooldownSongElements > 3)
+                        case songElementsCommand:
+                            isCanUseSongElements = cooldownSongElementsNumberMovesCounter == cooldownSongElementsNumberMoves;
+                            if (isCanUseSongElements)
                             {
                                 tempEvent = "Вы использовали заклинание Песнь стихий!";
 
-                                manaMag += 250;
-                                healthMag -= 75;
-                                healthBoss -= 25;
+                                manaMag += songElementsManaMagChangeNumber;
+                                healthMag += songElementsHealthMagChangeNumber;
+                                healthBoss += songElementsHealthBossChangeNumber;
 
-                                cooldownSongElements = 0;
+                                cooldownSongElementsNumberMovesCounter -= cooldownSongElementsNumberMoves;
                             }
                             else
                             {
@@ -127,8 +159,12 @@ namespace Task12BossFight
                             break;
                     }
 
-                    if (useSpell != 3) cooldownSongElements++;
-                       
+                    isCanUseSongElements = cooldownSongElementsNumberMoves == cooldownSongElementsNumberMovesCounter;
+                    if (!isCanUseSongElements) cooldownSongElementsNumberMovesCounter++;
+                    
+                    isCorrectHelthMagNumber = healthMag < requiredNumberHealthForSpell;
+
+                    damageBoss = random.Next(damageBossMinimumValue, damageBossMaximumValue);
                     healthMag -= damageBoss;
                 }
                 catch 
@@ -136,6 +172,7 @@ namespace Task12BossFight
                     Console.Clear();
                     tempEvent = "Такое заклинание ещё не изучено. Пожалуйста, выбирите что-то, чем уже владеете\n"; 
                 }
+                isGameOn = healthBoss > healthBossValueFromFinishGame && healthMag > healthMagValueFromFinishGame;
             }
 
             winner = healthBoss > healthMag ? "Босс" : "Маг";
