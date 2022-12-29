@@ -8,23 +8,26 @@ namespace Task04SumNumbers
         {
             Random random = new Random();
 
+            int minValue = 0;
             int maxValue = 100;
-            int number = random.Next(0, maxValue);
-            int divider0 = 3;
-            int divider1 = 5;
-            int sum = number;
+            int number = random.Next(minValue, maxValue);
+            int firstDivider = 3;
+            int secondDivider = 5;
+            int sum = 0;
 
             Console.WriteLine(number);
+            sum += number;
 
             for (int i = 0; i < number; i++)
             {
-                if (i % divider0 == 0 || i % divider1 == 0)
+                if (i % firstDivider == 0 || i % secondDivider == 0)
                 {
                     sum += i;
                     Console.Write(i + " ");
                 }
             }
-            Console.WriteLine(sum);
+            Console.WriteLine("\n"+sum);
+            Console.ReadKey();
         }
     }
 }

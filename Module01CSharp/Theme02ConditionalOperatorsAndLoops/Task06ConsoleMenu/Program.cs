@@ -23,11 +23,9 @@ namespace Task06ConsoleMenu
             const string greenColorCommand = "Green";
 
             bool isProgramRanning = true;
-            bool isForvard = true;
-            bool isValid = true;
             bool isСorrectPassword = true;
 
-            while (userCommand != exitCommand)
+            while (isProgramRanning)
             {
                 Console.Write(
                     "             ДОСТУПНЫЕ КОМАНДЫ\n\n" +
@@ -47,10 +45,7 @@ namespace Task06ConsoleMenu
                         userCommand = Console.ReadLine();
 
                         isProgramRanning = userCommand != exitCommand;
-                        isForvard = userCommand != backCommand;
-                        isValid = isForvard || isProgramRanning;
-
-                        if (isValid)
+                        if (isProgramRanning)
                         {
                             userName = userCommand;
                             Console.Clear();
@@ -64,12 +59,8 @@ namespace Task06ConsoleMenu
                                       "\n Введите желаемый цвет консоли: ");
                         userCommand = Console.ReadLine();
 
-
                         isProgramRanning = userCommand == exitCommand;
-                        isForvard = userCommand == backCommand;
-                        isValid = !isForvard || !isProgramRanning;
-
-                        if (isValid) { Console.Clear(); break; }
+                        if (isProgramRanning) { Console.Clear(); break; }
 
                         switch (userCommand)
                         {
@@ -96,27 +87,18 @@ namespace Task06ConsoleMenu
                         break;
 
                     case setPasswordCommand:
-                        Console.Write("Введите Ваш пароль или команду Back чтобы вернуться в меню: ");
+                        Console.Write("Введите Ваш пароль: ");
                         userCommand = Console.ReadLine();
 
-                        isForvard = userCommand != backCommand;
-                        if (isForvard)
-                        {
                             userPassword = userCommand;
                             Console.Clear();
                             Console.WriteLine("Пароль установлен\n");
-                        }
-                        else Console.Clear();
                         break;
 
                     case writeNameCommand:
-                        isForvard = userCommand != backCommand;
-                        while (isForvard)
-                        {
-                            Console.Write("Введите Ваш пароль или команду Back чтобы вернуться в меню: ");
-                            userCommand = Console.ReadLine();
-
-                            isForvard = userCommand != backCommand;
+                        Console.Write("Введите пароль: ");
+                        userCommand = Console.ReadLine();
+                            
                             isСorrectPassword = userCommand == userPassword;
                             if (isСorrectPassword)
                             {
@@ -124,13 +106,11 @@ namespace Task06ConsoleMenu
                                 Console.WriteLine($"Ваше имя: {userName}\n");
                                 userCommand = backCommand;
                             }
-                            else if (isForvard)
+                            else
                             {
-                                Console.WriteLine("\nНеверный пароль!\n\n" +
-                                                  "Повторите попытку входа или вернитесь в меню с помощью команды Back");
+                                Console.WriteLine("\nНеверный пароль!\n" +
+                                                  "\nПовторите попытку");
                             }
-                            else Console.Clear();
-                        }
                         break;
 
                     case exitCommand: return;
