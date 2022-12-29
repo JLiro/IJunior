@@ -8,18 +8,17 @@ namespace Task04SumNumbers
         {
             Random random = new Random();
 
-            int minValue = 0;
             int maxValue = 100;
-            int number = random.Next(minValue, maxValue);
-            int multiplicityNumber1 = 3;
-            int multiplicityNumber2 = 5;
+            int number = random.Next(0, maxValue);
+            int divider1 = 3;
+            int divider2 = 5;
             int sum = number;
 
             Console.WriteLine(number);
 
             for (int i = 0; i < number; i++)
             {
-                if (i % multiplicityNumber1 == 0 || i % multiplicityNumber2 == 0)
+                if (i % divider1 == 0 || i % divider2 == 0)
                 {
                     sum += i;
                     Console.Write(i + " ");
