@@ -7,11 +7,10 @@ namespace Task07OutputName
         static void Main()
         {
             string userName = string.Empty;
-            
-            string symbolFromBorder = string.Empty,
-                          borderRow = string.Empty;
-            
-            int additionToLengthOfHorizontalBorder = 4;
+
+            string symbolFromBorder = string.Empty;
+            string borderRow = string.Empty;
+            string nameRow = string.Empty;
 
             Console.Write("Введите Ваше имя: ");
             userName = Console.ReadLine();
@@ -19,13 +18,14 @@ namespace Task07OutputName
             Console.Write("Введите символ: ");
             symbolFromBorder = Console.ReadLine();
 
-            for (int i = 0; i < userName.Length + additionToLengthOfHorizontalBorder; i++)
+            nameRow = symbolFromBorder + userName + symbolFromBorder;
+            for (int i = 0; i < nameRow.Length; i++)
             {
                 borderRow += symbolFromBorder;
             }
 
             Console.WriteLine($"\n{borderRow}" +
-                              $"\n{symbolFromBorder} {userName} {symbolFromBorder}" +
+                              $"\n{nameRow}" +
                               $"\n{borderRow}");
 
             Console.ReadKey();
