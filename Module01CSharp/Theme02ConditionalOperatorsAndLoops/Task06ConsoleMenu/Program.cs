@@ -6,13 +6,26 @@ namespace Task06ConsoleMenu
     {
         static void Main()
         {
-            string userName = string.Empty,
-                   userPassword = string.Empty;
+            string userName = string.Empty;
+            string userPassword = string.Empty;
 
             string userCommand = string.Empty;
 
-            string exitCommand = "Esc",
-                   backCommand = "Back";
+            const string exitCommand = "Esc";
+            const string backCommand = "Back";
+            const string setNameCommand = "SetName";
+            const string changeTextColorCommand = "ChangeTextColor";
+            const string setPasswordCommand = "SetPassword";
+            const string writeNameCommand = "WriteName";
+
+            const string redColorCommand = "Red";
+            const string blueColorCommand = "Blue";
+            const string greenColorCommand = "Green";
+
+            bool isProgramRanning = true;
+            bool isForvard = true;
+            bool isValid = true;
+            bool isСorrectPassword = true;
 
             while (userCommand != exitCommand)
             {
@@ -29,11 +42,15 @@ namespace Task06ConsoleMenu
 
                 switch (userCommand)
                 {
-                    case "SetName":
+                    case setNameCommand:
                         Console.Write("Введите Ваше имя или команду Back чтобы вернуться в меню: ");
                         userCommand = Console.ReadLine();
 
-                        if (userCommand != backCommand || userCommand != exitCommand)
+                        isProgramRanning = userCommand != exitCommand;
+                        isForvard = userCommand != backCommand;
+                        isValid = isForvard || isProgramRanning;
+
+                        if (isValid)
                         {
                             userName = userCommand;
                             Console.Clear();
@@ -42,28 +59,33 @@ namespace Task06ConsoleMenu
                         else Console.Clear();
                         break;
 
-                    case "ChangeTextColor":
+                    case changeTextColorCommand:
                         Console.Write("\nДоступные команды выбора цвета: Red, Blue, Green" +
                                       "\n Введите желаемый цвет консоли: ");
                         userCommand = Console.ReadLine();
 
-                        if (userCommand == backCommand || userCommand == exitCommand) { Console.Clear(); break; }
+
+                        isProgramRanning = userCommand == exitCommand;
+                        isForvard = userCommand == backCommand;
+                        isValid = !isForvard || !isProgramRanning;
+
+                        if (isValid) { Console.Clear(); break; }
 
                         switch (userCommand)
                         {
-                            case "Red":
+                            case redColorCommand:
                                 Console.ForegroundColor = ConsoleColor.Red;
                                 Console.Clear();
                                 break;
-                            case "Blue":
+                            case blueColorCommand:
                                 Console.ForegroundColor = ConsoleColor.Blue;
                                 Console.Clear();
                                 break;
-                            case "Green":
+                            case greenColorCommand:
                                 Console.ForegroundColor = ConsoleColor.Green;
                                 Console.Clear();
                                 break;
-                            case "Back":
+                            case backCommand:
                                 Console.Clear();
                                 break;
                             default:
@@ -73,11 +95,12 @@ namespace Task06ConsoleMenu
                         }
                         break;
 
-                    case "SetPassword":
+                    case setPasswordCommand:
                         Console.Write("Введите Ваш пароль или команду Back чтобы вернуться в меню: ");
                         userCommand = Console.ReadLine();
 
-                        if (userCommand != backCommand)
+                        isForvard = userCommand != backCommand;
+                        if (isForvard)
                         {
                             userPassword = userCommand;
                             Console.Clear();
@@ -86,19 +109,22 @@ namespace Task06ConsoleMenu
                         else Console.Clear();
                         break;
 
-                    case "WriteName":
-                        while (userCommand != backCommand)
+                    case writeNameCommand:
+                        isForvard = userCommand != backCommand;
+                        while (isForvard)
                         {
                             Console.Write("Введите Ваш пароль или команду Back чтобы вернуться в меню: ");
                             userCommand = Console.ReadLine();
 
-                            if (userCommand == userPassword)
+                            isForvard = userCommand != backCommand;
+                            isСorrectPassword = userCommand == userPassword;
+                            if (isСorrectPassword)
                             {
                                 Console.Clear();
                                 Console.WriteLine($"Ваше имя: {userName}\n");
                                 userCommand = backCommand;
                             }
-                            else if (userCommand != backCommand)
+                            else if (isForvard)
                             {
                                 Console.WriteLine("\nНеверный пароль!\n\n" +
                                                   "Повторите попытку входа или вернитесь в меню с помощью команды Back");
@@ -107,7 +133,7 @@ namespace Task06ConsoleMenu
                         }
                         break;
 
-                    case "Esc": return;
+                    case exitCommand: return;
 
                     default:
                         Console.Clear();

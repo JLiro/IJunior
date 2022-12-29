@@ -6,9 +6,9 @@ namespace Task03Sequence
     {
         static void Main()
         {
-            int startingNumber = 5,
-                  finishNumber = 97,
-                      loopStep = 7;
+            int startingNumber = 5;
+            int finishNumber = 97;
+            int loopStep = 7;
 
             for (int i = startingNumber; i < finishNumber; i += loopStep)
             {
