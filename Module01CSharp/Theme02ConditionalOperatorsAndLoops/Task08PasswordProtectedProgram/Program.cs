@@ -9,8 +9,9 @@ namespace Task08PasswordProtectedProgram
             string password = "secret";
             string userText = string.Empty;
             bool isСorrectPassword;
+            int passpasswordAttemptsNumberword = 3;
 
-            for (int i = 3; i > 0; i--)
+            for (int i = passpasswordAttemptsNumberword; i > 0; i--)
             {
                 Console.Write($"Осталось попыток: {i} из 3\n\n" +
                               $"Для доступа к тайному сообщению ведите пароль: ");
