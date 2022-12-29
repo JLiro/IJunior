@@ -23,7 +23,7 @@ namespace Task06ConsoleMenu
             const string greenColorCommand = "Green";
 
             bool isProgramRanning = true;
-            bool isСorrectPassword = true;
+            bool isСorrectPassword;
 
             while (isProgramRanning)
             {
@@ -90,26 +90,29 @@ namespace Task06ConsoleMenu
                         Console.Write("Введите Ваш пароль: ");
                         userCommand = Console.ReadLine();
 
-                            userPassword = userCommand;
-                            Console.Clear();
-                            Console.WriteLine("Пароль установлен\n");
+                        userPassword = userCommand;
+                        Console.Clear();
+                        Console.WriteLine("Пароль установлен\n");
                         break;
 
                     case writeNameCommand:
                         Console.Write("Введите пароль: ");
                         userCommand = Console.ReadLine();
-                            
-                            isСorrectPassword = userCommand == userPassword;
-                            if (isСorrectPassword)
+
+                        isProgramRanning = userCommand == exitCommand;
+                        if (isProgramRanning) { Console.Clear(); break; }
+
+                        isСorrectPassword = userCommand == userPassword;
+                        if (isСorrectPassword)
                             {
-                                Console.Clear();
-                                Console.WriteLine($"Ваше имя: {userName}\n");
-                                userCommand = backCommand;
+                             Console.Clear();
+                             Console.WriteLine($"Ваше имя: {userName}\n");
                             }
-                            else
+                        else
                             {
-                                Console.WriteLine("\nНеверный пароль!\n" +
-                                                  "\nПовторите попытку");
+                            Console.Clear();
+                            Console.WriteLine("\nНеверный пароль!\n" +
+                                              "\nПовторите попытку");
                             }
                         break;
 

@@ -13,11 +13,11 @@ namespace Task04SumNumbers
             int number = random.Next(minValue, maxValue);
             int firstDivider = 3;
             int secondDivider = 5;
-            int sum = 0;
+            int sum;
 
             Console.WriteLine(number);
             
-            sum += number;
+            sum = number;
             for (int i = 0; i < number; i++)
             {
                 if (i % firstDivider == 0 || i % secondDivider == 0)

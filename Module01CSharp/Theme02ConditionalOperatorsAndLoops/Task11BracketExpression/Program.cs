@@ -6,21 +6,28 @@ namespace Task11BracketExpression
     {
         static void Main()
         {
-            int leftBracketsCount = 0,
-                rightBracketsCount= 0;
+            int leftBracketsCount = 0;
+            int rightBracketsCount= 0;
 
             string bracketExpression;
+
+            bool isCorrectBracketExpression;
+            bool isLeftBracket;
+            bool isRightBracket;
 
             Console.Write("Введите последовательность скобок: ");
             bracketExpression = Console.ReadLine();
 
             foreach (char bracket in bracketExpression)
             {
-                if (bracket == '(') { leftBracketsCount++; }
-                else if (bracket == ')') { rightBracketsCount++; }
+                isLeftBracket = bracket == '(';
+                isRightBracket = bracket == ')';
+                if (isLeftBracket) { leftBracketsCount++; }
+                else if (isRightBracket) { rightBracketsCount++; }
             }
 
-            if (leftBracketsCount == rightBracketsCount) Console.WriteLine($"\nЭто корректное скобочное выражение с глубиной {leftBracketsCount}");
+            isCorrectBracketExpression = leftBracketsCount == rightBracketsCount;
+            if (isCorrectBracketExpression) Console.WriteLine($"\nЭто корректное скобочное выражение с глубиной {leftBracketsCount}");
             else Console.WriteLine("Это некорректное скобочное выражение");
 
             Console.ReadKey();
