@@ -11,8 +11,10 @@ namespace Task06ConsoleMenu
 
             string userCommand = null;
 
+            string exitCommand = "Esc",
+                   backCommand = "Back";
 
-            while (userCommand != "Esc")
+            while (userCommand != exitCommand)
             {
                 Console.Write(
                     "             ДОСТУПНЫЕ КОМАНДЫ\n\n" +
@@ -31,7 +33,7 @@ namespace Task06ConsoleMenu
                         Console.Write("Введите Ваше имя или команду Back чтобы вернуться в меню: ");
                         userCommand = Console.ReadLine();
 
-                        if (userCommand != "Back")
+                        if (userCommand != backCommand || userCommand != exitCommand)
                         {
                             userName = userCommand;
                             Console.Clear();
@@ -44,6 +46,8 @@ namespace Task06ConsoleMenu
                         Console.Write("\nДоступные команды выбора цвета: Red, Blue, Green" +
                                       "\n Введите желаемый цвет консоли: ");
                         userCommand = Console.ReadLine();
+
+                        if (userCommand == backCommand || userCommand == exitCommand) { Console.Clear(); break; }
 
                         switch (userCommand)
                         {
@@ -73,7 +77,7 @@ namespace Task06ConsoleMenu
                         Console.Write("Введите Ваш пароль или команду Back чтобы вернуться в меню: ");
                         userCommand = Console.ReadLine();
 
-                        if (userCommand != "Back")
+                        if (userCommand != backCommand)
                         {
                             userPassword = userCommand;
                             Console.Clear();
@@ -83,7 +87,7 @@ namespace Task06ConsoleMenu
                         break;
 
                     case "WriteName":
-                        while (userCommand != "Back")
+                        while (userCommand != backCommand)
                         {
                             Console.Write("Введите Ваш пароль или команду Back чтобы вернуться в меню: ");
                             userCommand = Console.ReadLine();
@@ -92,9 +96,9 @@ namespace Task06ConsoleMenu
                             {
                                 Console.Clear();
                                 Console.WriteLine($"Ваше имя: {userName}\n");
-                                userCommand = "Back";
+                                userCommand = backCommand;
                             }
-                            else if (userCommand != "Back")
+                            else if (userCommand != backCommand)
                             {
                                 Console.WriteLine("\nНеверный пароль!\n\n" +
                                                   "Повторите попытку входа или вернитесь в меню с помощью команды Back");

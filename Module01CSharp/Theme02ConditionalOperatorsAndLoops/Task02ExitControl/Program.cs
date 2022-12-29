@@ -7,8 +7,9 @@ namespace Task02ExitControl
         static void Main()
         {
             string userText = null;
+            string exitСommand = "Exit";
 
-            while (userText != "Exit")
+            while (userText != exitСommand)
             {
                 Console.Write("Введите текст: ");
                 userText = Console.ReadLine();

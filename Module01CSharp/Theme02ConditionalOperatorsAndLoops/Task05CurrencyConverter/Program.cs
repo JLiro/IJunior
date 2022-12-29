@@ -20,7 +20,11 @@ namespace Task05CurrencyConverter
 
             string userText = null;
 
-            while ((userText != "Exit") && (userText != "EXIT") && (userText != "exit"))
+            string exitCommand0 = "Exit",
+                   exitCommand1 = "exit",
+                   exitCommand2 = "EXIT";
+
+            while ((userText != exitCommand0) && (userText != exitCommand1) && (userText != exitCommand2))
             {
                 Console.WriteLine($"Ваш баланс счёта | {usdBalance} USD | {eurBalance} EUR | {rubBalance} RUB |\n");
 
