@@ -6,15 +6,14 @@ namespace Task12BossFight
     {
         static void Main()
         {
-            const int rashamonCommand = 1;
-            const int huganzakuraCommand = 2;
-            const int dimensionalCommand = 3;
-            const int songElementsCommand = 4;
+            const int RashamonCommand = 1;
+            const int HuganzakuraCommand = 2;
+            const int DimensionalCommand = 3;
+            const int SongElementsCommand = 4;
 
             int healthBoss;
             int healthBossMinimumValue = 250;
             int healthBossMaximumValue = 500;
-            int healthBossValueFromFinishGame = 0;
             int damageBoss;
             int damageBossMinimumValue = 25;
             int damageBossMaximumValue = 50;
@@ -22,33 +21,28 @@ namespace Task12BossFight
             int healthMag;
             int healthMagMinimumValue = 100;
             int healthMagMaximumValue = 250;
-            int healthMagValueFromFinishGame = 0;
             int manaMag;
             int manaMagMinimumValue = 100;
             int manaMagMaximumValue = 500;
 
             bool isActivateRamashonSpell = false;
-            int rashamonManaMagChangeNumber = -35;
-            int rashamonHealthBossChangeNumber = -50;
+            int rashamonManaMagValue = -35;
+            int rashamonHealthBossValue = -50;
 
-            int huganzakuraManaMagChangeNumber = -10;
-            int huganzakuraHealthBossChangeNumber = -100;
+            int huganzakuraManaMagValue = -10;
+            int huganzakuraHealthBossValue = -100;
 
-            bool isCorrectHelthMagNumber = false;
-            int requiredNumberHealthForSpell = 100;
-            int dimensionalManaMagChangeNumber = -50;
-            int dimensionalHealthMagChangeNumber = 250;
+            bool isCorrectHelthMagValue = false;
+            int requiredValueHealthForSpell = 100;
+            int dimensionalManaMagValue = -50;
+            int dimensionalHealthMagValue = 250;
 
             bool isCanUseSongElements = false;
-            int cooldownSongElementsNumberMoves = 3;
-            int cooldownSongElementsNumberMovesCounter = 0;
-            int songElementsManaMagChangeNumber = 250;
-            int songElementsHealthMagChangeNumber = -75;
-            int songElementsHealthBossChangeNumber = -25;
-
-            int usedSpells;
-            string tempEvent = string.Empty;
-            string winner;
+            int cooldownSongElementsMaxValue = 3;
+            int cooldownSongElementsCount = 0;
+            int songElementsManaMagValue = 250;
+            int songElementsHealthMagValue = -75;
+            int songElementsHealthBossValue = -25;
 
             Random random = new Random();
             healthBoss = random.Next(healthBossMinimumValue, healthBossMaximumValue);
@@ -56,8 +50,11 @@ namespace Task12BossFight
             healthMag = random.Next(healthMagMinimumValue, healthMagMaximumValue);
             manaMag = random.Next(manaMagMinimumValue, manaMagMaximumValue);
 
-            bool isGameOn = true;
-            while (isGameOn)
+            int usedSpells;
+            string tempEvent = string.Empty;
+            string winner;
+
+            while (healthBoss > 0 && healthMag > 0)
             {
                 Console.Write
                 (
@@ -71,44 +68,42 @@ namespace Task12BossFight
                  $"\n" +
                  $"\n   Доступные заклинания:" +
                  $"\n   [1] Рашамон" +
-                 $"\n       Отнимает у заклинателя {rashamonManaMagChangeNumber} маны | Наносит {rashamonHealthBossChangeNumber} урона боссу" +
+                 $"\n       Отнимает у заклинателя {rashamonManaMagValue} маны | Наносит {rashamonHealthBossValue} урона боссу" +
                  $"\n" +
                  $"\n   [2] Хуганзакура" +
-                 $"\n       Отнимает у заклинателя {huganzakuraManaMagChangeNumber} маны | Наносит {huganzakuraHealthBossChangeNumber} урона боссу" +
+                 $"\n       Отнимает у заклинателя {huganzakuraManaMagValue} маны | Наносит {huganzakuraHealthBossValue} урона боссу" +
                  $"\n       Заклинание Хуганзакура доступно только после использования Рашамон" +
                  $"\n" +
                  $"\n   [3] Межпространственный разлом" +
-                 $"\n       Отнимает у заклинателя {dimensionalManaMagChangeNumber} маны | Восстанавливает {dimensionalHealthMagChangeNumber} здоровья заклинателю" +
-                 $"\n       Заклинание Межпространственный разлом доступно только если у вас менее {requiredNumberHealthForSpell} здоровья" +
+                 $"\n       Отнимает у заклинателя {dimensionalManaMagValue} маны | Восстанавливает {dimensionalHealthMagValue} здоровья заклинателю" +
+                 $"\n       Заклинание Межпространственный разлом доступно только если у вас менее {requiredValueHealthForSpell} здоровья" +
                  $"\n" +
                  $"\n   [4] Песнь стихий" +
-                 $"\n       Отнимает {songElementsHealthBossChangeNumber} здоровья у босса и {songElementsHealthMagChangeNumber} здоровья у заклинателя | Восстанавливает {songElementsManaMagChangeNumber} маны заклинателю" +
-                 $"\n       Можно использовать один раз в {cooldownSongElementsNumberMoves} хода" +
+                 $"\n       Отнимает {songElementsHealthBossValue} здоровья у босса и {songElementsHealthMagValue} здоровья у заклинателя | Восстанавливает {songElementsManaMagValue} маны заклинателю" +
+                 $"\n       Можно использовать один раз в {cooldownSongElementsMaxValue} хода" +
                  $"\n" +
                  $"\n   Введите номер заклинания для атаки: "
                  );
                 usedSpells = Convert.ToInt32(Console.ReadLine());
 
-                Console.Clear();
-
                 switch (usedSpells)
                 {
-                    case rashamonCommand:
+                    case RashamonCommand:
                         tempEvent = "Вы использовали заклинание Рашамон!";
 
-                        manaMag += rashamonManaMagChangeNumber;
-                        healthBoss += rashamonHealthBossChangeNumber;
+                        manaMag += rashamonManaMagValue;
+                        healthBoss += rashamonHealthBossValue;
 
                         isActivateRamashonSpell = true;
                         break;
 
-                    case huganzakuraCommand:
+                    case HuganzakuraCommand:
                         if (isActivateRamashonSpell)
                         {
                             tempEvent = "Вы использовали заклинание Хуганзакура!";
 
-                            manaMag += huganzakuraManaMagChangeNumber;
-                            healthBoss += huganzakuraHealthBossChangeNumber;
+                            manaMag += huganzakuraManaMagValue;
+                            healthBoss += huganzakuraHealthBossValue;
 
                             isActivateRamashonSpell = false;
                         }
@@ -119,13 +114,13 @@ namespace Task12BossFight
                         }
                         break;
 
-                    case dimensionalCommand:
-                        if (isCorrectHelthMagNumber)
+                    case DimensionalCommand:
+                        if (isCorrectHelthMagValue)
                         {
                             tempEvent = "Вы использовали заклинание Межпространственный разлом!";
 
-                            manaMag += dimensionalManaMagChangeNumber;
-                            healthMag += dimensionalHealthMagChangeNumber;
+                            manaMag += dimensionalManaMagValue;
+                            healthMag += dimensionalHealthMagValue;
                         }
                         else
                         {
@@ -134,17 +129,18 @@ namespace Task12BossFight
                         }
                         break;
 
-                    case songElementsCommand:
-                        isCanUseSongElements = cooldownSongElementsNumberMovesCounter == cooldownSongElementsNumberMoves;
+                    case SongElementsCommand:
+                        isCanUseSongElements = cooldownSongElementsCount == cooldownSongElementsMaxValue;
+
                         if (isCanUseSongElements)
                         {
                             tempEvent = "Вы использовали заклинание Песнь стихий!";
 
-                            manaMag += songElementsManaMagChangeNumber;
-                            healthMag += songElementsHealthMagChangeNumber;
-                            healthBoss += songElementsHealthBossChangeNumber;
+                            manaMag += songElementsManaMagValue;
+                            healthMag += songElementsHealthMagValue;
+                            healthBoss += songElementsHealthBossValue;
 
-                            cooldownSongElementsNumberMovesCounter -= cooldownSongElementsNumberMoves;
+                            cooldownSongElementsCount -= cooldownSongElementsMaxValue;
                         }
                         else
                         {
@@ -159,19 +155,33 @@ namespace Task12BossFight
                         break;
                 }
 
-                isCanUseSongElements = cooldownSongElementsNumberMoves == cooldownSongElementsNumberMovesCounter;
-                
-                if (!isCanUseSongElements)
-                {
-                    cooldownSongElementsNumberMovesCounter++;
-                }
-
-                isCorrectHelthMagNumber = healthMag < requiredNumberHealthForSpell;
-
                 damageBoss = random.Next(damageBossMinimumValue, damageBossMaximumValue);
                 healthMag -= damageBoss;
+                
+                isCanUseSongElements = cooldownSongElementsMaxValue == cooldownSongElementsCount;
+                
+                if (isCanUseSongElements == false)
+                {
+                    cooldownSongElementsCount++;
+                }
 
-                isGameOn = healthBoss > healthBossValueFromFinishGame && healthMag > healthMagValueFromFinishGame;
+                isCorrectHelthMagValue = healthMag < requiredValueHealthForSpell;
+
+                Console.Clear();
+            }
+
+
+            if (healthBoss <= 0 && healthMag <= 0)
+            {
+                winner = "Ничья";
+            }
+            else if (healthBoss <= 0)
+            {
+                winner = "Маг";
+            }
+            else
+            {
+                winner = "Босс";
             }
 
             winner = healthBoss > healthMag ? "Босс" : "Маг";
