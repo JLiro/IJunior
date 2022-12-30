@@ -8,7 +8,7 @@ namespace Task07OutputName
         {
             string userName = string.Empty;
 
-            string symbolFromBorder = string.Empty;
+            char symbolFromBorder;
             string borderRow = string.Empty;
             string nameRow = string.Empty;
 
@@ -16,7 +16,7 @@ namespace Task07OutputName
             userName = Console.ReadLine();
 
             Console.Write("Введите символ: ");
-            symbolFromBorder = Console.ReadLine();
+            symbolFromBorder = Convert.ToChar(Console.ReadLine());
 
             nameRow = symbolFromBorder + userName + symbolFromBorder;
             for (int i = 0; i < nameRow.Length; i++)
