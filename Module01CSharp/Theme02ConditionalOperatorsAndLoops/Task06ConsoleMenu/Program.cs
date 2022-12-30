@@ -6,12 +6,11 @@ namespace Task06ConsoleMenu
     {
         static void Main()
         {
-            const string ExitCommand = "1";
-            const string BackCommand = "2";
-            const string SetNameCommand = "3";
-            const string ChangeTextColorCommand = "4";
-            const string SetPasswordCommand = "5";
-            const string WriteNameCommand = "6";
+            const string SetNameCommand = "1";
+            const string ChangeTextColorCommand = "2";
+            const string SetPasswordCommand = "3";
+            const string WriteNameCommand = "4";
+            const string ExitCommand = "5";
 
             const string RedColorCommand = "Red";
             const string BlueColorCommand = "Blue";
@@ -22,11 +21,10 @@ namespace Task06ConsoleMenu
 
             string userCommand = string.Empty;
 
-            bool isProgramRanning = true;
             bool isСorrectPassword;
             bool isOpen = true;
 
-            while (isProgramOpen)
+            while (isOpen)
             {
                 Console.Write(
                     "ДОСТУПНЫЕ КОМАНДЫ\n\n" +
@@ -43,11 +41,9 @@ namespace Task06ConsoleMenu
                 {
                     case SetNameCommand:
                         Console.Write("Введите Ваше имя: ");
-                        userCommand = Console.ReadLine();
-
-                            userName = userCommand;
-                            Console.Clear();
-                            Console.WriteLine("Имя установлено\n");
+                        userName = Console.ReadLine();
+                        Console.Clear();
+                        Console.WriteLine("Имя установлено\n");
                         break;
 
                     case ChangeTextColorCommand:
@@ -72,10 +68,6 @@ namespace Task06ConsoleMenu
                                 Console.Clear();
                                 break;
 
-                            case BackCommand:
-                                Console.Clear();
-                                break;
-
                             default:
                                 Console.Clear();
                                 Console.WriteLine("Был введён неизвестный параметр. Пожалуйста, попробуйте снова\n");
@@ -96,8 +88,12 @@ namespace Task06ConsoleMenu
                         Console.Write("Введите пароль: ");
                         userCommand = Console.ReadLine();
 
-                        Console.Clear();
-                        Console.WriteLine($"Ваше имя: {userName}\n");
+                        isСorrectPassword = userCommand == userPassword;
+                        if (isСorrectPassword)
+                        {
+                            Console.Clear();
+                            Console.WriteLine($"Ваше имя: {userName}\n");
+                        }
                         break;
 
                     case ExitCommand:
