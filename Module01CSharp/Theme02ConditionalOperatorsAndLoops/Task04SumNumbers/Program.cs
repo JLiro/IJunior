@@ -9,7 +9,7 @@ namespace Task04SumNumbers
             Random random = new Random();
 
             int minValue = 0;
-            int maxValue = 100;
+            int maxValue = 101;
             int number = random.Next(minValue, maxValue);
             int firstDivider = 3;
             int secondDivider = 5;
@@ -17,7 +17,7 @@ namespace Task04SumNumbers
 
             Console.WriteLine(number);
             
-            sum = number;
+            sum = 0;
             for (int i = 0; i < number; i++)
             {
                 if (i % firstDivider == 0 || i % secondDivider == 0)
@@ -26,6 +26,7 @@ namespace Task04SumNumbers
                     Console.Write(i + " ");
                 }
             }
+
             Console.WriteLine("\n"+sum);
             Console.ReadKey();
         }
