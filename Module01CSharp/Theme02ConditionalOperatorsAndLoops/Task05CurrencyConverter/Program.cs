@@ -7,7 +7,7 @@ namespace Task05CurrencyConverter
         static void Main()
         {
             CurrencyConverter currencyConverter = new CurrencyConverter();
-            currencyConverter.ShowInterfece();
+            currencyConverter.Start();
         }
     }
 
@@ -32,7 +32,7 @@ namespace Task05CurrencyConverter
         private float rubToUsdCost = 0.1f;
         private float rubToEurCost = 0.2f;
 
-        public void ShowInterfece()
+        public void Start()
         {
             string userText;
 
