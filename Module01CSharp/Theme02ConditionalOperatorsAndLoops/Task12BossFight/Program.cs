@@ -6,6 +6,11 @@ namespace Task12BossFight
     {
         static void Main()
         {
+            const int rashamonCommand = 1;
+            const int huganzakuraCommand = 2;
+            const int dimensionalCommand = 3;
+            const int songElementsCommand = 4;
+
             int healthBoss;
             int healthBossMinimumValue = 250;
             int healthBossMaximumValue = 500;
@@ -22,28 +27,24 @@ namespace Task12BossFight
             int manaMagMinimumValue = 100;
             int manaMagMaximumValue = 500;
 
-            const int rashamonCommand = 1;
-                 bool isActivateRamashonSpell = false;
-                  int rashamonManaMagChangeNumber = -35;
-                  int rashamonHealthBossChangeNumber = -50;
+            bool isActivateRamashonSpell = false;
+            int rashamonManaMagChangeNumber = -35;
+            int rashamonHealthBossChangeNumber = -50;
 
-            const int huganzakuraCommand = 2;
-                  int huganzakuraManaMagChangeNumber = -10;
-                  int huganzakuraHealthBossChangeNumber = -100;
+            int huganzakuraManaMagChangeNumber = -10;
+            int huganzakuraHealthBossChangeNumber = -100;
 
-            const int dimensionalCommand = 3;
-                 bool isCorrectHelthMagNumber = false;
-                  int requiredNumberHealthForSpell = 100;
-                  int dimensionalManaMagChangeNumber = -50;
-                  int dimensionalHealthMagChangeNumber = 250;
+            bool isCorrectHelthMagNumber = false;
+            int requiredNumberHealthForSpell = 100;
+            int dimensionalManaMagChangeNumber = -50;
+            int dimensionalHealthMagChangeNumber = 250;
 
-            const int songElementsCommand = 4;
-                 bool isCanUseSongElements = false;
-                  int cooldownSongElementsNumberMoves = 3;
-                  int cooldownSongElementsNumberMovesCounter = 0;
-                  int songElementsManaMagChangeNumber = 250;
-                  int songElementsHealthMagChangeNumber = -75;
-                  int songElementsHealthBossChangeNumber = -25;
+            bool isCanUseSongElements = false;
+            int cooldownSongElementsNumberMoves = 3;
+            int cooldownSongElementsNumberMovesCounter = 0;
+            int songElementsManaMagChangeNumber = 250;
+            int songElementsHealthMagChangeNumber = -75;
+            int songElementsHealthBossChangeNumber = -25;
 
             int usedSpells;
             string tempEvent = string.Empty;
@@ -68,110 +69,108 @@ namespace Task12BossFight
                  $"\n   МАГ [ЗДОРОВЬЕ: {healthMag}]" +
                  $"\n           [МАНА: {manaMag}]" +
                  $"\n" +
-                  "\n   Доступные заклинания:" +
-                  "\n   [1] Рашамон" +
-                  "\n       Отнимает у заклинателя 35 маны | Наносит 50 урона боссу" +
-                  "\n" +
-                  "\n   [2] Хуганзакура" +
-                  "\n       Отнимает у заклинателя 10 маны | Наносит 100 урона боссу" +
-                  "\n       Заклинание Хуганзакура доступно только после использования Рашамон" +
-                  "\n" +
-                  "\n   [3] Межпространственный разлом" +
-                  "\n       Отнимает у заклинателя 50 маны | Восстанавливает 250 здоровья заклинателю" +
-                  "\n       Заклинание Межпространственный разлом доступно только если у вас менее 100 здоровья" +
-                  "\n" +
-                  "\n   [4] Песнь стихий" +
-                  "\n       Позволяет собрать ману из пространства рядом. + 250 маны" +
-                  "\n       Отнимает 25 здоровья у босса и 75 здоровья у заклинателя | Восстанавливает 250 маны заклинателю" +
-                  "\n" +
-                  "\n   Введите номер заклинания для атаки: "
+                 $"\n   Доступные заклинания:" +
+                 $"\n   [1] Рашамон" +
+                 $"\n       Отнимает у заклинателя {rashamonManaMagChangeNumber} маны | Наносит {rashamonHealthBossChangeNumber} урона боссу" +
+                 $"\n" +
+                 $"\n   [2] Хуганзакура" +
+                 $"\n       Отнимает у заклинателя {huganzakuraManaMagChangeNumber} маны | Наносит {huganzakuraHealthBossChangeNumber} урона боссу" +
+                 $"\n       Заклинание Хуганзакура доступно только после использования Рашамон" +
+                 $"\n" +
+                 $"\n   [3] Межпространственный разлом" +
+                 $"\n       Отнимает у заклинателя {dimensionalManaMagChangeNumber} маны | Восстанавливает {dimensionalHealthMagChangeNumber} здоровья заклинателю" +
+                 $"\n       Заклинание Межпространственный разлом доступно только если у вас менее {requiredNumberHealthForSpell} здоровья" +
+                 $"\n" +
+                 $"\n   [4] Песнь стихий" +
+                 $"\n       Отнимает {songElementsHealthBossChangeNumber} здоровья у босса и {songElementsHealthMagChangeNumber} здоровья у заклинателя | Восстанавливает {songElementsManaMagChangeNumber} маны заклинателю" +
+                 $"\n       Можно использовать один раз в {cooldownSongElementsNumberMoves} хода" +
+                 $"\n" +
+                 $"\n   Введите номер заклинания для атаки: "
                  );
-                try { 
-                    usedSpells = Convert.ToInt32(Console.ReadLine());
-                    
-                    Console.Clear();
-                    
-                    switch (usedSpells)
-                    {
-                        case rashamonCommand:
-                            tempEvent = "Вы использовали заклинание Рашамон!";
+                usedSpells = Convert.ToInt32(Console.ReadLine());
 
-                            manaMag += rashamonManaMagChangeNumber;
-                            healthBoss += rashamonHealthBossChangeNumber;
+                Console.Clear();
 
-                            isActivateRamashonSpell = true;
-                            break;
+                switch (usedSpells)
+                {
+                    case rashamonCommand:
+                        tempEvent = "Вы использовали заклинание Рашамон!";
 
-                        case huganzakuraCommand:
-                            if (isActivateRamashonSpell)
-                            {
-                                tempEvent = "Вы использовали заклинание Хуганзакура!";
+                        manaMag += rashamonManaMagChangeNumber;
+                        healthBoss += rashamonHealthBossChangeNumber;
 
-                                manaMag += huganzakuraManaMagChangeNumber;
-                                healthBoss += huganzakuraHealthBossChangeNumber;
+                        isActivateRamashonSpell = true;
+                        break;
 
-                                isActivateRamashonSpell = false;
-                            }
-                            else
-                            {
-                                tempEvent = "Заклинание Хуганзакура доступно только после использования Рашамон" +
-                                   "\n       Вы замешкались и пропустили удар!";
-                            }
-                            break;
+                    case huganzakuraCommand:
+                        if (isActivateRamashonSpell)
+                        {
+                            tempEvent = "Вы использовали заклинание Хуганзакура!";
 
-                        case dimensionalCommand:
-                            if (isCorrectHelthMagNumber)
-                            {
-                                tempEvent = "Вы использовали заклинание Межпространственный разлом!";
+                            manaMag += huganzakuraManaMagChangeNumber;
+                            healthBoss += huganzakuraHealthBossChangeNumber;
 
-                                manaMag += dimensionalManaMagChangeNumber;
-                                healthMag += dimensionalHealthMagChangeNumber;
-                            }
-                            else
-                            {
-                                tempEvent = "Заклинание Межпространственный разлом доступно только если у вас менее 100 здоровья" +
-                                   "\n       Вы замешкались и пропустили удар!";
-                            }
-                            break;
+                            isActivateRamashonSpell = false;
+                        }
+                        else
+                        {
+                            tempEvent = "Заклинание Хуганзакура доступно только после использования Рашамон" +
+                               "\n       Вы замешкались и пропустили удар!";
+                        }
+                        break;
 
-                        case songElementsCommand:
-                            isCanUseSongElements = cooldownSongElementsNumberMovesCounter == cooldownSongElementsNumberMoves;
-                            if (isCanUseSongElements)
-                            {
-                                tempEvent = "Вы использовали заклинание Песнь стихий!";
+                    case dimensionalCommand:
+                        if (isCorrectHelthMagNumber)
+                        {
+                            tempEvent = "Вы использовали заклинание Межпространственный разлом!";
 
-                                manaMag += songElementsManaMagChangeNumber;
-                                healthMag += songElementsHealthMagChangeNumber;
-                                healthBoss += songElementsHealthBossChangeNumber;
+                            manaMag += dimensionalManaMagChangeNumber;
+                            healthMag += dimensionalHealthMagChangeNumber;
+                        }
+                        else
+                        {
+                            tempEvent = "Заклинание Межпространственный разлом доступно только если у вас менее 100 здоровья" +
+                               "\n       Вы замешкались и пропустили удар!";
+                        }
+                        break;
 
-                                cooldownSongElementsNumberMovesCounter -= cooldownSongElementsNumberMoves;
-                            }
-                            else
-                            {
-                                tempEvent = "Заклинание Песнь стихий доступно раз в 3 хода.\n" +
-                                   "\n       Вы замешкались и пропустили удар!";
-                            }
-                            break;
+                    case songElementsCommand:
+                        isCanUseSongElements = cooldownSongElementsNumberMovesCounter == cooldownSongElementsNumberMoves;
+                        if (isCanUseSongElements)
+                        {
+                            tempEvent = "Вы использовали заклинание Песнь стихий!";
 
-                            default:
-                                tempEvent = "Такое заклинание ещё не изучено. Пожалуйста, выбирите что-то, чем уже владеете" +
-                                   "\n       Вы замешкались и пропустили удар!";
-                            break;
-                    }
+                            manaMag += songElementsManaMagChangeNumber;
+                            healthMag += songElementsHealthMagChangeNumber;
+                            healthBoss += songElementsHealthBossChangeNumber;
 
-                    isCanUseSongElements = cooldownSongElementsNumberMoves == cooldownSongElementsNumberMovesCounter;
-                    if (!isCanUseSongElements) cooldownSongElementsNumberMovesCounter++;
-                    
-                    isCorrectHelthMagNumber = healthMag < requiredNumberHealthForSpell;
+                            cooldownSongElementsNumberMovesCounter -= cooldownSongElementsNumberMoves;
+                        }
+                        else
+                        {
+                            tempEvent = "Заклинание Песнь стихий доступно раз в 3 хода.\n" +
+                               "\n       Вы замешкались и пропустили удар!";
+                        }
+                        break;
 
-                    damageBoss = random.Next(damageBossMinimumValue, damageBossMaximumValue);
-                    healthMag -= damageBoss;
+                    default:
+                        tempEvent = "Такое заклинание ещё не изучено. Пожалуйста, выбирите что-то, чем уже владеете" +
+                           "\n       Вы замешкались и пропустили удар!";
+                        break;
                 }
-                catch 
-                { 
-                    Console.Clear();
-                    tempEvent = "Такое заклинание ещё не изучено. Пожалуйста, выбирите что-то, чем уже владеете\n"; 
+
+                isCanUseSongElements = cooldownSongElementsNumberMoves == cooldownSongElementsNumberMovesCounter;
+                
+                if (!isCanUseSongElements)
+                {
+                    cooldownSongElementsNumberMovesCounter++;
                 }
+
+                isCorrectHelthMagNumber = healthMag < requiredNumberHealthForSpell;
+
+                damageBoss = random.Next(damageBossMinimumValue, damageBossMaximumValue);
+                healthMag -= damageBoss;
+
                 isGameOn = healthBoss > healthBossValueFromFinishGame && healthMag > healthMagValueFromFinishGame;
             }
 

@@ -17,6 +17,7 @@ namespace Task10PowerTwo
             Console.WriteLine($"Рандомное число: {number}");
 
             isPowerTwoLessNumber = degreeNumber <= number;
+
             while (isPowerTwoLessNumber)
             {
                 degreeNumber *= two;
