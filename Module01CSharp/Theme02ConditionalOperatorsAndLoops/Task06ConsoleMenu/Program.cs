@@ -26,7 +26,7 @@ namespace Task06ConsoleMenu
             bool isСorrectPassword;
             bool isOpen = true;
 
-            while (isOpen)
+            while (isProgramOpen)
             {
                 Console.Write(
                     "ДОСТУПНЫЕ КОМАНДЫ\n\n" +

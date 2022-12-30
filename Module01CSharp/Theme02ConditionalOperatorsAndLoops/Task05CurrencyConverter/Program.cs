@@ -28,10 +28,10 @@ namespace Task05CurrencyConverter
             float currencyCount;
             string userText;
 
-            bool isProgramOpen = true;
+            bool isOpen = true;
             bool isEnoughBalance;
 
-            while (isProgramOpen)
+            while (isOpen)
             {
                 Console.WriteLine($"Ваш баланс счёта | {usdBalance} USD | {eurBalance} EUR | {rubBalance} RUB |" +
                                 $"\n" +
@@ -158,7 +158,7 @@ namespace Task05CurrencyConverter
                         break;
 
                     case ExitСommand:
-                        isProgramOpen = false;
+                        isOpen = false;
                         return;
                 }
             }
