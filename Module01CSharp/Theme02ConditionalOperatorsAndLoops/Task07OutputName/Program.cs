@@ -19,6 +19,7 @@ namespace Task07OutputName
             symbolFromBorder = Convert.ToChar(Console.ReadLine());
 
             nameRow = symbolFromBorder + userName + symbolFromBorder;
+
             for (int i = 0; i < nameRow.Length; i++)
             {
                 borderRow += symbolFromBorder;

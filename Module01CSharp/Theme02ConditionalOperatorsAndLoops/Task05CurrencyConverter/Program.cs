@@ -54,6 +54,7 @@ namespace Task05CurrencyConverter
                         currencyCount = Convert.ToSingle(Console.ReadLine());
 
                         isEnoughBalance = currencyCount <= usdBalance;
+
                         if (isEnoughBalance)
                         {
                             usdBalance -= currencyCount;
@@ -72,6 +73,7 @@ namespace Task05CurrencyConverter
                         currencyCount = Convert.ToSingle(Console.ReadLine());
 
                         isEnoughBalance = currencyCount <= usdBalance;
+
                         if (isEnoughBalance)
                         {
                             usdBalance -= currencyCount;
@@ -90,6 +92,7 @@ namespace Task05CurrencyConverter
                         currencyCount = Convert.ToSingle(Console.ReadLine());
 
                         isEnoughBalance = currencyCount <= eurBalance;
+
                         if (isEnoughBalance)
                         {
                             eurBalance -= currencyCount;
@@ -108,6 +111,7 @@ namespace Task05CurrencyConverter
                         currencyCount = Convert.ToSingle(Console.ReadLine());
 
                         isEnoughBalance = currencyCount <= eurBalance;
+
                         if (isEnoughBalance)
                         {
                             eurBalance -= currencyCount;
@@ -126,6 +130,7 @@ namespace Task05CurrencyConverter
                         currencyCount = Convert.ToSingle(Console.ReadLine());
 
                         isEnoughBalance = currencyCount <= rubBalance;
+
                         if (isEnoughBalance)
                         {
                             rubBalance -= currencyCount;
@@ -144,6 +149,7 @@ namespace Task05CurrencyConverter
                         currencyCount = Convert.ToSingle(Console.ReadLine());
 
                         isEnoughBalance = currencyCount <= rubBalance;
+
                         if (isEnoughBalance)
                         {
                             rubBalance -= currencyCount;
