@@ -12,10 +12,15 @@ namespace Task10PowerTwo
             int number = random.Next(minValueForRandom, maxValueForRandom);
             int degreeNumber = 1;
             int two = 2;
+            bool isPowerTwoLessNumber;
 
             Console.WriteLine($"Рандомное число: {number}");
 
-            while (degreeNumber <= number) degreeNumber *= two;
+            isPowerTwoLessNumber = degreeNumber <= number;
+            while (isPowerTwoLessNumber)
+            {
+                degreeNumber *= two;
+            }
 
             Console.WriteLine($"Минимальная степень двойки, превосходящая число {number}: {degreeNumber}");
             Console.ReadKey();
