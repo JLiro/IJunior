@@ -20,6 +20,7 @@ namespace Task09Multiples
             for (int i = desiredNumber; i <= maxNumber; i += desiredNumber)
             {
                 isQuantityNumbers = i >= minNumber;
+
                 if (isQuantityNumbers)
                 {
                     quantityNumbers++;

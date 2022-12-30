@@ -18,6 +18,7 @@ namespace Task08PasswordProtectedProgram
                 userText = Console.ReadLine();
 
                 isСorrectPassword = userText == password;
+
                 if (isСorrectPassword)
                 {
                     Console.WriteLine("\nЭто секретное сообщение\n\n" +

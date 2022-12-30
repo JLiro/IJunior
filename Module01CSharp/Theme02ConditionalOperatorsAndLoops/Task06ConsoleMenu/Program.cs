@@ -89,6 +89,7 @@ namespace Task06ConsoleMenu
                         userCommand = Console.ReadLine();
 
                         isСorrectPassword = userCommand == userPassword;
+
                         if (isСorrectPassword)
                         {
                             Console.Clear();
