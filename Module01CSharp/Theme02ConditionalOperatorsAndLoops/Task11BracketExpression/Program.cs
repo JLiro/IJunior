@@ -6,35 +6,44 @@ namespace Task11BracketExpression
     {
         static void Main()
         {
-            int leftBracketsCount = 0;
-            int rightBracketsCount= 0;
+            char openBracket = '(';
+            char closeBracket = ')';
 
-            string bracketExpression;
+            int openBracketsCount = 0;
+            int closedBracketsCount= 0;
 
-            bool isCorrectBracketExpression;
+            string bracketsExpression;
+
             bool isOpenBracket;
             bool isClosedBracket;
-            bool isOpeningPartExpression;
+            bool isCorrectBracketExpression;
+            bool isFirstSymbolCloseBracket;
+            bool isLastSymbolOpenBracket;
+            bool isEqualOpenAndCloseBracketsNumber;
 
             Console.Write("Введите последовательность скобок: ");
-            bracketExpression = Console.ReadLine();
+            bracketsExpression = Console.ReadLine();
 
-            foreach (char bracket in bracketExpression)
+            foreach (char bracket in bracketsExpression)
             {
-                isOpenBracket = bracket == '(';
-                isClosedBracket = bracket == ')';
+                isOpenBracket = bracket == openBracket;
+                isClosedBracket = bracket == closeBracket;
 
-                if (isOpenBracket && isOpeningPartExpression) { leftBracketsCount++; }
-                else if (isClosedBracket) { rightBracketsCount++; }
+                if (isOpenBracket) openBracketsCount++;
+                if (isClosedBracket) closedBracketsCount++;
             }
 
-            isCorrectBracketExpression = leftBracketsCount == rightBracketsCount;
+            isLastSymbolOpenBracket = bracketsExpression[0] != closeBracket;
+            isFirstSymbolCloseBracket = bracketsExpression[bracketsExpression.Length - 1] != openBracket;
+            isEqualOpenAndCloseBracketsNumber = openBracketsCount == closedBracketsCount;
+
+            isCorrectBracketExpression = (isFirstSymbolCloseBracket && isLastSymbolOpenBracket && isEqualOpenAndCloseBracketsNumber);
+
             if (isCorrectBracketExpression)
             {
-                Console.WriteLine($"\nЭто корректное скобочное выражение с глубиной {leftBracketsCount}");
+                Console.Write($"\nЭто корректное скобочное выражение с глубиной: {openBracketsCount}");
             }
-                else Console.WriteLine("Это некорректное скобочное выражение");
-
+                else Console.Write("\nЭто некорректное скобочное выражение");
             Console.ReadKey();
         }
     }
