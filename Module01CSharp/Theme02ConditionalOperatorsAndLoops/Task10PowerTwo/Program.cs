@@ -7,24 +7,22 @@ namespace Task10PowerTwo
         static void Main()
         {
             Random random = new Random();
-            int minValueForRandom = 0;
-            int maxValueForRandom = 1;
-            int number = random.Next(minValueForRandom, maxValueForRandom);
+            int minRandomValue = 10;
+            int maxRandomValue = 100;
+            int randomNumber = random.Next(minRandomValue, maxRandomValue);
             int degreeNumber = 0;
             int numberPower = 1;
-            int two = 2;
-            bool isPowerTwoLessNumber = true;
+            int baseNumber = 2;
 
-            Console.WriteLine($"Рандомное число: {number}");
+            Console.WriteLine($"Рандомное число: {randomNumber}");
 
-            while (isPowerTwoLessNumber)
+            while (numberPower <= randomNumber)
             {
-                numberPower *= two;
+                numberPower *= baseNumber;
                 degreeNumber++;
-                isPowerTwoLessNumber = numberPower <= number;
             }
 
-            Console.WriteLine($"Минимальная степень двойки, превосходящая число {number}: {degreeNumber}");
+            Console.WriteLine($"Минимальная степень двойки, превосходящая число {randomNumber}: {degreeNumber}");
             Console.ReadKey();
         }
     }

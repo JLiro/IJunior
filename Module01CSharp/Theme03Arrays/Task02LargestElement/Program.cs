@@ -6,12 +6,15 @@ namespace Task02LargestElement
     {
         static void Main()
         {
-            int[,] array = new int[10, 10];
-            int maxElement = 0;
-
-            int RandomMinValue = 10;
-            int RandomMaxValue = 100;
             Random random = new Random();
+            int RandomMinValue = -99;
+            int RandomMaxValue = -10;
+            
+            int rowArrayValue = 10;
+            int colArrayValue = 10;
+            int[,] array = new int[rowArrayValue, colArrayValue];
+            int maxElement;
+            int replacementValue = 0;
 
             for (int column = 0; column < array.GetLength(0); column++)
             {
@@ -19,14 +22,40 @@ namespace Task02LargestElement
                 {
                     array[column, row] = random.Next(RandomMinValue, RandomMaxValue);
 
-                    maxElement = maxElement < array[column, row] ? array[column, row] : maxElement;
-
                     Console.Write(array[column, row] + " ");
                 }
+
                 Console.WriteLine();
             }
 
-            Console.WriteLine("\nМаксимальный элемент: " + maxElement);
+            maxElement = array[0, 0];
+
+            for (int column = 0; column < array.GetLength(0); column++)
+            {
+                for (int row = 0; row < array.GetLength(1); row++)
+                {
+                    maxElement = maxElement < array[column, row] ? array[column, row] : maxElement;
+                }
+            }
+
+            Console.WriteLine(
+                             $"\nМаксимальный элемент: {maxElement}" +
+                              "\n" +
+                              "\nМассив, в котором он заменен нулем:"
+                             );
+
+            for (int column = 0; column < array.GetLength(0); column++)
+            {
+                for (int row = 0; row < array.GetLength(1); row++)
+                {
+                    array[column, row] = array[column, row] == maxElement ? replacementValue : array[column, row];
+
+                    Console.Write(array[column, row] + " ");
+                }
+
+                Console.WriteLine();
+            }
+
             Console.ReadKey();
         }
     }
