@@ -35,13 +35,13 @@ namespace Task05CurrencyConverter
             {
                 Console.WriteLine($"Ваш баланс счёта | {usdBalance} USD | {eurBalance} EUR | {rubBalance} RUB |" +
                                 $"\n" +
-                                $"\n[1] Сконвертировать из валюты USD в валюту RUB" +
-                                $"\n[2] Сконвертировать из валюты USD в валюту EUR" +
-                                $"\n[3] Сконвертировать из валюты EUR в валюту RUB" +
-                                $"\n[4] Сконвертировать из валюты EUR в валюту USD" +
-                                $"\n[5] Сконвертировать из валюты RUB в валюту USD" +
-                                $"\n[6] Сконвертировать из валюты RUB в валюту EUR" +
-                                $"\n[7] Выйти из программы" +
+                                $"\n[{UsdToRubСommand}] Сконвертировать из валюты USD в валюту RUB" +
+                                $"\n[{UsdToEurСommand}] Сконвертировать из валюты USD в валюту EUR" +
+                                $"\n[{EurToRubСommand}] Сконвертировать из валюты EUR в валюту RUB" +
+                                $"\n[{EurToUsdСommand}] Сконвертировать из валюты EUR в валюту USD" +
+                                $"\n[{RubToUsdСommand}] Сконвертировать из валюты RUB в валюту USD" +
+                                $"\n[{RubToEurСommand}] Сконвертировать из валюты RUB в валюту EUR" +
+                                $"\n[{ExitСommand}] Выйти из программы" +
                                 $"\n");
 
                 Console.Write("Введите номер команды: ");
@@ -165,7 +165,7 @@ namespace Task05CurrencyConverter
 
                     case ExitСommand:
                         isOpen = false;
-                        return;
+                        break;
                 }
             }
         }

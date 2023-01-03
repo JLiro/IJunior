@@ -6,44 +6,47 @@ namespace Task11BracketExpression
     {
         static void Main()
         {
-            char openBracket = '(';
-            char closeBracket = ')';
+            const char OpenBracket = '(';
 
-            int openBracketsCount = 0;
-            int closedBracketsCount= 0;
+            string bracketsString;
 
-            string bracketsExpression;
+            int bracketsBalance = 0;
+            int bracketsMaxDepth = 0;
 
-            bool isOpenBracket;
-            bool isClosedBracket;
-            bool isCorrectBracketExpression;
-            bool isFirstSymbolCloseBracket;
-            bool isLastSymbolOpenBracket;
-            bool isEqualOpenAndCloseBracketsNumber;
+            Console.Write("Введите строку символов: ");
+            bracketsString = Console.ReadLine();
 
-            Console.Write("Введите последовательность скобок: ");
-            bracketsExpression = Console.ReadLine();
-
-            foreach (char bracket in bracketsExpression)
+            foreach (char symbol in bracketsString)
             {
-                isOpenBracket = bracket == openBracket;
-                isClosedBracket = bracket == closeBracket;
+                if (bracketsBalance < 0)
+                {
+                    break;
+                }
 
-                if (isOpenBracket) openBracketsCount++;
-                if (isClosedBracket) closedBracketsCount++;
+                if (symbol == OpenBracket)
+                {
+                    bracketsBalance++;
+                }
+                else
+                {
+                    bracketsBalance--;
+                }    
+
+                if (bracketsBalance > bracketsMaxDepth)
+                {
+                    bracketsMaxDepth = bracketsBalance;
+                }
             }
 
-            isLastSymbolOpenBracket = bracketsExpression[0] != closeBracket;
-            isFirstSymbolCloseBracket = bracketsExpression[bracketsExpression.Length - 1] != openBracket;
-            isEqualOpenAndCloseBracketsNumber = openBracketsCount == closedBracketsCount;
-
-            isCorrectBracketExpression = (isFirstSymbolCloseBracket && isLastSymbolOpenBracket && isEqualOpenAndCloseBracketsNumber);
-
-            if (isCorrectBracketExpression)
+            if (bracketsBalance == 0)
             {
-                Console.Write($"\nЭто корректное скобочное выражение с глубиной: {openBracketsCount}");
+                Console.WriteLine($"Строка корректна. Максимальная глубина вложенности скобок: {bracketsMaxDepth}");
             }
-                else Console.Write("\nЭто некорректное скобочное выражение");
+            else
+            {
+                Console.WriteLine("Строка не корректна");
+            }
+
             Console.ReadKey();
         }
     }

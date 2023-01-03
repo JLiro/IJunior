@@ -6,60 +6,60 @@ namespace Task04DynamicArray
     {
         static void Main()
         {
+            const string CommandSum = "sum";
+            const string CommandExit = "exit";
+
             int[] array = new int[0];
-            string userText = null;
 
-            while (userText != "Exit")
+            string userText;
+
+            bool isWorking = true;
+
+            while (isWorking)
             {
-                Console.Write("Введите число или команду: ");
-                userText = Console.ReadLine();
+                Console.Write($"КОМАНДЫ" +
+                                  $"\n{CommandSum} : Cложить числа" +
+                                  $"\n{CommandExit} : Выход):" +
+                                  $"\n" +
+                                  $"\nВведите число или команду: ");
+                userText = Console.ReadLine().ToLower();
 
-                try
+                switch (userText)
                 {
-                    addNumber(ref array, Convert.ToInt32(userText));
-                }
-                catch
-                {
-                    if (userText == "sum")
-                    {
-                        Console.WriteLine();
-                        showArray(array);
-                        Console.WriteLine();
-                        sum(array);
+                    case CommandSum:
+                        int sum = 0;
 
-                        Console.WriteLine("\nНажмите любую клавишу, чтобы продолжить");
+                        for (int i = 0; i < array.Length; i++)
+                        {
+                            sum += array[i];
+                        }
+
+                        Console.WriteLine($"Сумма чисел: {sum}");
                         Console.ReadKey();
-                    }
+                        break;
+
+                    case CommandExit:
+                        isWorking = false;
+                        break;
+
+                    default:
+                        if (int.TryParse(userText, out int value))
+                        {
+                            int[] tempArray = new int[array.Length + 1];
+
+                            for (int i = 0; i < array.Length; i++)
+                            {
+                                tempArray[i] = array[i];
+                            }
+
+                            tempArray[tempArray.Length - 1] = value;
+                            array = tempArray;
+                        }
+                        break;
                 }
+
                 Console.Clear();
             }
-        }
-
-        static void addNumber(ref int[] array, int number)
-        {
-            int[] arrayTemp = new int[array.Length + 1];
-
-            for (int i = 0; i < array.Length; i++)
-                arrayTemp[i] = array[i];
-
-            arrayTemp[array.Length] = number;
-
-            array = arrayTemp;
-        }
-
-        static void sum(int[] array)
-        {
-            int sum = 0;
-
-            for (int i = 0; i < array.Length; i++)
-                sum += array[i];
-
-            Console.WriteLine($"Сумма чисел: {sum}");
-        }
-
-        static void showArray(int[] array)
-        {
-            foreach (int item in array) Console.Write(item + " ");
         }
     }
 }

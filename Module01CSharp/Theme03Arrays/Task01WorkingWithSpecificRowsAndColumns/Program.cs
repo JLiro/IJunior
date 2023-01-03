@@ -18,6 +18,7 @@ namespace Task01WorkingWithSpecificRowsAndColumns
 
             productNumbersFromColumn = 1;
             sumNumbersFromRow = 0;
+
             for (int column = 0; column < array.GetLength(0); column++)
             {
                 productNumbersFromColumn *= array[column, columnNumber];

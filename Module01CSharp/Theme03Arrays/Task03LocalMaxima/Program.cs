@@ -7,8 +7,12 @@ namespace Task03LocalMaxima
         static void Main()
         {
             int[] array = new int[30];
-            int currentLocalMaximum = 0;
 
+            int previousArrayValue;
+            int currentArrayValue;
+            int nextArrayValue;
+            int currentLocalMaximum = 0;
+            
             string allLocalMaximum = "\nСписок локальных максимумов: ";
 
             Random random = new Random();
@@ -22,15 +26,18 @@ namespace Task03LocalMaxima
 
             for (int row = 0; row < array.GetLength(0); row++)
             {
-                int previousArrayValue = row >= 1 ? array[row - 1] : 0;
-                int currentArrayValue = row >= 0 ? array[row] : 0;
-                int nextArrayValue = row < array.GetLength(0) - 1 ? array[row + 1] : 0;
+                previousArrayValue = row >= 1 ? array[row - 1] : 0;
+                currentArrayValue = row >= 0 ? array[row] : 0;
+                nextArrayValue = row < array.GetLength(0) - 1 ? array[row + 1] : 0;
 
-                if  (currentArrayValue > nextArrayValue)
+                if (currentArrayValue > nextArrayValue)
                 {
-                     currentLocalMaximum = (currentArrayValue > previousArrayValue) ? currentArrayValue : previousArrayValue;
+                    currentLocalMaximum = (currentArrayValue > previousArrayValue) ? currentArrayValue : previousArrayValue;
                 }
-                else currentLocalMaximum = (nextArrayValue > previousArrayValue) ? nextArrayValue : previousArrayValue;
+                else
+                {
+                    currentLocalMaximum = (nextArrayValue > previousArrayValue) ? nextArrayValue : previousArrayValue;
+                }
 
                 allLocalMaximum += currentLocalMaximum != 0 ? currentLocalMaximum + " " : "";
             }

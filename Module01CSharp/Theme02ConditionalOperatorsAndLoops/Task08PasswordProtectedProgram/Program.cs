@@ -9,12 +9,12 @@ namespace Task08PasswordProtectedProgram
             string password = "secret";
             string secretMessage = "Это секретное сообщение";
             string userText = string.Empty;
-            bool isСorrectPassword;
+            bool isСorrectPassword = false;
             int attemptsCount = 3;
 
-            for (int i = attemptsCount; i > 0; i--)
+            for (int attemptsCountTemp = attemptsCount; attemptsCountTemp > 0; attemptsCountTemp--)
             {
-                Console.Write($"Осталось попыток: {i} из {attemptsCount}\n\n" +
+                Console.Write($"Осталось попыток: {attemptsCountTemp} из {attemptsCount}\n\n" +
                               $"Для доступа к тайному сообщению ведите пароль: ");
                 userText = Console.ReadLine();
 
@@ -26,6 +26,12 @@ namespace Task08PasswordProtectedProgram
                                       $"\nНажмите любую клавишу для завершения программы");
                     Console.ReadKey();
                     break;
+                }
+                else if (isСorrectPassword == false && attemptsCountTemp == 1)
+                {
+                    Console.WriteLine($"\nКолличество попыток закончилось\n" +
+                                      $"Нажмите любую клавишу для выхода");
+                    Console.ReadKey();
                 }
                 else
                 {

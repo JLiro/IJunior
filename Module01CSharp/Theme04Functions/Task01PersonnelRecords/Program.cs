@@ -1,0 +1,155 @@
+﻿using System;
+
+namespace Task01PersonnelRecords
+{
+    internal class Program
+    {
+        static void Main()
+        {
+            const string CommandAddDossier = "1";
+            const string CommandShowAllDossiers = "2";
+            const string CommandDeleteDossier = "3";
+            const string CommandSearchDossiersByLastName = "4";
+            const string CommandExit = "5";
+
+            string[] fullNames = new string[0];
+            string[] posts = new string[0];
+
+            bool isWorking = true;
+
+            while (isWorking)
+            {
+                Console.Clear();
+                Console.WriteLine($"{CommandAddDossier}. Добавить досье");
+                Console.WriteLine($"{CommandShowAllDossiers}. Вывести все досье");
+                Console.WriteLine($"{CommandDeleteDossier}. Удалить досье");
+                Console.WriteLine($"{CommandSearchDossiersByLastName}. Поиск досье по фамилии");
+                Console.WriteLine($"{CommandExit}. Выход");
+
+                string input = Console.ReadLine();
+
+                Console.Clear();
+
+                switch (input)
+                {
+                    case CommandAddDossier:
+                        AddDossier(ref fullNames, ref posts);
+                        break;
+                    case CommandShowAllDossiers:
+                        ShowDossiers(fullNames, posts);
+                        break;
+                    case CommandDeleteDossier:
+                        DeleteDossier(ref fullNames, ref posts);
+                        break;
+                    case CommandSearchDossiersByLastName:
+                        SearchDossiersByLastName(fullNames, posts);
+                        break;
+                    case CommandExit:
+                        isWorking = false;
+                        continue;
+                    default:
+                        Console.WriteLine("Неверная команда");
+                        break;
+                }
+
+                Console.ReadLine();
+            }
+        }
+
+        private static void AddDossier(ref string[] fullNames, ref string[] posts)
+        {
+            Console.Write("Введите ФИО: ");
+            Array.Resize(ref fullNames, fullNames.Length + 1);
+            fullNames[fullNames.Length - 1] = Console.ReadLine();
+
+            Console.Write("Введите должность: ");
+            Array.Resize(ref posts, posts.Length + 1);
+            posts[posts.Length - 1] = Console.ReadLine();
+
+            Console.WriteLine("Досье добавлено");
+        }
+
+        private static void DeleteDossier(ref string[] fullNames, ref string[] posts)
+        {
+            ShowDossiers(fullNames, posts);
+
+            if (fullNames.Length > 0)
+            {
+                Console.WriteLine("\nВведите номер досье для удаления: ");
+
+                if (Int32.TryParse(Console.ReadLine(), out int dossierNumber) && dossierNumber <= fullNames.Length && dossierNumber > 0)
+                {
+                    RemoveElementByIndex(ref fullNames, dossierNumber - 1);
+                    RemoveElementByIndex(ref posts, dossierNumber - 1);
+
+                    Console.WriteLine("Досье удалено");
+                }
+                else
+                {
+                    Console.WriteLine("Неверный номер досье");
+                }
+            }
+        }
+
+        private static void RemoveElementByIndex(ref string[] array, int index)
+        {
+            for (int i = index; i < array.Length - 1; i++)
+            {
+                array[i] = array[i + 1];
+            }
+
+            Array.Resize(ref array, array.Length - 1);
+        }
+
+        private static void SearchDossiersByLastName(string[] fullNames, string[] posts)
+        {
+            if (fullNames.Length > 0)
+            {
+                string[] subStrings;
+                int dosiersCount = 0;
+
+                Console.Write("Введите фамилию: ");
+                string input = Console.ReadLine().ToLower();
+
+                for (int i = 0; i < fullNames.Length; i++)
+                {
+                    subStrings = fullNames[i].Split(' ');
+
+                    if (subStrings[0].ToLower() == input)
+                    {
+                        Console.WriteLine($"{++dosiersCount}. {fullNames[i]} - {posts[i]}");
+                    }
+                }
+
+                if (dosiersCount == 0)
+                {
+                    Console.WriteLine("Не найдено ни одного досье");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Нет ни одного досье");
+            }
+        }
+
+        private static void ShowDossiers(string[] fullNames, string[] posts)
+        {
+            if (fullNames.Length > 0)
+            {
+                for (int i = 0; i < fullNames.Length; i++)
+                {
+                    Console.Write($"{i + 1}. {fullNames[i]} - {posts[i]}");
+
+                    if (i < fullNames.Length - 1)
+                    {
+                        Console.Write(", ");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Нет ни одного досье");
+            }
+        }
+    }
+}

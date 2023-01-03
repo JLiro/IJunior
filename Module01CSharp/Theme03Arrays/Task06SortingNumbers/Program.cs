@@ -6,8 +6,21 @@ namespace Task06SortingNumbers
     {
         static void Main()
         {
-            int[] array = new int[15] { 4, 3, 5, 8, 1, 9, 5, 6, 5, 7, 2, 3, 7, 1, 8 };
-            int tempNumber;
+            Random random = new Random();
+            int randomMin = 10;
+            int randomMax = 100;
+
+            int arraySize = 10;
+            int[] array = new int[arraySize];
+
+            Console.WriteLine("Исходный массив:");
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i] = random.Next(randomMin, randomMax);
+                Console.Write(array[i] + " ");
+            }
+
+            Console.WriteLine("\n\nОтсортированный массив:");
 
             for (int i = 0; i < array.Length; i++)
             {
@@ -15,19 +28,14 @@ namespace Task06SortingNumbers
                 {
                     if (array[i] > array[j])
                     {
-                        tempNumber = array[j];
-                        array[j] = array[i];
-                        array[i] = tempNumber;
+                        (array[i], array[j]) = (array[j], array[i]);
                     }
                 }
-            }
 
-            for (int i = 0; i < array.Length; i++)
-            {
                 Console.Write(array[i] + " ");
             }
 
-            Console.ReadKey();
+            Console.ReadLine();
         }
     }
 }

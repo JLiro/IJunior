@@ -9,13 +9,15 @@ namespace Task02LargestElement
             int[,] array = new int[10, 10];
             int maxElement = 0;
 
+            int RandomMinValue = 10;
+            int RandomMaxValue = 100;
             Random random = new Random();
 
             for (int column = 0; column < array.GetLength(0); column++)
             {
                 for (int row = 0; row < array.GetLength(1); row++)
                 {
-                    array[column, row] = random.Next(10, 100);
+                    array[column, row] = random.Next(RandomMinValue, RandomMaxValue);
 
                     maxElement = maxElement < array[column, row] ? array[column, row] : maxElement;
 
