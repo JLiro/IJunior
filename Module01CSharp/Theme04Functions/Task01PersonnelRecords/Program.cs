@@ -15,22 +15,29 @@ namespace Task01PersonnelRecords
             string[] fullNames = new string[0];
             string[] posts = new string[0];
 
-            bool isWorking = true;
+            string userText;
 
-            while (isWorking)
+            bool isOpen = true;
+
+            while (isOpen)
             {
                 Console.Clear();
-                Console.WriteLine($"{CommandAddDossier}. Добавить досье");
-                Console.WriteLine($"{CommandShowAllDossiers}. Вывести все досье");
-                Console.WriteLine($"{CommandDeleteDossier}. Удалить досье");
-                Console.WriteLine($"{CommandSearchDossiersByLastName}. Поиск досье по фамилии");
-                Console.WriteLine($"{CommandExit}. Выход");
+                Console.Write(
+                                $" - = == МЕНЮ == = -" +
+                                $"\n[{CommandAddDossier}] Добавить досье" +
+                                $"\n[{CommandShowAllDossiers}] Вывести все досье" +
+                                $"\n[{CommandDeleteDossier}] Удалить досье" +
+                                $"\n[{CommandSearchDossiersByLastName}] Поиск досье по фамилии" +
+                                $"\n[{CommandExit}] Выход" +
+                                $"\n" +
+                                $"\nВведите команду: "
+                             );
 
-                string input = Console.ReadLine();
+                userText = Console.ReadLine();
 
                 Console.Clear();
 
-                switch (input)
+                switch (userText)
                 {
                     case CommandAddDossier:
                         AddDossier(ref fullNames, ref posts);
@@ -45,10 +52,10 @@ namespace Task01PersonnelRecords
                         SearchDossiersByLastName(fullNames, posts);
                         break;
                     case CommandExit:
-                        isWorking = false;
+                        isOpen = false;
                         continue;
                     default:
-                        Console.WriteLine("Неверная команда");
+                        Console.WriteLine("Неверная команда. Нажмите любую клавишу для возвращения в меню");
                         break;
                 }
 
@@ -66,7 +73,7 @@ namespace Task01PersonnelRecords
             Array.Resize(ref posts, posts.Length + 1);
             posts[posts.Length - 1] = Console.ReadLine();
 
-            Console.WriteLine("Досье добавлено");
+            Console.WriteLine("Досье добавлено. Нажмите любую клавишу для возвращения в меню");
         }
 
         private static void DeleteDossier(ref string[] fullNames, ref string[] posts)
@@ -75,18 +82,19 @@ namespace Task01PersonnelRecords
 
             if (fullNames.Length > 0)
             {
-                Console.WriteLine("\nВведите номер досье для удаления: ");
+                Console.Write("\nВведите номер досье для удаления: ");
+                int dossierNumber = Convert.ToInt32(Console.ReadLine());
 
-                if (Int32.TryParse(Console.ReadLine(), out int dossierNumber) && dossierNumber <= fullNames.Length && dossierNumber > 0)
+                if (dossierNumber <= fullNames.Length && dossierNumber > 0)
                 {
                     RemoveElementByIndex(ref fullNames, dossierNumber - 1);
                     RemoveElementByIndex(ref posts, dossierNumber - 1);
 
-                    Console.WriteLine("Досье удалено");
+                    Console.WriteLine("Досье удалено. Нажмите любую клавишу для возвращения в меню");
                 }
                 else
                 {
-                    Console.WriteLine("Неверный номер досье");
+                    Console.WriteLine("Неверный номер досье. Нажмите любую клавишу для возвращения в меню");
                 }
             }
         }
@@ -117,18 +125,19 @@ namespace Task01PersonnelRecords
 
                     if (subStrings[0].ToLower() == input)
                     {
-                        Console.WriteLine($"{++dosiersCount}. {fullNames[i]} - {posts[i]}");
+                        Console.WriteLine($"[{++dosiersCount}] ФИО: {fullNames[i]}" +
+                                          $"\n    Должность: {posts[i]}");
                     }
                 }
 
                 if (dosiersCount == 0)
                 {
-                    Console.WriteLine("Не найдено ни одного досье");
+                    Console.Write("Не найдено ни одного досье. Нажмите любую клавишу для возвращения в меню");
                 }
             }
             else
             {
-                Console.WriteLine("Нет ни одного досье");
+                Console.Write("Нет ни одного досье. Нажмите любую клавишу для возвращения в меню");
             }
         }
 
@@ -138,17 +147,18 @@ namespace Task01PersonnelRecords
             {
                 for (int i = 0; i < fullNames.Length; i++)
                 {
-                    Console.Write($"{i + 1}. {fullNames[i]} - {posts[i]}");
+                    Console.WriteLine($"[{i + 1}] ФИО: {fullNames[i]}" +
+                                  $"\n    Должность: {posts[i]}");
 
                     if (i < fullNames.Length - 1)
                     {
-                        Console.Write(", ");
+                        Console.WriteLine();
                     }
                 }
             }
             else
             {
-                Console.WriteLine("Нет ни одного досье");
+                Console.Write("Нет ни одного досье. Нажмите любую клавишу для возвращения в меню");
             }
         }
     }
