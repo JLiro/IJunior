@@ -6,7 +6,7 @@ namespace Task11BracketExpression
     {
         static void Main()
         {
-            const char OpenBracket = '(';
+            char OpenBracket = '(';
 
             string bracketsString;
 

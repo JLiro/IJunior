@@ -6,44 +6,42 @@ namespace Task03LocalMaxima
     {
         static void Main()
         {
-            int[] array = new int[30];
-
-            int previousArrayValue;
-            int currentArrayValue;
-            int nextArrayValue;
-            int currentLocalMaximum = 0;
-            
-            string allLocalMaximum = "\nСписок локальных максимумов: ";
-
             Random random = new Random();
+            int randomMinValue = 0;
+            int randomMaxValue = 100;
 
-            for (int row = 0; row < array.GetLength(0); row++)
+            const int arraySize = 30;
+            int[] array = new int[arraySize];
+
+            Console.WriteLine("Массив: ");
+
+            for (int i = 0; i < array.Length; i++)
             {
-                array[row] = random.Next(10, 100);
-
-                Console.Write(array[row] + " ");
+                array[i] = random.Next(randomMinValue, randomMaxValue + 1);
+                Console.Write(array[i] + " ");
             }
 
-            for (int row = 0; row < array.GetLength(0); row++)
+            Console.Write("\n\nЛокальные максимумы:\n");
+
+            if (array[0] > array[1])
             {
-                previousArrayValue = row >= 1 ? array[row - 1] : 0;
-                currentArrayValue = row >= 0 ? array[row] : 0;
-                nextArrayValue = row < array.GetLength(0) - 1 ? array[row + 1] : 0;
-
-                if (currentArrayValue > nextArrayValue)
-                {
-                    currentLocalMaximum = (currentArrayValue > previousArrayValue) ? currentArrayValue : previousArrayValue;
-                }
-                else
-                {
-                    currentLocalMaximum = (nextArrayValue > previousArrayValue) ? nextArrayValue : previousArrayValue;
-                }
-
-                allLocalMaximum += currentLocalMaximum != 0 ? currentLocalMaximum + " " : "";
+                Console.Write(array[0] + " ");
             }
 
-            Console.WriteLine("\n" + allLocalMaximum);
-            Console.ReadKey();
+            for (int i = 1; i < arraySize - 1; ++i)
+            {
+                if (array[i - 1] < array[i] && array[i + 1] < array[i])
+                {
+                    Console.Write(array[i] + " ");
+                }
+            }
+
+            if (array[array.Length - 1] > array[array.Length - 2])
+            {
+                Console.Write(array[array.Length - 1] + " ");
+            }
+
+            Console.ReadLine();
         }
     }
 }
