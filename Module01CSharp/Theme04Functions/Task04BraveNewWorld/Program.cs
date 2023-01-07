@@ -95,27 +95,30 @@ namespace Task04BraveNewWorld
                 case UpKey:
                     horizontalStep = Immobility; verticalStep = up;
                     break;
+
                 case DownKey:
                     horizontalStep = Immobility; verticalStep = down;
                     break;
+
                 case LeftKey:
                     horizontalStep = left; verticalStep = Immobility;
                     break;
+
                 case RightKey:
                     horizontalStep = right; verticalStep = Immobility;
                     break;
             }
         }
 
-        static void Move(char userSymbol, char emptySpaceSymbol, ref int horizontal, ref int vertical, int horizontalDirection, int verticalDirection)
+        static void Move(char userSymbol, char emptySpaceSymbol, ref int userHorizontalPosition, ref int userVerticalPosition, int userHorizontalStep, int userVerticalStep)
         {
-            Console.SetCursorPosition(horizontal, vertical);
+            Console.SetCursorPosition(userHorizontalPosition, userVerticalPosition);
             Console.Write(emptySpaceSymbol);
 
-            horizontal += horizontalDirection;
-            vertical += verticalDirection;
+            userHorizontalPosition += userHorizontalStep;
+            userVerticalPosition += userVerticalStep;
 
-            Console.SetCursorPosition(horizontal, vertical);
+            Console.SetCursorPosition(userHorizontalPosition, userVerticalPosition);
             Console.Write(userSymbol);
         }
 

@@ -153,12 +153,7 @@ namespace Task01PersonnelRecords
                 for (int i = 0; i < fullNames.Length; i++)
                 {
                     Console.WriteLine($"[{i + 1}] ФИО: {fullNames[i]}" +
-                                  $"\n    Должность: {posts[i]}");
-
-                    if (i < fullNames.Length - 1)
-                    {
-                        Console.WriteLine();
-                    }
+                                      $"\n    Должность: {posts[i]}");
                 }
             }
             else

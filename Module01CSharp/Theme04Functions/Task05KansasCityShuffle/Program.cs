@@ -8,9 +8,9 @@ namespace Task05KansasCityShuffle
         {
             int[] array = { 1, 2, 3, 4, 5 };
 
-            ViewArray(array, "Изначальный массив: ");
+            ShowArray(array, "Изначальный массив: ");
             ShuffleArray(ref array);
-            ViewArray(array, "\nПеремешанный массив: ");
+            ShowArray(array, "\nПеремешанный массив: ");
 
             Console.ReadKey();
         }
@@ -29,7 +29,7 @@ namespace Task05KansasCityShuffle
             }
         }
 
-        public static void ViewArray(int[] array, string text)
+        public static void ShowArray(int[] array, string text)
         {
             Console.Write(text);
             for (int i = 0; i < array.Length; i++)
