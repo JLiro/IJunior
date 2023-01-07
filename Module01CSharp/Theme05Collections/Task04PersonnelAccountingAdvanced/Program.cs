@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace Task01PersonnelRecords
+namespace Task04PersonnelAccountingAdvanced
 {
     internal class Program
     {
@@ -27,7 +28,6 @@ namespace Task01PersonnelRecords
                                 $"\n[{CommandAddDossier}] Добавить досье" +
                                 $"\n[{CommandShowAllDossiers}] Вывести все досье" +
                                 $"\n[{CommandDeleteDossier}] Удалить досье" +
-                                $"\n[{CommandSearchDossiersByLastName}] Поиск досье по фамилии" +
                                 $"\n[{CommandExit}] Выход" +
                                 $"\n" +
                                 $"\nВведите команду: "
@@ -49,10 +49,6 @@ namespace Task01PersonnelRecords
 
                     case CommandDeleteDossier:
                         DeleteDossier(ref fullNames, ref posts);
-                        break;
-
-                    case CommandSearchDossiersByLastName:
-                        SearchDossiersByLastName(fullNames, posts);
                         break;
 
                     case CommandExit:
@@ -112,38 +108,6 @@ namespace Task01PersonnelRecords
             }
 
             Array.Resize(ref array, array.Length - 1);
-        }
-
-        private static void SearchDossiersByLastName(string[] fullNames, string[] posts)
-        {
-            if (fullNames.Length > 0)
-            {
-                string[] subStrings;
-                int dosiersCount = 0;
-
-                Console.Write("Введите фамилию: ");
-                string input = Console.ReadLine().ToLower();
-
-                for (int i = 0; i < fullNames.Length; i++)
-                {
-                    subStrings = fullNames[i].Split(' ');
-
-                    if (subStrings[0].ToLower() == input)
-                    {
-                        Console.WriteLine($"[{++dosiersCount}] ФИО: {fullNames[i]}" +
-                                          $"\n    Должность: {posts[i]}");
-                    }
-                }
-
-                if (dosiersCount == 0)
-                {
-                    Console.Write("Не найдено ни одного досье. Нажмите любую клавишу для возвращения в меню");
-                }
-            }
-            else
-            {
-                Console.Write("Нет ни одного досье. Нажмите любую клавишу для возвращения в меню");
-            }
         }
 
         private static void ShowDossiers(string[] fullNames, string[] posts)
