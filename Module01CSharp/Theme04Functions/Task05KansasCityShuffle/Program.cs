@@ -9,27 +9,27 @@ namespace Task05KansasCityShuffle
             int[] array = { 1, 2, 3, 4, 5 };
 
             ShowArray(array, "Изначальный массив: ");
-            ShuffleArray(ref array);
+            ShuffleArray(array);
             ShowArray(array, "\nПеремешанный массив: ");
 
             Console.ReadKey();
         }
 
-        public static void ShuffleArray(ref int[] array)
+        private static void ShuffleArray(int[] array)
         {
             Random random = new Random();
 
-            for (int index = 0; index < array.Length; index++)
+            for (int i = 0; i < array.Length; i++)
             {
-                int tempArray = array[index];
-                int randomIndex = random.Next(index, array.Length);
+                int tempValue = array[i];
+                int randomIndex = random.Next(i, array.Length);
 
-                array[index] = array[randomIndex];
-                array[randomIndex] = tempArray;
+                array[i] = array[randomIndex];
+                array[randomIndex] = tempValue;
             }
         }
 
-        public static void ShowArray(int[] array, string text)
+        private static void ShowArray(int[] array, string text)
         {
             Console.Write(text);
             for (int i = 0; i < array.Length; i++)

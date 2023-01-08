@@ -9,7 +9,7 @@ namespace Task01PersonnelRecords
             const string CommandAddDossier = "1";
             const string CommandShowAllDossiers = "2";
             const string CommandDeleteDossier = "3";
-            const string CommandSearchDossiersByLastName = "4";
+            const string CommandShowSearchResult = "4";
             const string CommandExit = "5";
 
             string[] fullNames = new string[0];
@@ -27,7 +27,7 @@ namespace Task01PersonnelRecords
                                 $"\n[{CommandAddDossier}] Добавить досье" +
                                 $"\n[{CommandShowAllDossiers}] Вывести все досье" +
                                 $"\n[{CommandDeleteDossier}] Удалить досье" +
-                                $"\n[{CommandSearchDossiersByLastName}] Поиск досье по фамилии" +
+                                $"\n[{CommandShowSearchResult}] Поиск досье по фамилии" +
                                 $"\n[{CommandExit}] Выход" +
                                 $"\n" +
                                 $"\nВведите команду: "
@@ -51,13 +51,13 @@ namespace Task01PersonnelRecords
                         DeleteDossier(ref fullNames, ref posts);
                         break;
 
-                    case CommandSearchDossiersByLastName:
-                        SearchDossiersByLastName(fullNames, posts);
+                    case CommandShowSearchResult:
+                        ShowByLastName(fullNames, posts);
                         break;
 
                     case CommandExit:
                         isOpen = false;
-                        continue;
+                        break;
 
                     default:
                         Console.WriteLine("Неверная команда. Нажмите любую клавишу для возвращения в меню");
@@ -70,15 +70,31 @@ namespace Task01PersonnelRecords
 
         private static void AddDossier(ref string[] fullNames, ref string[] posts)
         {
+            string newFullName;
+            string newPost;
+
             Console.Write("Введите ФИО: ");
-            Array.Resize(ref fullNames, fullNames.Length + 1);
-            fullNames[fullNames.Length - 1] = Console.ReadLine();
+            newFullName = Console.ReadLine();
+            EncreaseArray(ref fullNames, newFullName);
 
             Console.Write("Введите должность: ");
-            Array.Resize(ref posts, posts.Length + 1);
-            posts[posts.Length - 1] = Console.ReadLine();
+            newPost = Console.ReadLine();
+            EncreaseArray(ref posts, newPost);
 
-            Console.WriteLine("Досье добавлено. Нажмите любую клавишу для возвращения в меню");
+            Console.WriteLine("\nДосье добавлено. Нажмите любую клавишу для возвращения в меню");
+        }
+
+        static void EncreaseArray(ref string[] array, string information)
+        {
+            string[] tempArray = new string[array.Length + 1];
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                tempArray[i] = array[i];
+            }
+
+            tempArray[tempArray.Length - 1] = information;
+            array = tempArray;
         }
 
         private static void DeleteDossier(ref string[] fullNames, ref string[] posts)
@@ -92,8 +108,8 @@ namespace Task01PersonnelRecords
 
                 if (dossierNumber <= fullNames.Length && dossierNumber > 0)
                 {
-                    RemoveElementByIndex(ref fullNames, dossierNumber - 1);
-                    RemoveElementByIndex(ref posts, dossierNumber - 1);
+                    DecreaseArray(ref fullNames, dossierNumber - 1);
+                    DecreaseArray(ref posts, dossierNumber - 1);
 
                     Console.WriteLine("Досье удалено. Нажмите любую клавишу для возвращения в меню");
                 }
@@ -104,25 +120,35 @@ namespace Task01PersonnelRecords
             }
         }
 
-        private static void RemoveElementByIndex(ref string[] array, int index)
+        private static void DecreaseArray(ref string[] array, int index)
         {
-            for (int i = index; i < array.Length - 1; i++)
+            string[] tempArray = new string[array.Length - 1];
+
+            for (int i = 0; i < index; i++)
             {
-                array[i] = array[i + 1];
+                tempArray[i] = array[i];
             }
 
-            Array.Resize(ref array, array.Length - 1);
+            for (int i = index; i < tempArray.Length; i++)
+            {
+                tempArray[i] = array[i + 1];
+            }
+
+            array = tempArray;
         }
 
-        private static void SearchDossiersByLastName(string[] fullNames, string[] posts)
+        private static void ShowByLastName(string[] fullNames, string[] posts)
         {
             if (fullNames.Length > 0)
             {
                 string[] subStrings;
                 int dosiersCount = 0;
 
+                string output = String.Empty;
+                string input = String.Empty;
+
                 Console.Write("Введите фамилию: ");
-                string input = Console.ReadLine().ToLower();
+                input = Console.ReadLine().ToLower();
 
                 for (int i = 0; i < fullNames.Length; i++)
                 {
@@ -131,18 +157,19 @@ namespace Task01PersonnelRecords
                     if (subStrings[0].ToLower() == input)
                     {
                         Console.WriteLine($"[{++dosiersCount}] ФИО: {fullNames[i]}" +
-                                          $"\n    Должность: {posts[i]}");
+                                         $"\n    Должность: {posts[i]}" +
+                                         $"\n" +
+                                         $"\n");
                     }
-                }
-
-                if (dosiersCount == 0)
-                {
-                    Console.Write("Не найдено ни одного досье. Нажмите любую клавишу для возвращения в меню");
+                    else if (dosiersCount == 0)
+                    {
+                        Console.WriteLine("Не найдено ни одного досье. Нажмите любую клавишу для возвращения в меню");
+                    }
                 }
             }
             else
             {
-                Console.Write("Нет ни одного досье. Нажмите любую клавишу для возвращения в меню");
+                Console.WriteLine("Нет ни одного досье. Нажмите любую клавишу для возвращения в меню");
             }
         }
 
