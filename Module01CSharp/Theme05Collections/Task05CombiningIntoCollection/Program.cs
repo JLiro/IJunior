@@ -8,17 +8,21 @@ namespace Task05CombiningIntoCollection
         static void Main()
         {
             {
-                int[] firstArray =  { 1, 2, 3, 4, 4, 4 };
+                const string FirstArrayName = "1";
+                const string SecondArrayName = "2";
+
+                int[] firstArray  = { 1, 2, 3, 4, 4, 4 };
                 int[] secondArray = { 5, 2, 6, 2 };
                 
                 List<int> сollection = new List<int>();
 
-                Console.Write(ShowCollection(сollection));
+                ShowCollection(firstArray, FirstArrayName);
+                ShowCollection(secondArray, SecondArrayName);
 
                 AddUniqueElementsToCollection(сollection, firstArray );
                 AddUniqueElementsToCollection(сollection, secondArray);
 
-                Console.Write(ShowCollection(сollection));
+                ShowCollection(сollection);
 
                 Console.ReadKey();
             }
@@ -35,7 +39,7 @@ namespace Task05CombiningIntoCollection
             }
         }
 
-        static string ShowCollection(List<int> сollection)
+        static void ShowCollection(List<int> сollection)
         {
             string output;
             output = "Полученняа коллекция уникальных элементов из масивов:";
@@ -45,20 +49,20 @@ namespace Task05CombiningIntoCollection
                 output += " " + element;
             }
 
-            return output;
+            Console.Write("\n" + output);
         }
 
-        static string ShowCollection(int[] сollection, string arrayNamber)
+        static void ShowCollection(int[] сollection, string arrayNamber)
         {
             string output;
-            output = "Исходный массив #{arrayNamber}:";
+            output = $"Исходный массив #{arrayNamber}:";
 
             foreach (int element in сollection)
             {
                 output += " " + element;
             }
 
-            return output;
+            Console.WriteLine(output);
         }
     }
 }

@@ -86,12 +86,11 @@ namespace Task04PersonnelAccountingAdvanced
             if (fullNames.Count > 0)
             {
                 Console.Write("\nВведите номер досье для удаления: ");
-                dossierNumber = Convert.ToInt32(Console.ReadLine()) - 1;
 
-                if (dossierNumber <= fullNames.Count)
+                if (int.TryParse(Console.ReadLine(), out dossierNumber) && dossierNumber <= fullNames.Count && dossierNumber >= 0)
                 {
-                    RemoveElementByIndex(fullNames, dossierNumber);
-                    RemoveElementByIndex(posts, dossierNumber);
+                    fullNames.RemoveAt(dossierNumber);
+                    posts.RemoveAt(dossierNumber);
 
                     Console.WriteLine("Досье удалено. Нажмите любую клавишу для возвращения в меню");
                 }
@@ -100,11 +99,6 @@ namespace Task04PersonnelAccountingAdvanced
                     Console.WriteLine("Неверный номер досье. Нажмите любую клавишу для возвращения в меню");
                 }
             }
-        }
-
-        private static void RemoveElementByIndex(List<string> list, int index)
-        {
-            list.RemoveAt(index);
         }
 
         private static void ShowDossiers(List<string> fullNames, List<string> posts)
