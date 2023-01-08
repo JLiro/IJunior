@@ -42,7 +42,7 @@ namespace Task05CombiningIntoCollection
         static void ShowCollection(List<int> сollection)
         {
             string output;
-            output = "Полученняа коллекция уникальных элементов из масивов:";
+            output = "Полученная коллекция уникальных элементов из масивов:";
 
             foreach (int element in сollection)
             {
