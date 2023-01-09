@@ -15,36 +15,37 @@ namespace Task02QueueInTheStore
             purchaseAmountsBuyers.Enqueue(40);
             
             int purchaseAmountBuyer;
-            int buyerIndex;
+            int buyerIndex = 0;
 
             string lastBayerInfo = string.Empty; 
             int storeBalance = 0;
 
-            for (int i = 0; 0 < purchaseAmountsBuyers.Count; i++)
+            while (0 < purchaseAmountsBuyers.Count)
             {
                 Console.Write("Список покупателей:" +
                               ShowQueueBuyers(purchaseAmountsBuyers) +
                               "\n" +
-                              "\n" +
-                              "Нажмите любую клавишу, чтобы обслужить клиента" +
+                              "\nНажмите любую клавишу, чтобы обслужить клиента" +
                               "\n" +
                               lastBayerInfo);
-                
+
                 Console.ReadKey();
 
-                    purchaseAmountBuyer = purchaseAmountsBuyers.Peek();
-                    storeBalance += purchaseAmountsBuyers.Dequeue();
+                purchaseAmountBuyer = purchaseAmountsBuyers.Peek();
+                storeBalance += purchaseAmountsBuyers.Dequeue();
 
-                    buyerIndex = i + 1;
+                buyerIndex++;
 
-                    lastBayerInfo =  "\n=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=" +
-                                    $"\nПокупатель #{buyerIndex} совершил покупку на {purchaseAmountBuyer} руб." +
-                                    $"\nВыручка магазина: {storeBalance} руб.";
+                lastBayerInfo = "\n=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=" +
+                                $"\nПокупатель #{buyerIndex} совершил покупку на {purchaseAmountBuyer} руб." +
+                                $"\nВыручка магазина: {storeBalance} руб.";
 
                 Console.Clear();
             }
 
             Console.WriteLine("Список покупателей пуст, все клиенты обслужены!" +
+                              "\n" +
+                              "\nНажмите любую клавишу, чтобы завершить программу" +
                               "\n" +
                               lastBayerInfo);
 
@@ -61,6 +62,7 @@ namespace Task02QueueInTheStore
                 buyerIndex++;
                 queueBuyer += $"\n#{buyerIndex} с покупкой на {purchaseAmountBuyer} руб.";
             }
+
             return queueBuyer;
         }
     }

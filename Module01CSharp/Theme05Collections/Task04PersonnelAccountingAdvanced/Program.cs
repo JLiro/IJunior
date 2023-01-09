@@ -15,9 +15,6 @@ namespace Task04PersonnelAccountingAdvanced
             List<string> fullNames = new List<string>();
             List<string> posts = new List<string>();
 
-            string[] fullNamess = new string[0];
-            string[] postss = new string[0];
-
             string input;
 
             bool isWork = true;
@@ -58,7 +55,7 @@ namespace Task04PersonnelAccountingAdvanced
                         continue;
 
                     default:
-                        Console.WriteLine("Неверная команда. Нажмите любую клавишу для возвращения в меню");
+                        Console.Write("Неверная команда. Нажмите любую клавишу для возвращения в меню");
                         break;
                 }
 
@@ -87,16 +84,21 @@ namespace Task04PersonnelAccountingAdvanced
             {
                 Console.Write("\nВведите номер досье для удаления: ");
 
-                if (int.TryParse(Console.ReadLine(), out dossierNumber) && dossierNumber <= fullNames.Count && dossierNumber >= 0)
+                if ( int.TryParse(Console.ReadLine(), out dossierNumber) )
                 {
-                    fullNames.RemoveAt(dossierNumber);
-                    posts.RemoveAt(dossierNumber);
+                    dossierNumber--;
 
-                    Console.WriteLine("Досье удалено. Нажмите любую клавишу для возвращения в меню");
+                    if (dossierNumber <= posts.Count && dossierNumber <= fullNames.Count && dossierNumber >= 0)
+                    {
+                        fullNames.RemoveAt(dossierNumber);
+                        posts.RemoveAt(dossierNumber);
+
+                        Console.WriteLine("\nДосье удалено. Нажмите любую клавишу для возвращения в меню");
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("Неверный номер досье. Нажмите любую клавишу для возвращения в меню");
+                    Console.WriteLine("\nНеверный номер досье. Нажмите любую клавишу для возвращения в меню");
                 }
             }
         }

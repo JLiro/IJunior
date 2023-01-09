@@ -23,7 +23,10 @@ namespace Task01ExplanatoryDictionary
                 Console.Clear();
                 Console.Write($"Словарь {word[input]}");
             }
-            else Console.WriteLine("Ошибка! Неизвестное слово!");
+            else
+            {
+                Console.WriteLine("Ошибка! Неизвестное слово!");
+            }
 
             Console.ReadKey();
         }
