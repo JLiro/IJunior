@@ -8,12 +8,11 @@ namespace Task04PersonnelAccountingAdvanced
         static void Main()
         {
             const string CommandAddDossier = "1";
-            const string CommandShowAllDossiers = "2";
+            const string CommandShowDossiers = "2";
             const string CommandDeleteDossier = "3";
             const string CommandExit = "4";
 
-            List<string> fullNames = new List<string>();
-            List<string> posts = new List<string>();
+            Dictionary<string, string> dossiers = new Dictionary<string, string>();
 
             string input;
 
@@ -25,7 +24,7 @@ namespace Task04PersonnelAccountingAdvanced
                 Console.Write(
                                 $" - = == МЕНЮ == = -" +
                                 $"\n[{CommandAddDossier}] Добавить досье" +
-                                $"\n[{CommandShowAllDossiers}] Вывести все досье" +
+                                $"\n[{CommandShowDossiers}] Вывести все досье" +
                                 $"\n[{CommandDeleteDossier}] Удалить досье" +
                                 $"\n[{CommandExit}] Выход" +
                                 $"\n" +
@@ -39,15 +38,15 @@ namespace Task04PersonnelAccountingAdvanced
                 switch (input)
                 {
                     case CommandAddDossier:
-                        AddDossier(fullNames, posts);
+                        AddDossier(dossiers);
                         break;
 
-                    case CommandShowAllDossiers:
-                        ShowDossiers(fullNames, posts);
+                    case CommandShowDossiers:
+                        ShowDossiers(dossiers);
                         break;
 
                     case CommandDeleteDossier:
-                        DeleteDossier(fullNames, posts);
+                        DeleteDossier(dossiers);
                         break;
 
                     case CommandExit:
@@ -63,37 +62,53 @@ namespace Task04PersonnelAccountingAdvanced
             }
         }
 
-        private static void AddDossier(List<string> fullNames, List<string> posts)
+        private static void AddDossier(Dictionary<string, string> dossiers)
         {
-            Console.Write("Введите ФИО: ");
-            fullNames.Add(Console.ReadLine());
+            string fullNames = string.Empty;
+            string posts = string.Empty;
 
+            Console.Write("Введите ФИО: ");
+            fullNames = Console.ReadLine();
             Console.Write("Введите должность: ");
-            posts.Add(Console.ReadLine());
+            posts = Console.ReadLine();
+
+            dossiers.Add(fullNames, posts);
 
             Console.WriteLine("\nДосье добавлено. Нажмите любую клавишу для возвращения в меню");
         }
 
-        private static void DeleteDossier(List<string> fullNames, List<string> posts)
+        private static void DeleteDossier(Dictionary<string, string> dossiers)
         {
+            int index = 0;
             int dossierNumber;
 
-            ShowDossiers(fullNames, posts);
+            ShowDossiers(dossiers);
 
-            if (fullNames.Count > 0)
+            if (dossiers.Count > 0)
             {
                 Console.Write("\nВведите номер досье для удаления: ");
 
-                if ( int.TryParse(Console.ReadLine(), out dossierNumber) )
+                if (int.TryParse(Console.ReadLine(), out dossierNumber))
                 {
-                    dossierNumber--;
-
-                    if (dossierNumber <= posts.Count && dossierNumber <= fullNames.Count && dossierNumber >= 0)
+                    if (dossierNumber <= dossiers.Count && dossierNumber > 0)
                     {
-                        fullNames.RemoveAt(dossierNumber);
-                        posts.RemoveAt(dossierNumber);
+
+                        foreach (var dossier in dossiers)
+                        {
+                            index++;
+
+                            if (index == dossierNumber)
+                            {
+                                dossiers.Remove(dossier.Key);
+                                break;
+                            }    
+                        }
 
                         Console.WriteLine("\nДосье удалено. Нажмите любую клавишу для возвращения в меню");
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nНеверный номер досье. Нажмите любую клавишу для возвращения в меню");
                     }
                 }
                 else
@@ -103,19 +118,24 @@ namespace Task04PersonnelAccountingAdvanced
             }
         }
 
-        private static void ShowDossiers(List<string> fullNames, List<string> posts)
+        private static void ShowDossiers(Dictionary<string, string> dossiers)
         {
-            if (fullNames.Count > 0)
+            if (dossiers.Count > 0)
             {
-                for (int i = 0; i < fullNames.Count; i++)
+                int index = 0;
+
+                foreach (var dossier in dossiers)
                 {
-                    Console.WriteLine($"[{i + 1}] ФИО: {fullNames[i]}" +
-                                      $"\n    Должность: {posts[i]}");
+                    index++;
+
+                    Console.WriteLine($"[{index}] ФИО: {dossier.Key}" +
+                                          $"\n    Должность: {dossier.Value}");
                 }
+
             }
             else
             {
-                Console.Write("Нет ни одного досье. Нажмите любую клавишу для возвращения в меню");
+                Console.WriteLine("Список досье пуст. Нажмите любую клавишу для возвращения в меню");
             }
         }
     }
