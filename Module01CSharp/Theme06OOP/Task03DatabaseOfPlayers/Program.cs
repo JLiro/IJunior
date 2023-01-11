@@ -7,11 +7,12 @@ namespace Task03DatabaseOfPlayers
     {
         static void Main()
         {
-            const string CommandIncrease = "1";
-            const string CommandChange = "2";
-            const string CommandDecrease = "3";
-            const string CommandShow = "4"; 
-            const string CommandExit = "5";
+            const string CommandAddPlayer = "1";
+            const string CommandBanPlayer = "2";
+            const string CommandUnbanPlayer = "3";
+            const string CommandRemovePlayer = "4";
+            const string CommandShowPlayersForMineMethod = "5"; 
+            const string CommandExit = "6";
 
             Database database = new Database();
 
@@ -24,15 +25,16 @@ namespace Task03DatabaseOfPlayers
                 Console.CursorVisible = true;
 
                 Console.Clear();
-                Console.Write(
+                Console.Write(  
                                 $"  - = == МЕНЮ == = -" +
-                                $"\n [{CommandIncrease}] Добавить игрока" +
-                                $"\n [{CommandChange}] Заблокировать / Разблокировать игрока" +
-                                $"\n [{CommandDecrease}] Удалить игрока" +
-                                $"\n [{CommandShow}] Показать всех игроков" +
+                                $"\n [{CommandAddPlayer}] Добавить игрока" +
+                                $"\n [{CommandBanPlayer}] Заблокировать  игрока" +
+                                $"\n [{CommandUnbanPlayer}] Разблокировать игрока" +
+                                $"\n [{CommandRemovePlayer}] Удалить игрока" +
+                                $"\n [{CommandShowPlayersForMineMethod}] Показать всех игроков" +
                                 $"\n [{CommandExit}] Выход" +
-                                $"\n" +
-                                $"\n > Введите команду: "
+                                 "\n" +
+                                $"\n  > Введите команду: "
                              );
 
                 input = Console.ReadLine();
@@ -41,20 +43,24 @@ namespace Task03DatabaseOfPlayers
 
                 switch (input)
                 {
-                    case CommandIncrease:
-                        database.Increase();
+                    case CommandAddPlayer:
+                        database.AddPlayer();
                         break;
 
-                    case CommandChange:
-                        database.Change();
+                    case CommandBanPlayer:
+                        database.BanPlayer();
                         break;
 
-                    case CommandDecrease:
-                        database.Decrease();
+                    case CommandUnbanPlayer:
+                        database.UnbanPlayer();
                         break;
 
-                    case CommandShow:
-                        database.Show();
+                    case CommandRemovePlayer:
+                        database.RemovePlayer();
+                        break;
+
+                    case CommandShowPlayersForMineMethod:
+                        database.ShowPlayersForMineMethod();
                         break;
 
                     case CommandExit:
@@ -62,7 +68,7 @@ namespace Task03DatabaseOfPlayers
                         continue;
 
                     default:
-                        Console.Write(" > Неверная команда. Нажмите любую клавишу для возвращения в меню");
+                        Console.Write("  > Неверная команда. Нажмите любую клавишу для возвращения в меню");
                         break;
                 }
             }
@@ -71,14 +77,111 @@ namespace Task03DatabaseOfPlayers
 
     class Database
     {
-        private int _playerID;
+        private List<Player> _players = new List<Player>();
 
-        public List<Player> _players = new List<Player>();
-
-        public void Show()
+        public void ShowPlayersForMineMethod()
         {
             ShowPlayers();
             ShowResultOfMethod("Выведен список всех игроков");
+        }
+
+        public void AddPlayer()
+        {
+            ShowPlayers();
+
+            Console.Write("  > Введите никнейм нового игрока: ");
+            _players.Add(new Player(_players.Count, Console.ReadLine()));
+
+            ShowResultOfMethod("Новый игрок добавлен");
+        }
+
+        public void RemovePlayer()
+        {
+            ShowPlayers();
+
+            Console.Write("  > Введите ID для удаления игрока: ");
+            bool isCorrectID = TryGetPlayer(out Player player);
+
+            if (isCorrectID)
+            {
+                _players.Remove(player);
+
+                ShowResultOfMethod("Игрок с данным ID удалён");
+            }
+            else
+            {
+                ShowResultOfMethod("Игрок с данным ID не найден");
+            }
+        }
+
+        public void BanPlayer()
+        {
+            ShowPlayers();
+
+            Console.Write($"  > Введите ID игрока для смены статуса на заблокирован: ");
+            bool isCorrectID = TryGetPlayer(out Player player);
+
+            if (isCorrectID)
+            {
+                if (player.IsBanned == false)
+                {
+                    player.Banned();
+                    ShowResultOfMethod("Игрок заблокирован");
+                }
+                else
+                {
+                    ShowResultOfMethod("Статус не изменился, т.к. игрок был заблокирован ранее");
+                }
+            }
+            else
+            {
+                ShowResultOfMethod("Игрок с данным ID не найден");
+            }
+        }
+
+        public void UnbanPlayer()
+        {
+            ShowPlayers();
+
+            Console.Write($"  > Введите ID игрока для смены статуса на разблокирован: ");
+            bool isCorrectID = TryGetPlayer(out Player player);
+
+            if (isCorrectID)
+            {
+                if (player.IsBanned == true)
+                {
+                    player.Unbanned();
+                    ShowResultOfMethod("Игрок разблокирован");
+                }
+                else
+                {
+                    ShowResultOfMethod("Статус не изменился, т.к. игрок был разблокирован ранее");
+                }
+            }
+            else
+            {
+                ShowResultOfMethod("Игрок с данным ID не найден");
+            }
+        }
+
+        private bool TryGetPlayer(out Player player)
+        {
+            player = null;
+            bool isCorrectID = int.TryParse(Console.ReadLine(), out int inputID) && inputID >= 0 && inputID < _players.Count;
+
+            if(isCorrectID)
+            {
+                foreach (Player tempPlayer in _players)
+                {
+                    if (tempPlayer.ID == inputID)
+                    {
+                        player = tempPlayer;
+                        isCorrectID  = true;
+                    }
+                }
+            }
+
+            return isCorrectID;
         }
 
         private void ShowResultOfMethod(string input)
@@ -86,11 +189,11 @@ namespace Task03DatabaseOfPlayers
             Console.CursorVisible = false;
 
             Console.Write("\n"
-                        + "──?──?──?──?──?──?───?───?──?──?──?──?──?──"
-                        + "\n < > "
+                        + "───?──?──?──?──?──?───?───?──?──?──?──?──?───"
+                        + "\n  < > "
                         + input
                         + "\n"
-                        + "\n < Нажмите любую клавишу, чтобы вернуться в меню"); 
+                        + "\n  < Нажмите любую клавишу, чтобы вернуться в меню");
             Console.ReadKey();
         }
 
@@ -101,77 +204,7 @@ namespace Task03DatabaseOfPlayers
                 player.ShowInfo();
             }
 
-            Console.WriteLine("──────────────────── ? ────────────────────");
-        }
-
-        public void Increase()
-        {
-            ShowPlayers();
-
-            Console.Write(" > Введите никнейм нового игрока: ");
-            _players.Add(new Player(_players.Count, Console.ReadLine()));
-
-            ShowResultOfMethod("Новый игрок добавлен");
-        }
-
-        public void Decrease()
-        {
-            ShowPlayers();
-
-            Console.Write(" > Введите ID для удаления игрока: ");
-
-            if (int.TryParse(Console.ReadLine(), out _playerID) && _playerID >= 0 && _playerID <= _players.Count)
-            {
-                _players.RemoveAt(_playerID);
-
-                ShowResultOfMethod("Игрок с данным ID удалён");
-            }
-            else
-            {
-                ShowResultOfMethod("Игрок с данным ID не найден");
-            }
-        }
-
-        public void Change()
-        {
-            string banStatus   = "заблокирован";
-            string unbanStatus = "разблокирован";
-
-            ShowPlayers();
-
-            Console.Write($" > Введите ID игрока для смены статуса на {banStatus} / {unbanStatus}: ");
-
-            if(int.TryParse(Console.ReadLine(), out _playerID) && _playerID >= 0 && _playerID <= _players.Count)
-            {
-                if(_players[_playerID].IsBanned == false)
-                {
-                    ValidateBanStatusChange(_playerID, unbanStatus, banStatus);
-                }
-                else
-                {
-                    ValidateBanStatusChange(_playerID, banStatus, unbanStatus);
-                }
-            }
-            else
-            {
-                ShowResultOfMethod("Игрок с данным ID не найден");
-            }
-        }
-
-        private void ValidateBanStatusChange(int playerID, string currentBanStatus, string newBanStatus)
-        {
-            Console.Write($"\n > Игрок сейчас {currentBanStatus}. Вы точно хотите изменить его статус на {newBanStatus}?" +
-                           "\n > Введите ID повторно, для подверждения: ");
-
-            if (int.TryParse(Console.ReadLine(), out _playerID) && _playerID == playerID)
-            {
-                _players[playerID].InvertBanStatus();
-                ShowResultOfMethod($"Игрок {newBanStatus}");
-            }
-            else
-            {
-                ShowResultOfMethod($"Статус игрока не изменился, он {currentBanStatus}");
-            }
+            Console.WriteLine("───────────────────── ? ─────────────────────");
         }
     }
 
@@ -179,22 +212,28 @@ namespace Task03DatabaseOfPlayers
     {
         private int _baseLevel = 1;
         
-        private int _id;
         private string _nickname;
         private int _level;
-        public bool IsBanned { private set; get; }
 
         public Player(int id, string nickname)
         {
-            _id = id;
+            ID = id;
             _nickname = nickname;
             _level = _baseLevel;
             IsBanned = false;
         }
 
-        public void InvertBanStatus()
+        public int ID { get; private set; }
+        public bool IsBanned { get; private set; }
+
+        public void Banned()
         {
-            IsBanned = !IsBanned;
+            IsBanned = true;
+        }
+
+        public void Unbanned()
+        {
+            IsBanned = false;
         }
 
         public void ShowInfo()
@@ -203,9 +242,9 @@ namespace Task03DatabaseOfPlayers
 
             banStatus = IsBanned ? "Заблокирован" : "Разблокирован";
 
-            Console.WriteLine($"[{_id}] Псевдоним: {_nickname}"
-                            + $"\n      Уровень: {_level}"
-                            + $"\n       Статус: {banStatus}"
+            Console.WriteLine($"  [{ID}] Псевдоним: {_nickname}"
+                            + $"\n        Уровень: {_level}"
+                            + $"\n         Статус: {banStatus}"
                             +  "\n");
         }
     }
