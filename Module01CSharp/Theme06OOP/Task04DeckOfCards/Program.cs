@@ -89,7 +89,7 @@ namespace Task04CardDeck
     class Deck
     {
         private Queue<Card> _cards = new Queue<Card>();
-        
+
         private Random _random = new Random();
 
         public Deck(int cardCount)
