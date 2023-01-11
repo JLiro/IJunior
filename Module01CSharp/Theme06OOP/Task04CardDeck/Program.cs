@@ -48,7 +48,6 @@ namespace Task04CardDeck
 
     class Player
     {
-        public string Name { private set; get; }
         private List<Card> _cards;
 
         public Player(string name)
@@ -57,6 +56,8 @@ namespace Task04CardDeck
             _cards = new List<Card>();
         }
 
+        public string Name { private set; get; }
+        
         public void TakeCard(Deck deck, int count)
         {
             if (deck.СardCount > 0)
@@ -92,12 +93,12 @@ namespace Task04CardDeck
     {
         private Queue<Card> _cards = new Queue<Card>();
         
-        public int СardCount { private set; get; }
-        
         public Deck(int cardCount)
         {
             СardCount = cardCount;
         }
+
+        public int СardCount { private set; get; }
         
         public void Build()
         {
