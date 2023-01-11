@@ -23,15 +23,15 @@ namespace Task04CardDeck
                 Console.WriteLine($"Нажмите {ComandTakeCard} чтобы {player.Name} взял указанное кол-во карт: {cardCount}"
                                 + $"\nили нажмите {ComandExit} для выхода"
                                 + $"\n");
-                deck.Show();
-                player.Show();
+                deck.ShowCards();
+                player.ShowCards();
 
                 ConsoleKey сonsoleKey = Console.ReadKey(true).Key;
 
                 switch (сonsoleKey)
                 {
                     case ComandTakeCard:
-                        player.Take(deck, cardCount);
+                        player.TakeCard(deck, cardCount);
                         break;
                 
                     case ComandExit:
@@ -57,18 +57,18 @@ namespace Task04CardDeck
             _cards = new List<Card>();
         }
 
-        public void Take(Deck deck, int count)
+        public void TakeCard(Deck deck, int count)
         {
             if (deck.СardCount > 0)
             {
                 for (int i = 0; i < count; i++)
                 {
-                    _cards.Add(deck.Encrease());
+                    _cards.Add(deck.RemoveCard());
                 }
             }
         }
 
-        public void Show()
+        public void ShowCards()
         {
             string output = "Текущие карты у игрока:";
 
@@ -76,14 +76,14 @@ namespace Task04CardDeck
             {
                 foreach (Card card in _cards)
                 {
-                    output += " " + card.Show();
+                    output += " " + card.ShowPower();
                 }
 
                 Console.WriteLine(output);
             }
             else
             {
-                Console.WriteLine("Колода пуста");
+                Console.WriteLine("Колода игрока пуста");
             }
         }
     }
@@ -111,7 +111,7 @@ namespace Task04CardDeck
             }
         }
 
-        public Card Encrease()
+        public Card RemoveCard()
         {
             Card card = _cards.Peek();
             
@@ -122,7 +122,7 @@ namespace Task04CardDeck
             return card;
         }
 
-        public void Show()
+        public void ShowCards()
         {
             string output = "Текущие карты в колоде:";
 
@@ -130,14 +130,14 @@ namespace Task04CardDeck
             {
                 foreach (Card card in _cards)
                 {
-                    output += " " + card.Show();
+                    output += " " + card.ShowPower();
                 }
 
                 Console.WriteLine(output);
             }
             else
             {
-                Console.WriteLine("Колода пуста");
+                Console.WriteLine("Общая колода пуста");
             }
         }
     }
@@ -165,7 +165,7 @@ namespace Task04CardDeck
             }
         }
 
-        public int Show()
+        public int ShowPower()
         {
             return _power;
         }
