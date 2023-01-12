@@ -8,12 +8,12 @@ namespace Task04PersonnelAccountingAdvanced
         static void Main()
         {
             const string CommandAddDossier = "1";
-            const string CommandShowAllDossiers = "2";
+            const string CommandShowDossiers = "2";
             const string CommandDeleteDossier = "3";
             const string CommandExit = "4";
 
-            List<string> fullNames = new List<string>();
-            List<string> posts = new List<string>();
+            Dictionary<int, (string, string)> dossiers = new Dictionary<int, (string, string)>();
+            int maxID = 0;
 
             string input;
 
@@ -22,11 +22,10 @@ namespace Task04PersonnelAccountingAdvanced
             while (isWork)
             {
                 Console.Clear();
-
                 Console.Write(
                                 $" - = == МЕНЮ == = -" +
                                 $"\n[{CommandAddDossier}] Добавить досье" +
-                                $"\n[{CommandShowAllDossiers}] Вывести все досье" +
+                                $"\n[{CommandShowDossiers}] Вывести все досье" +
                                 $"\n[{CommandDeleteDossier}] Удалить досье" +
                                 $"\n[{CommandExit}] Выход" +
                                 $"\n" +
@@ -37,18 +36,20 @@ namespace Task04PersonnelAccountingAdvanced
 
                 Console.Clear();
 
+                
+
                 switch (input)
                 {
                     case CommandAddDossier:
-                        AddDossier(fullNames, posts);
+                        AddDossier(dossiers, ref maxID);
                         break;
 
-                    case CommandShowAllDossiers:
-                        ShowDossiers(fullNames, posts);
+                    case CommandShowDossiers:
+                        ShowDossiers(dossiers);
                         break;
 
                     case CommandDeleteDossier:
-                        DeleteDossier(fullNames, posts);
+                        DeleteDossier(dossiers);
                         break;
 
                     case CommandExit:
@@ -64,38 +65,36 @@ namespace Task04PersonnelAccountingAdvanced
             }
         }
 
-        private static void AddDossier(List<string> fullNames, List<string> posts)
-        {
-            string tempFullNames = string.Empty;
-            string tempPosts = string.Empty;
+        private static void AddDossier(Dictionary<int, (string, string)> dossiers, ref int maxID)
+        {   
+            string fullNames = string.Empty;
+            string posts = string.Empty;
 
             Console.Write("Введите ФИО: ");
-            tempFullNames = Console.ReadLine();
+            fullNames = Console.ReadLine();
             Console.Write("Введите должность: ");
-            tempPosts = Console.ReadLine();
+            posts = Console.ReadLine();
 
-            fullNames.Add(tempFullNames);
-            posts.Add(tempPosts);
+            dossiers.Add(maxID++, (fullNames, posts));
 
             Console.WriteLine("\nДосье добавлено. Нажмите любую клавишу для возвращения в меню");
         }
 
-        private static void DeleteDossier(List<string> fullNames, List<string> posts)
+        private static void DeleteDossier(Dictionary<int, (string, string)> dossiers)
         {
-            ShowDossiers(fullNames, posts);
+            int dossierID;
 
-            if (fullNames.Count > 0 && posts.Count > 0)
+            ShowDossiers(dossiers);
+
+            if (dossiers.Count > 0)
             {
                 Console.Write("\nВведите номер досье для удаления: ");
 
-                if (int.TryParse(Console.ReadLine(), out int dossierNumber))
+                if (int.TryParse(Console.ReadLine(), out dossierID))
                 {
-                    if (dossierNumber <= posts.Count && dossierNumber <= fullNames.Count && dossierNumber > 0)
+                    if (dossiers.ContainsKey(dossierID))
                     {
-                        dossierNumber--;
-
-                        fullNames.RemoveAt(dossierNumber);
-                        posts.RemoveAt(dossierNumber);
+                        dossiers.Remove(dossierID);
 
                         Console.WriteLine("\nДосье удалено. Нажмите любую клавишу для возвращения в меню");
                     }
@@ -111,20 +110,20 @@ namespace Task04PersonnelAccountingAdvanced
             }
         }
 
-        private static void ShowDossiers(List<string> fullNames, List<string> posts)
+        private static void ShowDossiers(Dictionary<int, (string, string)> dossiers)
         {
-            if (fullNames.Count > 0)
+            if (dossiers.Count > 0)
             {
-                for (int i = 0; i < fullNames.Count; i++)
+                foreach (var dossier in dossiers)
                 {
-                    int index = i + 1;
-                    Console.WriteLine($"[{index}] ФИО: {fullNames[i]}" +
-                                      $"\n    Должность: {posts[i]}");
+                    Console.WriteLine($"[{dossier.Key}] ФИО: {dossier.Value.Item1}" +
+                                          $"\n    Должность: {dossier.Value.Item2}");
                 }
+
             }
             else
             {
-                Console.Write("Нет ни одного досье. Нажмите любую клавишу для возвращения в меню");
+                Console.WriteLine("Список досье пуст. Нажмите любую клавишу для возвращения в меню");
             }
         }
     }
