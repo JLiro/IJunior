@@ -13,7 +13,7 @@ namespace Task04PersonnelAccountingAdvanced
             const string CommandExit = "4";
 
             Dictionary<int, (string, string)> dossiers = new Dictionary<int, (string, string)>();
-            int maxID = 0;
+            int maxDossierID = 0;
 
             string input;
 
@@ -36,12 +36,10 @@ namespace Task04PersonnelAccountingAdvanced
 
                 Console.Clear();
 
-                
-
                 switch (input)
                 {
                     case CommandAddDossier:
-                        AddDossier(dossiers, ref maxID);
+                        AddDossier(dossiers, ref maxDossierID);
                         break;
 
                     case CommandShowDossiers:
@@ -65,7 +63,7 @@ namespace Task04PersonnelAccountingAdvanced
             }
         }
 
-        private static void AddDossier(Dictionary<int, (string, string)> dossiers, ref int maxID)
+        private static void AddDossier(Dictionary<int, (string, string)> dossiers, ref int maxDossierID)
         {   
             string fullNames = string.Empty;
             string posts = string.Empty;
@@ -75,7 +73,7 @@ namespace Task04PersonnelAccountingAdvanced
             Console.Write("Введите должность: ");
             posts = Console.ReadLine();
 
-            dossiers.Add(maxID++, (fullNames, posts));
+            dossiers.Add(maxDossierID++, (fullNames, posts));
 
             Console.WriteLine("\nДосье добавлено. Нажмите любую клавишу для возвращения в меню");
         }
@@ -112,7 +110,6 @@ namespace Task04PersonnelAccountingAdvanced
                     Console.WriteLine($"[{dossier.Key}] ФИО: {dossier.Value.Item1}" +
                                           $"\n    Должность: {dossier.Value.Item2}");
                 }
-
             }
             else
             {
