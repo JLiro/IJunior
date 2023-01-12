@@ -90,18 +90,11 @@ namespace Task04PersonnelAccountingAdvanced
             {
                 Console.Write("\nВведите номер досье для удаления: ");
 
-                if (int.TryParse(Console.ReadLine(), out dossierID))
+                if (int.TryParse(Console.ReadLine(), out dossierID) && dossiers.ContainsKey(dossierID))
                 {
-                    if (dossiers.ContainsKey(dossierID))
-                    {
-                        dossiers.Remove(dossierID);
+                    dossiers.Remove(dossierID);
 
-                        Console.WriteLine("\nДосье удалено. Нажмите любую клавишу для возвращения в меню");
-                    }
-                    else
-                    {
-                        Console.WriteLine("\nНеверный номер досье. Нажмите любую клавишу для возвращения в меню");
-                    }
+                    Console.WriteLine("\nДосье удалено. Нажмите любую клавишу для возвращения в меню");
                 }
                 else
                 {
