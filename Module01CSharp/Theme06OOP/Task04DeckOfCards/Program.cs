@@ -88,7 +88,7 @@ namespace Task04CardDeck
 
     class Deck
     {
-        private Queue<Card> _cards = new Queue<Card>();
+        private Stack<Card> _cards = new Stack<Card>();
 
         private Random _random = new Random();
 
@@ -96,7 +96,7 @@ namespace Task04CardDeck
         {
             for (int i = 0; i < cardCount; i++)
             {
-                _cards.Enqueue(CreateCard());
+                _cards.Push(CreateCard());
             }
 
             СardCount = cardCount;
@@ -108,7 +108,7 @@ namespace Task04CardDeck
         {
             Card card = _cards.Peek();
 
-            _cards.Dequeue();
+            _cards.Pop();
 
             СardCount = _cards.Count;
 
@@ -117,16 +117,16 @@ namespace Task04CardDeck
 
         public void ShowCards()
         {
-            string output = "Текущие карты в колоде:";
-
             if (_cards.Count > 0)
             {
+                Console.Write("Текущие карты в колоде:");
+
                 foreach (Card card in _cards)
                 {
-                    output += " " + card.Power;
+                    Console.Write(" " + card.Power);
                 }
 
-                Console.WriteLine(output);
+                Console.WriteLine();
             }
             else
             {
@@ -136,12 +136,10 @@ namespace Task04CardDeck
 
         private Card CreateCard()
         {
-            int minPowerCard = 1;
-            int maxPowerCard = 11;
+            int minPowerCard = 10;
+            int maxPowerCard = 100;
 
-            int power = _random.Next(minPowerCard, maxPowerCard);
-
-            return new Card(_random.Next(minPowerCard, maxPowerCard));
+            return new Card( _random.Next(minPowerCard, maxPowerCard) );
         }
     }
 
