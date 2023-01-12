@@ -68,16 +68,17 @@ namespace Task04CardDeck
 
         public void ShowCards()
         {
-            string output = "Текущие карты у игрока:";
-
             if (_cards.Count > 0)
             {
+                Console.Write("Текущие карты у игрока:");
+                
                 foreach (Card card in _cards)
                 {
-                    output += " " + card.Power;
+                    Console.Write
+                        (" " + card.Power);
                 }
 
-                Console.WriteLine(output);
+                Console.WriteLine();
             }
             else
             {
@@ -106,11 +107,12 @@ namespace Task04CardDeck
 
         public Card RemoveCard()
         {
-            Card card = _cards.Peek();
+            if(TryGetCard(out Card card))
+            {
+                _cards.Pop();
 
-            _cards.Pop();
-
-            СardCount = _cards.Count;
+                СardCount = _cards.Count;
+            }
 
             return card;
         }
@@ -132,6 +134,27 @@ namespace Task04CardDeck
             {
                 Console.WriteLine("В колоде нет карт");
             }
+        }
+
+        private bool TryGetCard(out Card card)
+        {
+            card = null;
+            bool isCard = ( _cards.Contains( _cards.Peek() ) );
+
+            if (isCard)
+            {
+                foreach (Card tempCard in _cards)
+                {
+                    if (tempCard.Power == _cards.Peek().Power)
+                    {
+                        card = tempCard;
+
+                        isCard = true;
+                    }
+                }
+            }
+
+            return isCard;
         }
 
         private Card CreateCard()

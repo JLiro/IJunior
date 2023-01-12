@@ -80,15 +80,13 @@ namespace Task04PersonnelAccountingAdvanced
 
         private static void DeleteDossier(Dictionary<int, (string, string)> dossiers)
         {
-            int dossierID;
-
             ShowDossiers(dossiers);
 
             if (dossiers.Count > 0)
             {
                 Console.Write("\nВведите номер досье для удаления: ");
 
-                if (int.TryParse(Console.ReadLine(), out dossierID) && dossiers.ContainsKey(dossierID))
+                if (int.TryParse(Console.ReadLine(), out int dossierID) && dossiers.ContainsKey(dossierID))
                 {
                     dossiers.Remove(dossierID);
 
