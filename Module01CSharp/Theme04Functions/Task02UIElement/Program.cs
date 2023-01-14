@@ -50,9 +50,16 @@ namespace Task02UIElement
 
             Console.SetCursorPosition(horizontalPosition, verticalPosition);
 
-            for (int i = 0; i < maxSymbol; i++)
+            for (int i = 0; i < fullnessBar; i++)
             {
-                barView += i < Convert.ToInt32(fullnessBar / maxSymbol) ? "#" : "_";
+                barView += "#";
+            }
+
+            int emptyBarViewCount = maxSymbol - Convert.ToInt32(fullnessBar);
+
+            for (int i = 0; i < emptyBarViewCount; i++)
+            {
+                barView += "_";
             }
 
             Console.WriteLine($"[{barView}] {barName}");

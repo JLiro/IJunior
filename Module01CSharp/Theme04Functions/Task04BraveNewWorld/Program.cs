@@ -36,31 +36,25 @@ namespace Task04BraveNewWorld
             char emptySpaceSymbol = ' ';
             char wallSymbol = '#';
 
-            char[] bag = new char[9];
             string bagView = "Сумка:";
+            int bagSize = 9;
+            char[] bag = new char[bagSize];
 
             bool isPlaying = true;
 
             DrawMap(map, barrySymbol, ref allBerriesCount);
 
-            Console.SetCursorPosition(userHorizontalPosition, userVerticalPosition);
-            Console.Write(userSymbol);
+            CreatePlayer(userSymbol, userHorizontalPosition, userVerticalPosition);
 
             while (isPlaying)
             {
-                Console.SetCursorPosition(0, 16);
-                Console.Write($"Собрано: {collectBerriesCount}/{allBerriesCount}");
-
-                Console.SetCursorPosition(0, 17);
-                Console.Write(bagView);
+                ShowBag(bagView, collectBerriesCount, allBerriesCount);
 
                 isPlaying = collectBerriesCount != allBerriesCount;
 
                 if (Console.KeyAvailable)
                 {
-                    ConsoleKey key = Console.ReadKey(true).Key;
-
-                    ChangeDirection(key, ref userHorizontalStep, ref userVerticalStep);
+                    ChangeDirection(ref userHorizontalStep, ref userVerticalStep);
 
                     if (map[userVerticalPosition + userVerticalStep, userHorizontalPosition + userHorizontalStep] != wallSymbol)
                     {
@@ -75,7 +69,23 @@ namespace Task04BraveNewWorld
             Console.Write("Уровень пройден!");
             Console.ReadKey();
         }
-        static void ChangeDirection(ConsoleKey сonsoleKey, ref int horizontalStep, ref int verticalStep)
+
+        static void ShowBag(string bagView, int collectBerriesCount, int allBerriesCount)
+        {
+            Console.SetCursorPosition(0, 16);
+            Console.Write($"Собрано: {collectBerriesCount}/{allBerriesCount}");
+
+            Console.SetCursorPosition(0, 17);
+            Console.Write(bagView);
+        }
+
+        static void CreatePlayer(char userSymbol, int userHorizontalPosition, int userVerticalPosition)
+        {
+            Console.SetCursorPosition(userHorizontalPosition, userVerticalPosition);
+            Console.Write(userSymbol);
+        }
+
+        static void ChangeDirection(ref int horizontalStep, ref int verticalStep)
         {
             const ConsoleKey UpKey = ConsoleKey.UpArrow;
             const ConsoleKey DownKey = ConsoleKey.DownArrow;
@@ -90,22 +100,25 @@ namespace Task04BraveNewWorld
             int left = -Step;
             int right = Step;
 
-            switch (сonsoleKey)
+            horizontalStep = Immobility;
+            verticalStep = Immobility;
+
+            switch (Console.ReadKey(true).Key)
             {
                 case UpKey:
-                    horizontalStep = Immobility; verticalStep = up;
+                    verticalStep = up;
                     break;
 
                 case DownKey:
-                    horizontalStep = Immobility; verticalStep = down;
+                    verticalStep = down;
                     break;
 
                 case LeftKey:
-                    horizontalStep = left; verticalStep = Immobility;
+                    horizontalStep = left;
                     break;
 
                 case RightKey:
-                    horizontalStep = right; verticalStep = Immobility;
+                    horizontalStep = right;
                     break;
             }
         }
