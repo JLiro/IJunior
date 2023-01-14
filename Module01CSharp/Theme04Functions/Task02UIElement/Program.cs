@@ -13,13 +13,13 @@ namespace Task02UIElement
         static void SpawnBars()
         {
             string healthBarName = "Жизни";
-            int maxHealthSymbol = 10;
+            int maxHealthSymbolCount = 10;
             float fulnessHealthBar;
             int horizontalPositionHealthBar;
             int verticalPositionHealthBar;
 
             string manaBarName = "Мана";
-            int maxManaSymbol = 10;
+            int maxManaSymbolCount = 10;
             float fulnessManaBar;
             int horizontalPositionManaBar;
             int verticalPositionManaBar;
@@ -27,8 +27,8 @@ namespace Task02UIElement
             SetSettingsDrawBar(healthBarName, out fulnessHealthBar, out horizontalPositionHealthBar, out verticalPositionHealthBar);
             SetSettingsDrawBar(manaBarName, out fulnessManaBar, out horizontalPositionManaBar, out verticalPositionManaBar);
 
-            DrawBar(healthBarName, maxHealthSymbol, fulnessHealthBar, horizontalPositionHealthBar, verticalPositionHealthBar);
-            DrawBar(manaBarName, maxManaSymbol, fulnessManaBar, horizontalPositionManaBar, verticalPositionManaBar);
+            DrawBar(healthBarName, maxHealthSymbolCount, fulnessHealthBar, horizontalPositionHealthBar, verticalPositionHealthBar);
+            DrawBar(manaBarName, maxManaSymbolCount, fulnessManaBar, horizontalPositionManaBar, verticalPositionManaBar);
         }
 
         static void SetSettingsDrawBar(string barName, out float fullnessBar, out int horizontalPosition, out int verticalPosition)
@@ -44,9 +44,19 @@ namespace Task02UIElement
             Console.Clear();
         }
 
-        static void DrawBar(string barName, int maxSymbol, float fullnessBar, int horizontalPosition, int verticalPosition)
+        static void DrawBar(string barName, int maxSymbolCount, float fullnessBar, int horizontalPosition, int verticalPosition)
         {
             string barView = String.Empty;
+            int symbolCount = Convert.ToInt32(fullnessBar / maxSymbolCount);
+
+            if (symbolCount > maxSymbolCount)
+            {
+                fullnessBar = 100;
+            }
+            else if (symbolCount < 0)
+            {
+                fullnessBar = 0;
+            }
 
             Console.SetCursorPosition(horizontalPosition, verticalPosition);
 
@@ -55,9 +65,9 @@ namespace Task02UIElement
                 barView += "#";
             }
 
-            int emptyBarViewCount = maxSymbol - Convert.ToInt32(fullnessBar);
+            int emptinessBar = maxSymbolCount - Convert.ToInt32(fullnessBar);
 
-            for (int i = 0; i < emptyBarViewCount; i++)
+            for (int i = 0; i < emptinessBar; i++)
             {
                 barView += "_";
             }
