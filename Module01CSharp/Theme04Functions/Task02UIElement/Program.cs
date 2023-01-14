@@ -13,13 +13,13 @@ namespace Task02UIElement
         static void SpawnBars()
         {
             string healthBarName = "Жизни";
-            int maxHealthValue = 10;
+            int maxHealthSymbol = 10;
             float fulnessHealthBar;
             int horizontalPositionHealthBar;
             int verticalPositionHealthBar;
 
             string manaBarName = "Мана";
-            int maxManaValue = 10;
+            int maxManaSymbol = 10;
             float fulnessManaBar;
             int horizontalPositionManaBar;
             int verticalPositionManaBar;
@@ -27,8 +27,8 @@ namespace Task02UIElement
             SetSettingsDrawBar(healthBarName, out fulnessHealthBar, out horizontalPositionHealthBar, out verticalPositionHealthBar);
             SetSettingsDrawBar(manaBarName, out fulnessManaBar, out horizontalPositionManaBar, out verticalPositionManaBar);
 
-            DrawBar(healthBarName, maxHealthValue, fulnessHealthBar, horizontalPositionHealthBar, verticalPositionHealthBar);
-            DrawBar(manaBarName, maxManaValue, fulnessManaBar, horizontalPositionManaBar, verticalPositionManaBar);
+            DrawBar(healthBarName, maxHealthSymbol, fulnessHealthBar, horizontalPositionHealthBar, verticalPositionHealthBar);
+            DrawBar(manaBarName, maxManaSymbol, fulnessManaBar, horizontalPositionManaBar, verticalPositionManaBar);
         }
 
         static void SetSettingsDrawBar(string barName, out float fullnessBar, out int horizontalPosition, out int verticalPosition)
@@ -44,15 +44,15 @@ namespace Task02UIElement
             Console.Clear();
         }
 
-        static void DrawBar(string barName, int maxValue, float fullnessBar, int horizontalPosition, int verticalPosition)
+        static void DrawBar(string barName, int maxSymbol, float fullnessBar, int horizontalPosition, int verticalPosition)
         {
             string barView = String.Empty;
 
             Console.SetCursorPosition(horizontalPosition, verticalPosition);
 
-            for (int i = 0; i < maxValue; i++)
+            for (int i = 0; i < maxSymbol; i++)
             {
-                barView += i < Convert.ToInt32(fullnessBar / maxValue) ? "#" : "_";
+                barView += i < Convert.ToInt32(fullnessBar / maxSymbol) ? "#" : "_";
             }
 
             Console.WriteLine($"[{barView}] {barName}");
