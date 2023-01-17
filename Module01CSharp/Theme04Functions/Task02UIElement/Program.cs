@@ -51,21 +51,21 @@ namespace Task02UIElement
 
             if (symbolCount > maxSymbolCount)
             {
-                fullnessBar = 100;
+                symbolCount = 10;
             }
             else if (symbolCount < 0)
             {
-                fullnessBar = 0;
+                symbolCount = 0;
             }
 
             Console.SetCursorPosition(horizontalPosition, verticalPosition);
 
-            for (int i = 0; i < fullnessBar; i++)
+            for (int i = 0; i < symbolCount; i++)
             {
                 barView += "#";
             }
 
-            int emptinessBar = maxSymbolCount - Convert.ToInt32(fullnessBar);
+            int emptinessBar = maxSymbolCount - symbolCount;
 
             for (int i = 0; i < emptinessBar; i++)
             {
