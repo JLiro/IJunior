@@ -92,16 +92,19 @@ namespace Task05BookDepository
                     {
                         _books.RemoveAt(value - 1);
                         ShowBooks();
-                        Console.WriteLine("\nКнига успешно удалена");
+                        Console.WriteLine("\nКнига успешно удалена" +
+                                          "\n");
                     }
                     else
                     {
-                        Console.WriteLine("Неверный номер книги");
+                        Console.WriteLine("\nНеверный номер книги" +
+                                          "\n");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Неверный номер книги");
+                    Console.WriteLine("\nНеверный номер книги" +
+                                      "\n");
                 }
             }
 
