@@ -13,27 +13,31 @@ namespace Task02UIElement
         static void SpawnBars()
         {
             string healthBarName = "Жизни";
-            int maxHealthSymbolCount = 10;
             float fulnessHealthBar;
             int horizontalPositionHealthBar;
             int verticalPositionHealthBar;
 
             string manaBarName = "Мана";
-            int maxManaSymbolCount = 10;
             float fulnessManaBar;
             int horizontalPositionManaBar;
             int verticalPositionManaBar;
 
+            int maxSymbolCount = 10;
+            int minSymbolCount = 0;
+
             SetSettingsDrawBar(healthBarName, out fulnessHealthBar, out horizontalPositionHealthBar, out verticalPositionHealthBar);
             SetSettingsDrawBar(manaBarName, out fulnessManaBar, out horizontalPositionManaBar, out verticalPositionManaBar);
 
-            DrawBar(healthBarName, maxHealthSymbolCount, fulnessHealthBar, horizontalPositionHealthBar, verticalPositionHealthBar);
-            DrawBar(manaBarName, maxManaSymbolCount, fulnessManaBar, horizontalPositionManaBar, verticalPositionManaBar);
+            DrawBar(healthBarName, maxSymbolCount, minSymbolCount, fulnessHealthBar, horizontalPositionHealthBar, verticalPositionHealthBar);
+            DrawBar(manaBarName, maxSymbolCount, minSymbolCount, fulnessManaBar, horizontalPositionManaBar, verticalPositionManaBar);
         }
 
         static void SetSettingsDrawBar(string barName, out float fullnessBar, out int horizontalPosition, out int verticalPosition)
         {
-            Console.Write($"Введите заполненность бара {barName} в процентах от 0 до 100: ");
+            int minPercentage = 0;
+            int maxPercentage = 100;
+
+            Console.Write($"Введите заполненность бара {barName} в процентах от {minPercentage} до {maxPercentage}: ");
             fullnessBar = Convert.ToInt32(Console.ReadLine());
 
             Console.Write($"Введите позицию бара [{barName}] по X: ");
@@ -44,18 +48,18 @@ namespace Task02UIElement
             Console.Clear();
         }
 
-        static void DrawBar(string barName, int maxSymbolCount, float fullnessBar, int horizontalPosition, int verticalPosition)
+        static void DrawBar(string barName, int maxSymbolCount, int minSymbolCount, float fullnessBar, int horizontalPosition, int verticalPosition)
         {
             string barView = String.Empty;
             int symbolCount = Convert.ToInt32(fullnessBar / maxSymbolCount);
 
             if (symbolCount > maxSymbolCount)
             {
-                symbolCount = 10;
+                symbolCount = maxSymbolCount;
             }
-            else if (symbolCount < 0)
+            else if (symbolCount < minSymbolCount)
             {
-                symbolCount = 0;
+                symbolCount = minSymbolCount;
             }
 
             Console.SetCursorPosition(horizontalPosition, verticalPosition);
