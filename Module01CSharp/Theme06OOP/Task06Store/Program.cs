@@ -20,8 +20,7 @@ namespace Task06Store
 
             while (true)
             {
-                Console.WriteLine("Последнее событие: " + lastAction
-                                + "\n");
+                Console.WriteLine($"Последнее событие: {lastAction}\n");
 
                 Console.WriteLine($"  [ ПРОДАВЕЦ ] {seller.Money} монет");
                 seller.ShowProducts();
