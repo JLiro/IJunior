@@ -7,25 +7,23 @@ namespace Task05CombiningIntoCollection
     {
         static void Main()
         {
-            {
-                const string FirstArrayName = "1";
-                const string SecondArrayName = "2";
+            const string FirstArrayName = "1";
+            const string SecondArrayName = "2";
 
-                int[] firstArray  = { 1, 2, 3, 4, 4, 4 };
-                int[] secondArray = { 5, 2, 6, 2 };
+            int[] firstArray  = { 1, 2, 3, 4, 4, 4 };
+            int[] secondArray = { 5, 2, 6, 2 };
                 
-                List<int> сollection = new List<int>();
+            List<int> сollection = new List<int>();
 
-                ShowCollection(firstArray, FirstArrayName);
-                ShowCollection(secondArray, SecondArrayName);
+            ShowCollection(firstArray, FirstArrayName);
+            ShowCollection(secondArray, SecondArrayName);
 
-                AddUniqueElementsToCollection(сollection, firstArray );
-                AddUniqueElementsToCollection(сollection, secondArray);
+            AddUniqueElementsToCollection(сollection, firstArray );
+            AddUniqueElementsToCollection(сollection, secondArray);
 
-                ShowCollection(сollection);
+            ShowCollection(сollection);
 
-                Console.ReadKey();
-            }
+            Console.ReadKey();
         }
 
         static void AddUniqueElementsToCollection(List<int> сollection, int[] array)
