@@ -7,133 +7,178 @@ namespace Task06Store
     {
         static void Main()
         {
+            Market market = new Market();
+        }
+    }
+
+    class Market
+    {
+        public Market()
+        {
             const string CommandExit = "E";
 
-            int playerCoins = 2500;
-            int sellerCoins = 0;
+            string input  = String.Empty;
+            string output = String.Empty;
 
-            Seller seller = new Seller(sellerCoins);
-            Player player = new Player(playerCoins);
+            Seller seller = new Seller();
+            Player player = new Player();
 
-            string input  = string.Empty;
-            string lastAction = string.Empty;
-
-            while (true)
+            while (input.ToUpper() != CommandExit)
             {
-                Console.WriteLine($"Последнее событие: {lastAction}\n");
-
-                Console.WriteLine($"  [ ПРОДАВЕЦ ] {seller.Money} монет");
+                Console.WriteLine($"[ ПРОДАВЕЦ ] {seller.Coins} монет");
                 seller.ShowProducts();
-
-                Console.WriteLine($"  [ ИГРОК ] {player.Money} монет");
+                Console.WriteLine();
+                Console.WriteLine($"[ ПОКУПАТЕЛЬ ] {player.Coins} монет");
                 player.ShowProducts();
 
-                Console.Write($"\nВведите номер товары для покупки или [{CommandExit}] для выхода: ");
+                Console.Write
+                (
+                     "\n" +
+                    $"Последнее событие: {output}" +
+                     "\n"
+                );
+
+                Console.Write($"\nВведите номер товара для покупки или [{CommandExit}] для выхода: ");
                 input = Console.ReadLine();
 
-                if (input.ToUpper() == "E")
-                    return;
+                if (seller.IsCheckProductAvailability(input, out Product product))
+                {
+                    if(player.Coins >= product.Price)
+                    {
+                        seller.Sell(product);
+                        player.Buy (product);
 
-                lastAction = seller.SellProduct(player, input);
+                        output = "Покупка успешно совершена";
+                    }
+                    else
+                    {
+                        output = "У покупателя недостаточно монет";
+                    }
+                }
+                else
+                {
+                    output = $"Товар с таким номером не найден";
+                }
 
                 Console.Clear();
             }
         }
     }
 
-    internal class Player : Person
+    class Player
     {
-        public Player(int money) : base(money) { }
+        private List<Product> _products = new List<Product>();
+        
+        private Random _random = new Random();
 
-        public string BuyProduct(Product product)
+        public Player()
         {
-            Money -= product.Price;
-            Products.Add(product);
+            int minCoins = 0;
+            int maxCoins = 1000;
 
-            return $"Игрок купил {product.Title}";
-        }
-    }
-
-    internal class Seller : Person
-    {
-        public Seller(int money) : base(money)
-        {
-            CreateProducts();
+            Coins = _random.Next(minCoins, maxCoins);
         }
 
-        public string SellProduct(Player buyer, string input)
+        public int Coins { get; private set; }
+
+        public void Buy(Product product)
         {
-            Console.WriteLine("\nВведите номер товара для покупки:");
+            Coins -= product.Price;
 
-            if (Int32.TryParse(input, out int value) && value > 0 && value <= Products.Count)
-            {
-                Product product = Products[value - 1];
-
-                if (buyer.Money < product.Price)
-                {
-                    return "Недостаточно монет";
-                }
-
-                Products.RemoveAt(value - 1);
-                Money += product.Price;
-
-                return buyer.BuyProduct(product);
-            }
-            else
-            {
-                return "Введён невереный номер товара";
-            }
+            _products.Add(product);
         }
-
-        private void CreateProducts()
-        {
-            Products.Add(new Product("Меч из дерева", 250));
-            Products.Add(new Product("Меч из камня", 500));
-            Products.Add(new Product("Меч из стали", 1000));
-            Products.Add(new Product("Меч из обсидиана", 10000));
-        }
-    }
-
-    internal class Person
-    {
-        protected List<Product> Products = new List<Product>();
-
-        public int Money { get; protected set; }
-
-        public Person(int money) => Money = money < 0 ? 0 : money;
 
         public void ShowProducts()
         {
-            Console.WriteLine("    Инвертарь:");
-            if (Products.Count == 0)
+            string output = "Инвентарь:";
+
+            if (_products.Count > 0)
             {
-                Console.WriteLine("    Товары отсутствуют");
-                return;
+                for (int i = 0; i < _products.Count; i++)
+                {
+                    output += $"\n[{i}] {_products[i].GetInfo()}";
+                }
+            }
+            else
+            {
+                output += " Пусто";
             }
 
-            for (int i = 0; i < Products.Count; i++)
+            Console.WriteLine(output);
+        }
+    }
+    
+    class Seller
+    {
+        private List<Product> _products = new List<Product>();
+
+        public Seller()
+        {
+            _products = new List<Product>()
             {
-                Console.WriteLine($"[{i + 1}] {Products[i].GetInfo()}");
+                new Product("one", 100),
+                new Product("bne", 300),
+                new Product("tne", 600)
+            };
+        }
+
+        public int Coins { get; private set; }
+
+        public void Sell(Product product)
+        {
+            Coins += product.Price;
+
+            _products.Remove(product);
+        }
+
+        public void ShowProducts()
+        {
+            string output = "Инвентарь:";
+
+            if (_products.Count > 0)
+            {
+                for (int i = 0; i < _products.Count; i++)
+                {
+                    output += $"\n[{i}] {_products[i].GetInfo()}";
+                }
             }
-            Console.WriteLine();
+            else
+            {
+                output = " Пусто";
+            }
+
+            Console.WriteLine(output);
+        }
+
+        public bool IsCheckProductAvailability(string input, out Product product)
+        {
+            product = null;
+
+            bool isProductAvailability = Int32.TryParse(input, out int productIndex) && productIndex >= 0 && productIndex < _products.Count;
+
+            if(isProductAvailability == true)
+            {
+                product = _products[productIndex];
+            }
+
+            return isProductAvailability;
         }
     }
 
-    internal class Product
+    class Product
     {
-        public int Price { get; private set; }
-        public string Title { get; private set; }
-
         public Product(string title, int price)
         {
             Title = title;
             Price = price;
         }
 
+        public string Title { get; set; }
+        public int Price { get; set; }
+
         public string GetInfo()
         {
-            return $"{Title}" +
-                   $"\n    {Price} золотых";
+            return $"{Title} стоит {Price} монет";
         }
     }
 }
