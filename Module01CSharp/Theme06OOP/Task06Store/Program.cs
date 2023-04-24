@@ -43,9 +43,13 @@ namespace Task06Store
                 Console.Write($"\nВведите номер товара для покупки или [{CommandExit}] для выхода: ");
                 input = Console.ReadLine();
 
-                if (seller.IsCheckProductAvailability(input, out Product product))
+                bool isProductAvailability = Int32.TryParse(input, out int productIndex) && productIndex >= 0 && productIndex < seller.GetProductsCount();
+
+                if (isProductAvailability == true)
                 {
-                    if (player.Coins >= product.Price)
+                    Product product = seller.GetProduct(productIndex);
+
+                    if (player.CanPay(product.Price))
                     {
                         seller.Sell(product);
                         player.Buy(product);
@@ -54,8 +58,9 @@ namespace Task06Store
                     }
                     else
                     {
-                        output = "У покупателя недостаточно монет";
+                    output = "У покупателя недостаточно монет";
                     }
+
                 }
                 else
                 {
@@ -67,70 +72,17 @@ namespace Task06Store
         }
     }
 
-    class Player : Persone
-    {
-        private Random _random = new Random();
-
-        public Player()
-        {
-            _products = new List<Product>();
-
-            int minCoins = 0;
-            int maxCoins = 1000;
-
-            Coins = _random.Next(minCoins, maxCoins);
-        }
-
-        public override List<Product> _products { get; protected set; }
-        public override int Coins { get; protected set; }
-
-        public void Buy(Product product)
-        {
-            Coins -= product.Price;
-
-            _products.Add(product);
-        }
-    }
-    
-    class Seller : Persone
-    {
-        public Seller()
-        {
-            _products = new List<Product>()
-            {
-                new Product("one", 100),
-                new Product("bne", 300),
-                new Product("tne", 600)
-            };
-        }
-
-        public override List<Product> _products { get; protected set; }
-        public override int Coins { get; protected set; }
-
-        public void Sell(Product product)
-        {
-            Coins += product.Price;
-
-            _products.Remove(product);
-        }
-
-        public bool IsCheckProductAvailability(string input, out Product product)
-        {
-            product = null;
-
-            bool isProductAvailability = Int32.TryParse(input, out int productIndex) && productIndex >= 0 && productIndex < _products.Count;
-
-            if(isProductAvailability == true)
-            {
-                product = _products[productIndex];
-            }
-
-            return isProductAvailability;
-        }
-    }
-
     abstract class Persone
     {
+        private List<Product> _products;
+
+        protected Persone()
+        {
+            _products = new List<Product>();
+        }
+
+        public int Coins { get; private set; }
+
         public void ShowProducts()
         {
             string output = "Инвентарь:";
@@ -150,8 +102,97 @@ namespace Task06Store
             Console.WriteLine(output);
         }
 
-        public abstract List<Product> _products { get; protected set; }
-        public abstract int Coins { get; protected set; }
+        protected void FillProducts(List<Product> products)
+        {
+            _products = products;
+        }
+
+        protected void AddCoins(int coins)
+        {
+            if (coins > 0)
+            {
+                Coins += coins;
+            }
+        }
+
+        protected void Pay(int coins)
+        {
+            if (coins > 0)
+            {
+                Coins -= coins;
+            }
+        }
+
+        public void AddProduct(Product product)
+        {
+            _products.Add(product);
+        }
+
+        public void RemoveProduct(Product product)
+        {
+            _products.Remove(product);
+        }
+
+        public Product GetProduct(int id)
+        {
+            return _products[id];
+        }
+
+        public int GetProductsCount()
+        {
+            return _products.Count;
+        }
+    }
+
+    class Player : Persone
+    {
+        private Random _random = new Random();
+
+        public Player()
+        {
+            int minCoins = 0;
+            int maxCoins = 1000;
+
+            int coins = _random.Next(minCoins, maxCoins);
+            AddCoins(coins);
+        }
+
+        public void Buy(Product product)
+        {
+            Pay(product.Price);
+
+            AddProduct(product);
+        }
+
+        public bool CanPay(int price)
+        {
+            return Coins >= price;
+        }
+    }
+
+    class Seller : Persone
+    {
+        public Seller()
+        {
+            int coins = 0;
+            AddCoins(coins);
+
+            List<Product> products = new()
+            {
+                new Product("one", 100),
+                new Product("bne", 300),
+                new Product("tne", 600)
+            };
+
+            FillProducts(products);
+        }
+
+        public void Sell(Product product)
+        {
+            AddCoins(product.Price);
+
+            RemoveProduct(product);
+        }
     }
 
     class Product
@@ -164,7 +205,7 @@ namespace Task06Store
             Price = price;
         }
 
-        public int Price { get; private set; }
+        public int Price { get; }
 
         public string GetInfo()
         {

@@ -25,7 +25,7 @@ namespace Task07PassengerTrainConfigurator
             _finalPoint = finalPoint;
         }
 
-        public string GetRoute()
+        public string GetInfo()
         {
             return $"из <<{_startPoint}>> в <<{_finalPoint}>>";
         }
@@ -33,9 +33,8 @@ namespace Task07PassengerTrainConfigurator
 
     class Station
     {
-        private const ConsoleKey ComandExit = ConsoleKey.E;
 
-        private List<Route> _routes = new List<Route>();
+
         private List<Train> _trains = new List<Train>();
 
         private int _passengersCount;
@@ -52,9 +51,9 @@ namespace Task07PassengerTrainConfigurator
             string output = "ОТПРАВЛЕННЫЕ РЕЙСЫ" +
                             "\n";
 
-            for (int i = 0; i < _routes.Count && i < _trains.Count; i++)
+            for (int i = 0; i < _trains.Count && i < _trains.Count; i++)
             {
-                output += $"{i + 1}. По маршруту { _routes[i].GetRoute() } отправлен поезд со следующими параметрами:" +
+                output += $"{i + 1}. По маршруту { _trains[i].Route.GetInfo() } отправлен поезд со следующими параметрами:" +
                           $"\nКоличество пассажиров в поезде: {_passengersCount}" +
                           $"{ _trains[i].GetInfo() }" +
                           $"\n";
@@ -65,6 +64,8 @@ namespace Task07PassengerTrainConfigurator
 
         public void Begin()
         {
+            const ConsoleKey CommandExit = ConsoleKey.E;
+
             bool isWork = true;
 
             while (isWork)
@@ -72,15 +73,15 @@ namespace Task07PassengerTrainConfigurator
                 Console.Clear();
                 ShowRoutes();
 
-                if (TryСreateRoute())
+                if (TryСreateRoute(out Route route))
                 {
-                    SellTickets();
-                    CreateTrain();
+                    SellTickets(route);
+                    CreateTrain(route);
                     SendTrain();
 
-                    Console.Write($"\nВведите значение клавиши [{ComandExit}] (на англ. раскладке) для выхода, или любую другую для создания нового маршрута: ");
+                    Console.Write($"\nВведите значение клавиши [{CommandExit}] (на англ. раскладке) для выхода, или любую другую для создания нового маршрута: ");
 
-                    if(Console.ReadKey().Key == ConsoleKey.E)
+                    if(Console.ReadKey().Key == CommandExit)
                     {
                         isWork = false;
                     }
@@ -98,8 +99,10 @@ namespace Task07PassengerTrainConfigurator
             return _passengersCount;
         }
 
-        private bool TryСreateRoute()
+        private bool TryСreateRoute(out Route route)
         {
+            route = null;
+
             string startPoint = String.Empty;
             string finalPoint = String.Empty;
 
@@ -123,34 +126,29 @@ namespace Task07PassengerTrainConfigurator
             if (startPoint == finalPoint)
             {
                 Console.Clear();
-                Console.WriteLine("Пункт отбытия и пункт прибытия не могу совпадать. Пожалуйста, повторите попытку" +
+                Console.WriteLine("Пункт отбытия и пункт прибытия не могут совпадать. Пожалуйста, повторите попытку" +
                                   "\n");
                 return false;
             }
 
             Console.WriteLine("Направление создано");
             
-            _routes.Add(new Route(startPoint, finalPoint));
+            route = new Route(startPoint, finalPoint);
 
             return true;
         }
 
-        private string ShowLastRout()
-        {
-            return _routes[_routes.Count - 1].GetRoute();
-        }
-
-        private void SellTickets()
+        private void SellTickets(Route route)
         {
             Console.WriteLine("\n[2] ПРОДАЖА БИЛЕТОВ НА СОЗДАННЫЙ МАРШРУТ" +
-                             $"\n\nКолличество пассажиров купивших билет {ShowLastRout()}: {_passengersCount}" +
+                             $"\n\nКолличество пассажиров купивших билет { route.GetInfo() }: {_passengersCount}" +
                               "\n\nБилеты проданы");
         }
 
-        private void CreateTrain()
+        private void CreateTrain(Route route)
         {
             Console.WriteLine("\n[3] СОЗДАНИЕ ПОЕЗДА");
-            _trains.Add(new Train(_passengersCount));
+            _trains.Add(new Train(route, _passengersCount));
             Console.WriteLine("\nПоезд создан");
         }
 
@@ -173,10 +171,13 @@ namespace Task07PassengerTrainConfigurator
 
         private Random _random = new Random();
 
-        public Train(int passengersCount)
+        public Train(Route route, int passengersCount)
         {
+            Route = route;
             CreateWagons(passengersCount);
         }
+
+        public Route Route { get; private set; }
 
         private void CreateWagons(int passengersCount)
         {
