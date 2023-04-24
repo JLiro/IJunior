@@ -35,30 +35,7 @@ namespace Task07PassengerTrainConfigurator
     {
         private List<Train> _trains = new List<Train>();
 
-        private int _passengersCount;
-
         private Random _random = new Random();
-
-        public Station()
-        {
-            _passengersCount = CreatePassengersCount();
-        }
-
-        private void ShowRoutes()
-        {
-            string output = "ОТПРАВЛЕННЫЕ РЕЙСЫ" +
-                            "\n";
-
-            for (int i = 0; i < _trains.Count && i < _trains.Count; i++)
-            {
-                output += $"{i + 1}. По маршруту { _trains[i].Route.GetInfo() } отправлен поезд со следующими параметрами:" +
-                          $"\nКоличество пассажиров в поезде: {_passengersCount}" +
-                          $"{ _trains[i].GetInfo() }" +
-                          $"\n";
-            }
-
-            Console.WriteLine(output);
-        }
 
         public void SendTrain()
         {
@@ -76,13 +53,15 @@ namespace Task07PassengerTrainConfigurator
 
             while (isWork)
             {
+                int passengersCount = CreatePassengers();
+
                 Console.Clear();
-                ShowRoutes();
+                ShowRoutes(passengersCount);
 
                 if (TryСreateRoute(out Route route))
                 {
-                    SalesResult(route);
-                    CreateTrain(route);
+                    SalesResult(route, passengersCount);
+                    CreateTrain(route, passengersCount);
                     SendTrain();
 
                     Console.Write($"\nВведите значение клавиши [{CommandExit}] (на англ. раскладке) для выхода, или любую другую для создания нового маршрута: ");
@@ -94,15 +73,30 @@ namespace Task07PassengerTrainConfigurator
                 }
             }
         }
+        private void ShowRoutes(int passengersCount)
+        {
+            string output = "ОТПРАВЛЕННЫЕ РЕЙСЫ" +
+                            "\n";
 
-        private int CreatePassengersCount()
+            for (int i = 0; i < _trains.Count && i < _trains.Count; i++)
+            {
+                output += $"{i + 1}. По маршруту { _trains[i].Route.GetInfo() } отправлен поезд со следующими параметрами:" +
+                          $"\nКоличество пассажиров в поезде: {passengersCount}" +
+                          $"{ _trains[i].GetInfo() }" +
+                          $"\n";
+            }
+
+            Console.WriteLine(output);
+        }
+
+        private int CreatePassengers()
         {
             int minPassengerCount = 10;
             int maxPassengerCount = 100;
 
-            _passengersCount = _random.Next(minPassengerCount, maxPassengerCount);
+            int passengersCount = _random.Next(minPassengerCount, maxPassengerCount);
 
-            return _passengersCount;
+            return passengersCount;
         }
 
         private bool TryСreateRoute(out Route route)
@@ -144,23 +138,18 @@ namespace Task07PassengerTrainConfigurator
             return true;
         }
 
-        private void SalesResult(Route route)
+        private void SalesResult(Route route, int passengersCount)
         {
             Console.WriteLine("\n[2] ПРОДАЖА БИЛЕТОВ НА СОЗДАННЫЙ МАРШРУТ" +
-                             $"\n\nКолличество пассажиров купивших билет { route.GetInfo() }: {SellTickets()}" +
+                             $"\n\nКолличество пассажиров купивших билет { route.GetInfo() }: {passengersCount}" +
                               "\n\nБилеты проданы");
         }
 
-        private void CreateTrain(Route route)
+        private void CreateTrain(Route route, int passengersCount)
         {
             Console.WriteLine("\n[3] СОЗДАНИЕ ПОЕЗДА");
-            _trains.Add(new Train(route, _passengersCount));
+            _trains.Add(new Train(route, passengersCount));
             Console.WriteLine("\nПоезд создан");
-        }
-
-        private int SellTickets()
-        {
-            return _passengersCount;
         }
     }
 
@@ -174,13 +163,20 @@ namespace Task07PassengerTrainConfigurator
 
         private Random _random = new Random();
 
+        public Route Route { get; private set; }
+
+        public string GetInfo()
+        {
+            return $"\nКоличество  созданных вагонов: {_wagonsCount}" +
+                   $"\nВместимость последнего вагона: {_lastWagonCapacity}" +
+                   $"\nВместимость остальных вагонов: {_baseWagonCapasity}";
+        }
+
         public Train(Route route, int passengersCount)
         {
             Route = route;
             CreateWagons(passengersCount);
         }
-
-        public Route Route { get; private set; }
 
         private void CreateWagons(int passengersCount)
         {
@@ -190,7 +186,7 @@ namespace Task07PassengerTrainConfigurator
             _wagonsCount = _random.Next(minWagonsCount, maxWagonsCount);
 
             _baseWagonCapasity = passengersCount / _wagonsCount;
-            _lastWagonCapacity = passengersCount % _wagonsCount;
+            _lastWagonCapacity = _baseWagonCapasity + (passengersCount % _wagonsCount);
 
             for (int i = 0; i < _wagonsCount - 1; i++)
             {
@@ -200,13 +196,6 @@ namespace Task07PassengerTrainConfigurator
             _wagons.Enqueue(new Wagon(_lastWagonCapacity));
 
             Console.WriteLine(GetInfo());
-        }
-
-        public string GetInfo()
-        {
-            return $"\nКоличество  созданных вагонов: {_wagonsCount}" +
-                   $"\nВместимость последнего вагона: {_lastWagonCapacity}" +
-                   $"\nВместимость остальных вагонов: {_baseWagonCapasity}";
         }
     }
 
