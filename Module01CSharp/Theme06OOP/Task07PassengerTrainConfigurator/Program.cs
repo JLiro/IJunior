@@ -33,8 +33,6 @@ namespace Task07PassengerTrainConfigurator
 
     class Station
     {
-
-
         private List<Train> _trains = new List<Train>();
 
         private int _passengersCount;
@@ -43,7 +41,7 @@ namespace Task07PassengerTrainConfigurator
 
         public Station()
         {
-            _passengersCount = GetPassengersCount();
+            _passengersCount = CreatePassengersCount();
         }
 
         private void ShowRoutes()
@@ -62,6 +60,14 @@ namespace Task07PassengerTrainConfigurator
             Console.WriteLine(output);
         }
 
+        public void SendTrain()
+        {
+            Console.WriteLine("\n[4] ОТПРАВКА ПОЕЗДА" +
+                              "\n\nНажмите любую клавишу для подтверждения отправки поезда");
+            Console.ReadKey();
+            Console.WriteLine("\nПоезд отправлен");
+        }
+
         public void Begin()
         {
             const ConsoleKey CommandExit = ConsoleKey.E;
@@ -75,7 +81,7 @@ namespace Task07PassengerTrainConfigurator
 
                 if (TryСreateRoute(out Route route))
                 {
-                    SellTickets(route);
+                    SalesResult(route);
                     CreateTrain(route);
                     SendTrain();
 
@@ -89,7 +95,7 @@ namespace Task07PassengerTrainConfigurator
             }
         }
 
-        private int GetPassengersCount()
+        private int CreatePassengersCount()
         {
             int minPassengerCount = 10;
             int maxPassengerCount = 100;
@@ -138,10 +144,10 @@ namespace Task07PassengerTrainConfigurator
             return true;
         }
 
-        private void SellTickets(Route route)
+        private void SalesResult(Route route)
         {
             Console.WriteLine("\n[2] ПРОДАЖА БИЛЕТОВ НА СОЗДАННЫЙ МАРШРУТ" +
-                             $"\n\nКолличество пассажиров купивших билет { route.GetInfo() }: {_passengersCount}" +
+                             $"\n\nКолличество пассажиров купивших билет { route.GetInfo() }: {SellTickets()}" +
                               "\n\nБилеты проданы");
         }
 
@@ -152,12 +158,9 @@ namespace Task07PassengerTrainConfigurator
             Console.WriteLine("\nПоезд создан");
         }
 
-        public void SendTrain()
+        private int SellTickets()
         {
-            Console.WriteLine("\n[4] ОТПРАВКА ПОЕЗДА" +
-                              "\n\nНажмите любую клавишу для подтверждения отправки поезда");
-            Console.ReadKey();
-            Console.WriteLine("\nПоезд отправлен");
+            return _passengersCount;
         }
     }
 
@@ -187,7 +190,7 @@ namespace Task07PassengerTrainConfigurator
             _wagonsCount = _random.Next(minWagonsCount, maxWagonsCount);
 
             _baseWagonCapasity = passengersCount / _wagonsCount;
-            _lastWagonCapacity = _baseWagonCapasity + (passengersCount % _wagonsCount);
+            _lastWagonCapacity = passengersCount % _wagonsCount;
 
             for (int i = 0; i < _wagonsCount - 1; i++)
             {
@@ -201,9 +204,9 @@ namespace Task07PassengerTrainConfigurator
 
         public string GetInfo()
         {
-            return $"\nКоличество   созданных вагонов: {_wagonsCount}" +
-                   $"\nВместимость  последнего вагона: {_lastWagonCapacity}" +
-                   $"\nВместимость  остальных вагонов: {_baseWagonCapasity}";
+            return $"\nКоличество  созданных вагонов: {_wagonsCount}" +
+                   $"\nВместимость последнего вагона: {_lastWagonCapacity}" +
+                   $"\nВместимость остальных вагонов: {_baseWagonCapasity}";
         }
     }
 
