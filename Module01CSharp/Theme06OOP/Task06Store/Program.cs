@@ -8,17 +8,13 @@ namespace Task06Store
         static void Main()
         {
             Market market = new Market();
+            market.Work();
         }
     }
 
     class Market
     {
-        public Market()
-        {
-            OpenMarket();
-        }
-
-        private void OpenMarket()
+        public void Work()
         {
             const string CommandExit = "E";
 
