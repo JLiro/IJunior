@@ -20,12 +20,10 @@ namespace Task08GladiatorBattles
                 Console.Clear();
 
                 colosseum.ShowGladiators();
-                Console.Write
-                    (
-                       $"\nНажмите [{CommandExit}] (на англ. раскладке) для выхода, или любую другую для выбора бойцов"
-                    );
+                
+                Console.Write($"\nНажмите [{CommandExit}] (на англ. раскладке) для выхода, или любую другую для выбора бойцов");
 
-                if (Console.ReadKey().Key == ConsoleKey.E)
+                if (Console.ReadKey().Key == CommandExit)
                 {
                     isWork = false;
                 }
@@ -40,23 +38,30 @@ namespace Task08GladiatorBattles
     class Colosseum
     {
         private List<Gladiator> _gladiatorСlasses = new List<Gladiator>();
-        
+
+        private string _log;
+        private int _eventCount;
+
+        private void AddInfoToLog(string text)
+        {
+            _log += text + "\n";
+        }
+
         public Colosseum()
         {
             /*
-             * 1.1	Бестиарий
-            1.2	Велит
-            1.3	Гопломах
-            1.4	Галл
-            1.5	Димахер
-            .https://en.wikipedia.org/wiki/List_of_Roman_gladiator_types
-             1.1 Bestiary
-1.2 Orders
-1.3 Hoplomakh
-1.4 Gal
-1.5 Dimacher
-
-
+             *  1.1	Бестиарий
+                1.2	Велит
+                1.3	Гопломах
+                1.4	Галл
+                1.5	Димахер
+                
+                .https://en.wikipedia.org/wiki/List_of_Roman_gladiator_types
+                1.1 Bestiary
+                1.2 Orders
+                1.3 Hoplomakh
+                1.4 Gal
+                1.5 Dimacher
              */
 
             _gladiatorСlasses.Add(new Bestiary("Бестиарий"));
@@ -64,67 +69,55 @@ namespace Task08GladiatorBattles
 
         }
 
-        private void ChangeGladiators(out int firstID, out int secondID)
+        public void ShowGladiators()
         {
-            Console.CursorVisible = true;
-
-            Console.Write("Введите номер первого гладиатора: ");
-            int.TryParse(Console.ReadLine(), out firstID);
-
-            Console.Write("Введите номер второго гладиатора: ");
-            int.TryParse(Console.ReadLine(), out secondID);
-
-            Console.CursorVisible = false;
+            for (int i = 0; i < _gladiatorСlasses.Count; i++)
+            {
+                Console.WriteLine($"[{i + 1}]{_gladiatorСlasses[i].GetInfo()}");
+            }
         }
 
         public void StartEvent()
         {
             Console.Clear();
-            ShowGladiators();
-            ChangeGladiators(out int firstID, out int secondID);
 
-            if(firstID <= 0 || secondID <= 0 || firstID > _gladiatorСlasses.Count || secondID > _gladiatorСlasses.Count)
-            {
-                Console.Write
-                    (
-                        "\nВведены некорректные данные. Бойцы не выбраны" +
-                        "\nНажмие любую кливишу и попробуйте снова"
-                    );
-                Console.ReadKey();
-                return;
-            }
+            ShowGladiators();
+
+            SelectGladiator(out int firstID , "первого");
+            SelectGladiator(out int secondID, "второго");
 
             firstID--;
             secondID--;
 
             Gladiator first  = _gladiatorСlasses[firstID ].Clone();
             Gladiator second = _gladiatorСlasses[secondID].Clone();
-            
+
             ShowStartFightInfo(first, second);
 
             Console.Clear();
 
-            string log = string.Empty;
+            string currentLog = string.Empty;
 
             (int, int) logInfoPositionShow = (0, 10);
             int eventCount = 1;
             (int, int) headingInfoPosition = (0, 0);
 
-
-            while (first.Health > 0 || second.Health > 0)
+            while (first.IsAlive && second.IsAlive)
             {
                 ShowText("ГЛАДИАТОРЫ УЧАСТВУЮЩИЕ В БИТВЕ", headingInfoPosition.Item1, headingInfoPosition.Item2);
 
-                first.Attack(second, ref log, eventCount);
-                ShowAttackInfo(first, second, log, logInfoPositionShow, ref eventCount);
+                currentLog = first.Attack(second, eventCount);
+                AddInfoToLog(currentLog);
 
-                if (second.Health <= 0)
+                _eventCount += ShowAttackInfo(first, second, _log, logInfoPositionShow);
+
+                if (second.Health > 0)
                 {
-                    break;
-                }
+                    currentLog = second.Attack(first, eventCount);
+                    AddInfoToLog(currentLog);
 
-                second.Attack(first, ref log, eventCount);
-                ShowAttackInfo(first, second, log, logInfoPositionShow, ref eventCount);
+                    _eventCount += ShowAttackInfo(first, second, _log, logInfoPositionShow);
+                }
             }
 
             string winner = first.Health > second.Health ? first.Class : second.Class;
@@ -141,12 +134,42 @@ namespace Task08GladiatorBattles
             Console.Clear();
         }
 
-        private int ShowAttackInfo(Gladiator first, Gladiator second, string log, (int, int) logInfoPositionShow, ref int eventCount)
+        private void SelectGladiator(out int id, string description)
         {
-            eventCount++;
+            bool IsCorrect;
+
+            do
+            {
+                Console.CursorVisible = true;
+
+                Console.Write($"Введите номер {description} гладиатора: ");
+                int.TryParse(Console.ReadLine(), out id);
+
+                Console.CursorVisible = false;
+
+                IsCorrect = id > 0 && id <= _gladiatorСlasses.Count;
+
+                if (IsCorrect == false)
+                {
+                    Console.Write
+                        (
+                            "\nВведены некорректные данные. Бойцы не выбраны" +
+                            "\nНажмие любую кливишу и попробуйте снова" +
+                            "\n" +
+                            "\n"
+                        );
+                    Console.ReadKey();
+                }
+            } while (IsCorrect == false);
+
+            Console.WriteLine("Вышел из цикла");
+        }
+
+        private int ShowAttackInfo(Gladiator first, Gladiator second, string log, (int, int) logInfoPositionShow)
+        {
             ShowText(log, logInfoPositionShow.Item1, logInfoPositionShow.Item2);
             ShowHealthGladiators(first, second);
-            return eventCount;
+            return 1;
         }
 
         private void ShowStartFightInfo(Gladiator first, Gladiator second)
@@ -186,30 +209,12 @@ namespace Task08GladiatorBattles
             const int emptyCharCount = 35;
 
             Console.SetCursorPosition(showPosition.Item1, showPosition.Item2);
-            Console.WriteLine
-            (
-                new string(' ', emptyCharCount) +
-                "\n" +
-                new string(' ', emptyCharCount)
-            );
-        }
-
-        public void ShowGladiators()
-        {
-            for (int i = 0; i < _gladiatorСlasses.Count; i++)
-            {
-                Console.WriteLine($"[{i + 1}]{_gladiatorСlasses[i].GetInfo()}");
-            }
+            Console.WriteLine( new string(' ', emptyCharCount) + "\n" + new string(' ', emptyCharCount) );
         }
     }
-
     abstract class Gladiator
-    {
-        protected int AttackCount;
-         
-        private Random _random = new Random();
-
-        public Gladiator(string @class, int health, int damage)
+    {      
+        public Gladiator(string @class, uint health, uint damage)
         {
             Class  = @class;
             Health = health;
@@ -217,32 +222,31 @@ namespace Task08GladiatorBattles
         }
 
         public string Class { get; }
-        public int Health { get; protected set; }
-        public int Damage { get; protected set; }
+        public uint Health { get; protected set; }
+        public uint Damage { get; protected set; }
+        public bool IsAlive => Health > 0;
 
-        public void TakeDamage(int damage)
+        private Random _random = new Random();
+        
+        public void TakeDamage(uint damage)
         {
-            Health -= Math.Abs(damage);
-
-            if(Health < 0)
-            {
-                Health = 0;
-            }
+            Health -= Math.Min(Health, damage);
         }
 
-        public void Attack(Gladiator otherGladiator, ref string log, int eventCount)
+        public virtual string Attack(Gladiator otherGladiator, int eventCount)
         {
-            AttackCount++;
+            string log = string.Empty;
 
-            if (TrySkill())
+            if (CanUse())
             {
-                UseSkill(otherGladiator, ref log, eventCount);
+                log = UseSkill(otherGladiator, eventCount);
             }
             else
             {
                 otherGladiator.TakeDamage(Damage);
-                log += $"[{eventCount}] {Class} отнял {Damage} здоровья у {otherGladiator.Class}\n";
+                log += $"[{eventCount}] {Class} отнял {Damage} здоровья у {otherGladiator.Class}";
             }
+            return log;
         }
 
         public void ShowHealthInfo((int, int) positionShow)
@@ -256,8 +260,6 @@ namespace Task08GladiatorBattles
             Console.Write(Health + "hp");
         }
 
-        protected abstract string GetInfoSkill();
-
         public string GetInfo()
         {
             return $" Класс: {Class}" +
@@ -267,27 +269,44 @@ namespace Task08GladiatorBattles
                    $"\n";
         }
 
-        protected abstract bool TrySkill();
-
-        protected abstract void UseSkill(Gladiator otherGladiator, ref string output, int eventCount);
-
         public abstract Gladiator Clone();
+
+        protected abstract string GetInfoSkill();
+
+        protected abstract bool CanUse();
+
+        protected abstract string UseSkill(Gladiator otherGladiator, int eventCount);
     }
 
     class Bestiary : Gladiator
     {
-        private const int SkillActivationValue = 3;
+        private int AttackCount;
+
+        private readonly int SkillActivationValue = 3;
 
         public Bestiary(string name) : base(name, 250, 50) {}
 
-        protected override bool TrySkill()
+        public override Gladiator Clone()
         {
+            return new Bestiary($"{Class}");
+        }
 
+        public override string Attack(Gladiator otherGladiator, int eventCount)
+        {
+            AttackCount++;
+
+            return base.Attack(otherGladiator, eventCount);
+        }
+
+        protected override bool CanUse()
+        {
             return AttackCount == SkillActivationValue;
         }
 
-        protected override void UseSkill(Gladiator otherGladiator, ref string output, int eventCount)
+        protected override string UseSkill(Gladiator otherGladiator, int eventCount)
         {
+            string output = string.Empty;
+
             const int multiplier = 2;
 
             Damage *= multiplier;
@@ -297,45 +316,47 @@ namespace Task08GladiatorBattles
                       $"    Он отнял {Damage} здоровья у {otherGladiator.Class}\n";
 
             Damage /= multiplier;
+
+            return output;
         }
 
         protected override string GetInfoSkill()
         {
             return $"Удвоение урона каждую {SkillActivationValue} атаку";
         }
-
-        public override Gladiator Clone()
-        {
-            return new Bestiary($"{Class}");
-        }
     }
 
     class Gallus : Gladiator
     {
-        private const int SkillActivationValue = 0;
+        private readonly int _skillActivationValue = 0;
         
-        private const int _minRandomIndex = 0;
-        private const int _maxRandomIndex = 4;
+        private readonly int _minRandomIndex = 0;
+        private readonly int _maxRandomIndex = 4;
 
-        private const int HealCount = 25;
+        private readonly uint HealCount = 25;
 
         private Random _random = new Random();
 
         public Gallus(string name) : base(name, 200, 50) { }
 
-        protected override bool TrySkill()
+        public override Gladiator Clone()
         {
-            return _random.Next(_minRandomIndex, _maxRandomIndex) == SkillActivationValue;
+            return new Gallus($"{Class}");
         }
 
-        protected override void UseSkill(Gladiator otherGladiator, ref string output, int eventCount)
+        protected override bool CanUse()
+        {
+            return _random.Next(_minRandomIndex, _maxRandomIndex) == _skillActivationValue;
+        }
+
+        protected override string UseSkill(Gladiator otherGladiator, int eventCount)
         {
             otherGladiator.TakeDamage(Damage);
 
             Health += HealCount;
 
-            output += $"[{eventCount}] {Class} использовал навык <<{GetInfoSkill()}>>\n" +
-                      $"    Он отнял {Damage} здоровья у {otherGladiator.Class} и прибавил {HealCount}hp себе\n";
+            return $"[{eventCount}] {Class} использовал навык <<{GetInfoSkill()}>>\n" +
+                      $"    Он отнял {Damage} здоровья у {otherGladiator.Class} и прибавил {HealCount}hp себе";
         }
 
         protected override string GetInfoSkill()
@@ -343,11 +364,6 @@ namespace Task08GladiatorBattles
             int ChanceEvents = 100 / _maxRandomIndex;
 
             return $"Шанс {ChanceEvents}% восстановить {HealCount}hp при атаке";
-        }
-
-        public override Gladiator Clone()
-        {
-            return new Gallus($"{Class}");
         }
     }
 }
