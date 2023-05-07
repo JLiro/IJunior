@@ -57,7 +57,7 @@ namespace Task08GladiatorBattles
         {
             for (int i = 0; i < _gladiatorСlasses.Count; i++)
             {
-                int logIndex = i + 1;
+                int logIndex = i++;
 
                 Console.WriteLine($"[{logIndex}]{_gladiatorСlasses[i].GetInfo()}");
             }
