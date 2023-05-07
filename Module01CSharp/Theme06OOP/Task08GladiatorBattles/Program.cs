@@ -49,31 +49,17 @@ namespace Task08GladiatorBattles
 
         public Colosseum()
         {
-            /*
-             *  1.1	Бестиарий
-                1.2	Велит
-                1.3	Гопломах
-                1.4	Галл
-                1.5	Димахер
-                
-                .https://en.wikipedia.org/wiki/List_of_Roman_gladiator_types
-                1.1 Bestiary
-                1.2 Orders
-                1.3 Hoplomakh
-                1.4 Gal
-                1.5 Dimacher
-             */
-
             _gladiatorСlasses.Add(new Bestiary("Бестиарий"));
             _gladiatorСlasses.Add(new Gallus("Галл"));
-
         }
 
         public void ShowGladiators()
         {
             for (int i = 0; i < _gladiatorСlasses.Count; i++)
             {
-                Console.WriteLine($"[{i + 1}]{_gladiatorСlasses[i].GetInfo()}");
+                int logIndex = i + 1;
+
+                Console.WriteLine($"[{logIndex}]{_gladiatorСlasses[i].GetInfo()}");
             }
         }
 
@@ -280,7 +266,7 @@ namespace Task08GladiatorBattles
 
     class Bestiary : Gladiator
     {
-        private int AttackCount;
+        private int _attackCount;
 
         private readonly int SkillActivationValue = 3;
 
@@ -293,14 +279,14 @@ namespace Task08GladiatorBattles
 
         public override string Attack(Gladiator otherGladiator, int eventCount)
         {
-            AttackCount++;
+            _attackCount++;
 
             return base.Attack(otherGladiator, eventCount);
         }
 
         protected override bool CanUse()
         {
-            return AttackCount == SkillActivationValue;
+            return _attackCount == SkillActivationValue;
         }
 
         protected override string UseSkill(Gladiator otherGladiator, int eventCount)
