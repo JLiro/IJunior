@@ -57,7 +57,7 @@ namespace Task08GladiatorBattles
         {
             for (int i = 0; i < _gladiatorСlasses.Count; i++)
             {
-                int logIndex = i++;
+                int logIndex = i + 1;
 
                 Console.WriteLine($"[{logIndex}]{_gladiatorСlasses[i].GetInfo()}");
             }
@@ -83,23 +83,24 @@ namespace Task08GladiatorBattles
             Console.Clear();
 
             string currentLog = string.Empty;
+            _log = string.Empty;
+            _eventCount = 1;
 
             (int, int) logInfoPositionShow = (0, 10);
-            int eventCount = 1;
             (int, int) headingInfoPosition = (0, 0);
 
             while (first.IsAlive && second.IsAlive)
             {
                 ShowText("ГЛАДИАТОРЫ УЧАСТВУЮЩИЕ В БИТВЕ", headingInfoPosition.Item1, headingInfoPosition.Item2);
 
-                currentLog = first.Attack(second, eventCount);
+                currentLog = first.Attack(second, _eventCount);
                 AddInfoToLog(currentLog);
 
                 _eventCount += ShowAttackInfo(first, second, _log, logInfoPositionShow);
 
                 if (second.Health > 0)
                 {
-                    currentLog = second.Attack(first, eventCount);
+                    currentLog = second.Attack(first, _eventCount);
                     AddInfoToLog(currentLog);
 
                     _eventCount += ShowAttackInfo(first, second, _log, logInfoPositionShow);
@@ -147,8 +148,6 @@ namespace Task08GladiatorBattles
                     Console.ReadKey();
                 }
             } while (IsCorrect == false);
-
-            Console.WriteLine("Вышел из цикла");
         }
 
         private int ShowAttackInfo(Gladiator first, Gladiator second, string log, (int, int) logInfoPositionShow)
@@ -171,7 +170,7 @@ namespace Task08GladiatorBattles
             Console.ReadKey();
         }
 
-        private static void ShowText(string text, int ShowPositionHorizontal, int ShowPositionVertical)
+        private void ShowText(string text, int ShowPositionHorizontal, int ShowPositionVertical)
         {
             Console.SetCursorPosition(ShowPositionHorizontal, ShowPositionVertical);
             Console.Write(text);
