@@ -1,155 +1,253 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Task09Supermarket
+public class Product
 {
-    internal class Program
+    public string Name { get; private set; }
+    public double Price { get; private set; }
+
+    public Product(string name, double price)
     {
-        static void Main()
+        Name = name;
+        Price = price;
+    }
+}
+
+public class Storage
+{
+    private List<Product> products = new List<Product>();
+
+    public IReadOnlyList<Product> Products => products;
+
+    public void AddProduct(Product product)
+    {
+        products.Add(product);
+    }
+
+    public void RemoveProduct(Product product)
+    {
+        products.Remove(product);
+    }
+
+    public double GetTotalPrice()
+    {
+        double totalPrice = 0;
+
+        foreach (var product in products)
         {
-            Store cash = new Store();
-            cash.Work();
+            totalPrice += product.Price;
+        }
+
+        return totalPrice;
+    }
+}
+
+public class Customer
+{
+    private Random random = new Random();
+
+    public string Name { get; private set; }
+    public double Money { get; set; }
+    public Storage Storage { get; } = new Storage();
+
+    public Customer(string name, double money)
+    {
+        Name = name;
+        Money = money;
+    }
+
+    public bool Pay(double amount)
+    {
+        if (Money < amount)
+        {
+            return false;
+        }
+
+        Money -= amount;
+
+        return true;
+    }
+
+    public void RemoveRandomProduct()
+    {
+        if (Storage.Products.Count > 0)
+        {
+            int index = random.Next(Storage.Products.Count);
+            Product product = Storage.Products[index];
+            Storage.RemoveProduct(product);
+        }
+    }
+}
+
+public class Seller
+{
+    private List<Product> products = new List<Product>();
+    private Queue<Customer> queue = new Queue<Customer>();
+    private Random random = new Random();
+
+    public void AddRandomProductToCustomer(Customer customer)
+    {
+        if (products.Count > 0)
+        {
+            int index = random.Next(products.Count);
+            Product product = products[index];
+            customer.Storage.AddProduct(product);
         }
     }
 
-    public enum ProductType
+    public void AddProduct(Product product)
     {
-        Milk,
-        Cheese,
-        Sausage,
-        Cookies,
-        Sugar,
-        Salt,
-        Sausages,
-        Potatoes,
-        Carrots
+        products.Add(product);
     }
 
-    class Product
+    public void AddCustomer(Customer customer)
     {
-        public ProductType ProductType { get; private set; }
-        public int ProductPrice { get; private set; }
-
-        public Product(ProductType productType, int productPrice)
+        if (!queue.Contains(customer))
         {
-            ProductType = productType;
-            ProductPrice = productPrice;
+            queue.Enqueue(customer);
         }
     }
 
-    class Buyer
+    public void ServeCustomers()
     {
-        private List<Product> _cart;
-        public int Money { get; private set; }
-        public int DesiredCountOfProduct { get; private set; }
-
-        public Buyer(int money, int desiredCountOfProduct)
+        while (queue.Count > 0)
         {
-            Money = money;
-            DesiredCountOfProduct = desiredCountOfProduct;
-            _cart = new List<Product>();
-        }
+            Customer customer = queue.Dequeue();
 
-        public void AddToCart(List<Product> products, Random random)
-        {
-            for (int i = 0; i < DesiredCountOfProduct; i++)
+            double totalPrice = 0;
+            foreach (Product product in customer.Storage.Products)
             {
-                _cart.Add(products[random.Next(0, products.Count)]);
-                Console.WriteLine($"{_cart[i].ProductType} {_cart[i].ProductPrice}");
+                totalPrice += product.Price;
             }
-        }
 
-        public void RemoveFromCart(Random random)
-        {
-            Product currentproduct = _cart[random.Next(0, _cart.Count)];
-            _cart.Remove(currentproduct);
-            Console.Write($"\nПокупатель отказался от покупки: {currentproduct.ProductType}");
-        }
-
-        public void CountUpMoney(out int moneyToPay)
-        {
-            moneyToPay = 0;
-
-            foreach (var product in _cart)
+            if (totalPrice == 0)
             {
-                moneyToPay += product.ProductPrice;
+                Console.WriteLine($"{customer.Name} не имеет товаров для покупки.");
             }
-        }
-    }
-
-    class Store
-    {
-        private Random _random = new Random();
-        
-        private int _storeMoneyCount = 0;
-
-        private List<Product> _products = new List<Product>();
-        private Queue<Buyer>  _buyers = new Queue<Buyer>();
-
-        public Store()
-        {
-            int _productsCount = Enum.GetNames(typeof(ProductType)).Length;
-            AddProduct(_productsCount);
-
-            int minBuyersCount = 0;
-            int maxBuyersCount = 12;
-
-            int _buyersCount = _random.Next(minBuyersCount, maxBuyersCount);
-            AddBuyer(_buyersCount);
-        }
-
-        public void Work()
-        {
-            while (_buyers.Count > 0)
+            else if (customer.Pay(totalPrice))
             {
-                Buyer buyer = _buyers.Dequeue();
-                int moneyToPay;
+                Console.WriteLine($"{customer.Name} совершил покупку на сумму {totalPrice}.");
+            }
+            else
+            {
+                Console.WriteLine($"{customer.Name} не имеет достаточно денег, чтобы заплатить.");
 
-                Console.WriteLine
-                (
-                    $"В кассе: {_storeMoneyCount}руб." +
-                    $"\n\n" +
-                    $"Покупатель выложил {buyer.DesiredCountOfProduct} продуктов на стойку кассы" +
-                    $"\n"
-                );
-
-                buyer.AddToCart(_products, _random);
-                buyer.CountUpMoney(out moneyToPay);
-
-                while (buyer.Money < moneyToPay)
+                while (totalPrice > customer.Money && customer.Storage.Products.Count > 0)
                 {
-                    buyer.RemoveFromCart(_random);
-                    buyer.CountUpMoney(out moneyToPay);
+                    customer.RemoveRandomProduct();
+
+                    totalPrice = 0;
+
+                    foreach (Product product in customer.Storage.Products)
+                    {
+                        totalPrice += product.Price;
+                    }
                 }
 
-                Console.Write
-                (
-                    $"\n" +
-                    $"\n" +
-                    $"Покупатель оплатил покупку на {moneyToPay}руб."
-                );
-                _storeMoneyCount += moneyToPay;
-
-                Console.ReadKey();
-                Console.Clear();
+                if (totalPrice == 0)
+                {
+                    Console.WriteLine($"{customer.Name} не имеет товаров для покупки.");
+                }
+                else
+                {
+                    customer.Pay(totalPrice);
+                    Console.WriteLine($"{customer.Name} совершил покупку на сумму {totalPrice} после удаления некоторых продуктов.");
+                }
             }
         }
+    }
+}
 
-        private void AddProduct(int productCount)
+public class Supermarket
+{
+    private readonly Seller seller;
+    private readonly List<Customer> customers = new List<Customer>();
+    private Random random = new Random();
+
+    private IReadOnlyList<Customer> Customers => customers;
+
+    public Supermarket()
+    {
+        seller = new Seller();
+    }
+
+    public void Work()
+    {
+        int minEach = 1;
+        int maxEach = 11;
+
+        AddProduct(new Product("Хлеб", 0.5));
+        AddProduct(new Product("Молоко", 0.5));
+        AddProduct(new Product("Яйца", 0.8));
+        AddProduct(new Product("Рыба", 0.9));
+
+        AddRandomCustomers();
+
+        foreach (Customer customer in Customers)
         {
-            for (int i = 0; i < productCount; i++)
-            {
-                Product product = new Product((ProductType)i, _random.Next(50, 400));
-                _products.Add(product);
-            }
+            int count = random.Next(minEach, maxEach);
+
+            AddRandomProductsToCustomer(customer, count);
         }
 
-        private void AddBuyer(int buyerCount)
+        ServeCustomers();
+    }
+
+    private void AddRandomProductsToCustomer(Customer customer, int count)
+    {
+        for (int i = 0; i < count; i++)
         {
-            for (int i = 0; i < buyerCount; i++)
-            {
-                _buyers.Enqueue(new Buyer(_random.Next(100, 5000), _random.Next(1, _products.Count)));
-            }
+            seller.AddRandomProductToCustomer(customer);
         }
+    }
+
+    private void AddProduct(Product product)
+    {
+        seller.AddProduct(product);
+    }
+
+    private void AddCustomer(Customer customer)
+    {
+        customers.Add(customer);
+        seller.AddCustomer(customer);
+    }
+
+    private void AddRandomCustomers()
+    {
+        double minMoney = 0.5;
+        double maxMoney = 3.5;
+
+        int minCustomer = 1;
+        int maxCustomer = 11;
+
+        int count = random.Next(minCustomer, maxCustomer);
+
+        for (int i = 0; i < count; i++)
+        {
+            int customerID = i + 1;
+
+            Customer customer = new Customer($"Клиент {customerID}", nextDouble(random, minMoney, maxMoney));
+            AddCustomer(customer);
+        }
+    }
+
+    private void ServeCustomers()
+    {
+        seller.ServeCustomers();
+    }
+
+    private double nextDouble(Random random, double minValue, double maxValue)
+    {
+        return random.NextDouble() * (maxValue - minValue) + minValue;
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Supermarket supermarket = new Supermarket();
+
+        supermarket.Work();
     }
 }
