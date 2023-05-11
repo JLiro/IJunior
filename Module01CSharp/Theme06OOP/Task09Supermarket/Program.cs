@@ -3,37 +3,37 @@ using System.Collections.Generic;
 
 public class Product
 {
-    public string Name { get; private set; }
-    public double Price { get; private set; }
-
     public Product(string name, double price)
     {
         Name = name;
         Price = price;
     }
+
+    public string Name { get; private set; }
+    public double Price { get; private set; }
 }
 
 public class Storage
 {
-    private List<Product> products = new List<Product>();
+    private List<Product> _products = new List<Product>();
 
-    public IReadOnlyList<Product> Products => products;
+    public IReadOnlyList<Product> Products => _products;
 
     public void AddProduct(Product product)
     {
-        products.Add(product);
+        _products.Add(product);
     }
 
     public void RemoveProduct(Product product)
     {
-        products.Remove(product);
+        _products.Remove(product);
     }
 
     public double GetTotalPrice()
     {
         double totalPrice = 0;
 
-        foreach (var product in products)
+        foreach (var product in _products)
         {
             totalPrice += product.Price;
         }
@@ -44,11 +44,7 @@ public class Storage
 
 public class Customer
 {
-    private Random random = new Random();
-
-    public string Name { get; private set; }
-    public double Money { get; set; }
-    public Storage Storage { get; } = new Storage();
+    private Random _random = new Random();
 
     public Customer(string name, double money)
     {
@@ -56,7 +52,11 @@ public class Customer
         Money = money;
     }
 
-    public bool Pay(double amount)
+    public string Name { get; private set; }
+    public double Money { get; set; }
+    public Storage Storage { get; } = new Storage();
+
+    public bool TryPay(double amount)
     {
         if (Money < amount)
         {
@@ -72,7 +72,7 @@ public class Customer
     {
         if (Storage.Products.Count > 0)
         {
-            int index = random.Next(Storage.Products.Count);
+            int index = _random.Next(Storage.Products.Count);
             Product product = Storage.Products[index];
             Storage.RemoveProduct(product);
         }
@@ -81,76 +81,64 @@ public class Customer
 
 public class Seller
 {
-    private List<Product> products = new List<Product>();
-    private Queue<Customer> queue = new Queue<Customer>();
-    private Random random = new Random();
+    private List<Product> _products = new List<Product>();
+    private Queue<Customer> _queue = new Queue<Customer>();
+    private Random _random = new Random();
 
     public void AddRandomProductToCustomer(Customer customer)
     {
-        if (products.Count > 0)
+        if (_products.Count > 0)
         {
-            int index = random.Next(products.Count);
-            Product product = products[index];
+            int index = _random.Next(_products.Count);
+            Product product = _products[index];
             customer.Storage.AddProduct(product);
         }
     }
 
     public void AddProduct(Product product)
     {
-        products.Add(product);
+        _products.Add(product);
     }
 
     public void AddCustomer(Customer customer)
     {
-        if (!queue.Contains(customer))
+        if (!_queue.Contains(customer))
         {
-            queue.Enqueue(customer);
+            _queue.Enqueue(customer);
         }
     }
 
     public void ServeCustomers()
     {
-        while (queue.Count > 0)
+        while (_queue.Count > 0)
         {
-            Customer customer = queue.Dequeue();
+            Customer customer = _queue.Dequeue();
 
-            double totalPrice = 0;
-            foreach (Product product in customer.Storage.Products)
-            {
-                totalPrice += product.Price;
-            }
+            double totalPrice = customer.Storage.GetTotalPrice();
 
             if (totalPrice == 0)
             {
                 Console.WriteLine($"{customer.Name} не имеет товаров для покупки.");
             }
-            else if (customer.Pay(totalPrice))
-            {
-                Console.WriteLine($"{customer.Name} совершил покупку на сумму {totalPrice}.");
-            }
             else
             {
-                Console.WriteLine($"{customer.Name} не имеет достаточно денег, чтобы заплатить.");
+                bool canPay = customer.TryPay(totalPrice);
 
-                while (totalPrice > customer.Money && customer.Storage.Products.Count > 0)
+                while (canPay == false && customer.Storage.Products.Count > 0)
                 {
                     customer.RemoveRandomProduct();
 
-                    totalPrice = 0;
-
-                    foreach (Product product in customer.Storage.Products)
-                    {
-                        totalPrice += product.Price;
-                    }
+                    totalPrice = customer.Storage.GetTotalPrice();
+                    canPay = customer.TryPay(totalPrice);
                 }
 
-                if (totalPrice == 0)
+                if (canPay)
                 {
-                    Console.WriteLine($"{customer.Name} не имеет товаров для покупки.");
+                    Console.WriteLine($"{customer.Name} совершил покупку на сумму {totalPrice}.");
                 }
                 else
                 {
-                    customer.Pay(totalPrice);
+                    Console.WriteLine($"{customer.Name} не имеет достаточно денег, чтобы заплатить.");
                     Console.WriteLine($"{customer.Name} совершил покупку на сумму {totalPrice} после удаления некоторых продуктов.");
                 }
             }
@@ -160,16 +148,9 @@ public class Seller
 
 public class Supermarket
 {
-    private readonly Seller seller;
-    private readonly List<Customer> customers = new List<Customer>();
-    private Random random = new Random();
-
-    private IReadOnlyList<Customer> Customers => customers;
-
-    public Supermarket()
-    {
-        seller = new Seller();
-    }
+    private readonly List<Customer> _customers = new List<Customer>();
+    private readonly List<Product> _products = new List<Product>();
+    private Random _random = new Random();
 
     public void Work()
     {
@@ -183,57 +164,98 @@ public class Supermarket
 
         AddRandomCustomers();
 
-        foreach (Customer customer in Customers)
+        foreach (Customer customer in _customers)
         {
-            int count = random.Next(minEach, maxEach);
+            int count = _random.Next(minEach, maxEach);
 
             AddRandomProductsToCustomer(customer, count);
         }
 
         ServeCustomers();
+
+        Console.ReadKey();
+    }
+
+    private void AddProduct(Product product)
+    {
+        _products.Add(product);
     }
 
     private void AddRandomProductsToCustomer(Customer customer, int count)
     {
         for (int i = 0; i < count; i++)
         {
-            seller.AddRandomProductToCustomer(customer);
+            AddRandomProductToCustomer(customer);
         }
     }
 
-    private void AddProduct(Product product)
+    private void AddRandomProductToCustomer(Customer customer)
     {
-        seller.AddProduct(product);
+        if (_products.Count > 0)
+        {
+            int index = _random.Next(_products.Count);
+            Product product = _products[index];
+            customer.Storage.AddProduct(product);
+        }
     }
 
     private void AddCustomer(Customer customer)
     {
-        customers.Add(customer);
-        seller.AddCustomer(customer);
+        _customers.Add(customer);
     }
 
     private void AddRandomCustomers()
     {
-        double minMoney = 0.5;
+        double minMoney = 0.1;
         double maxMoney = 3.5;
 
         int minCustomer = 1;
         int maxCustomer = 11;
 
-        int count = random.Next(minCustomer, maxCustomer);
+        int count = _random.Next(minCustomer, maxCustomer);
 
         for (int i = 0; i < count; i++)
         {
             int customerID = i + 1;
 
-            Customer customer = new Customer($"Клиент {customerID}", nextDouble(random, minMoney, maxMoney));
+            Customer customer = new Customer($"Клиент {customerID}", nextDouble(_random, minMoney, maxMoney));
             AddCustomer(customer);
         }
     }
 
     private void ServeCustomers()
     {
-        seller.ServeCustomers();
+        foreach (Customer customer in _customers)
+        {
+            double totalPrice = customer.Storage.GetTotalPrice();
+
+            if (totalPrice == 0)
+            {
+                Console.WriteLine($"{customer.Name} не имеет товаров для покупки.");
+            }
+            else
+            {
+                bool canPay = customer.TryPay(totalPrice);
+
+                if (canPay)
+                {
+                    Console.WriteLine($"{customer.Name} совершил покупку на сумму {totalPrice}.");
+                }
+                else
+                {
+                    while (canPay == false && customer.Storage.Products.Count > 0)
+                    {
+                        customer.RemoveRandomProduct();
+
+                        totalPrice = customer.Storage.GetTotalPrice();
+                        canPay = customer.TryPay(totalPrice);
+                    }
+
+                    Console.WriteLine($"{customer.Name} не имеет достаточно денег, чтобы заплатить.");
+                    Console.WriteLine($"{customer.Name} совершил покупку на сумму {totalPrice} после удаления некоторых продуктов.");
+                }
+            }
+        }
     }
 
     private double nextDouble(Random random, double minValue, double maxValue)
