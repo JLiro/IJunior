@@ -55,8 +55,8 @@ namespace Task09Supermarket
         }
 
         public string Name { get; private set; }
-        public double Money { get; set; }
-        public Storage Storage { get; } = new Storage();
+        public double Money { get; private set; }
+        public Storage Storage { get; private set; } = new Storage();
 
         public bool TryPay(double amount)
         {
