@@ -6,28 +6,52 @@ namespace Task10War
 {
     public class Soldier
     {
-        private Random _random;
+        public readonly string Description;
 
-        public readonly string Name;
+        private Random _random = new Random();
 
-        public Soldier(string name) => Name = name;
+        public Soldier(string description, Random random)
+        {
+            SpecialAbility = GetRandomSpecialAbility(random);
+            Description = description + " " + SpecialAbility;
+        }
 
-        public string SpecialAbility { get; set; }
+        public string SpecialAbility { get; private set; }
 
         public int Health { get; private set; } = 100;
         public bool IsDead => Health <= 0;
 
         public void Attack(Soldier enemy)
         {
-            const string SniperClass = "Sniper";
-            const string TankClass   = "Tank";
-
-            _random = new Random();
-
             int minDamage = 0;
             int maxDamage = 15;
 
             int damage = _random.Next(minDamage, maxDamage);
+
+            SetSpecialAbility(ref damage);
+
+            enemy.TakeDamage(damage);
+        }
+
+        public void TakeDamage(int damage)
+        {
+            int minHealth = 0;
+
+            Health = Math.Max(minHealth, Health - damage);
+        }
+
+        public override string ToString() => $"{Description} ({Health} здоровья)";
+
+        private string GetRandomSpecialAbility(Random random)
+        {
+            var abilities = new[] { "Normal", "Sniper", "Tank" };
+            return abilities[random.Next(abilities.Length)];
+        }
+    
+        private void SetSpecialAbility(ref int damage)
+        {
+            const string SniperClass = "Sniper";
+            const string TankClass = "Tank";
 
             int PowerSniperAbility = 2;
             int PowerTankAbility = 2;
@@ -39,27 +63,13 @@ namespace Task10War
                     break;
                 case TankClass:
                     damage /= PowerTankAbility;
-                    enemy.TakeDamage(damage);
                     break;
             }
-
-            enemy.TakeDamage(_random.Next(damage));
         }
-
-        public void TakeDamage(int damage)
-        {
-            int minHealth = 0;
-
-            Health = Math.Max(minHealth, Health - damage);
-        }
-
-        public override string ToString() => $"{Name} ({Health} здоровья)";
     }
 
     public class Platoon
     {
-        private Random _random;
-
         public readonly string Name;
         
         public readonly List<Soldier> Soldiers = new List<Soldier>();
@@ -79,28 +89,19 @@ namespace Task10War
             return aliveSoldiers[randomIndex];
         }
 
-        public void CreatePlatoon()
+        public void CreatePlatoon(Random random)
         {
-            _random = new Random();
-
             int minSolider = 2;
             int maxSolider = 4;
 
-            int soliderCount = _random.Next(minSolider, maxSolider);
+            int soliderCount = random.Next(minSolider, maxSolider);
 
             for (int i = 0; i < soliderCount; i++)
             {
                 int id = i + 1;
 
-                AddSoldier(new Soldier($"Солдат {id} взвода {Name}") {SpecialAbility = GetRandomSpecialAbility()});
+                AddSoldier(new Soldier($"Солдат {id} взвода {Name}", random));
             }
-        }
-
-        private string GetRandomSpecialAbility()
-        {
-            var abilities = new[] { "Normal", "Sniper", "Tank" };
-
-            return abilities[new Random().Next(abilities.Length)];
         }
     }
 
@@ -174,13 +175,13 @@ namespace Task10War
 
     class Map
     { 
-        public void StartPlay()
+        public void StartPlay(Random random)
         {
             var platoon1 = new Platoon("Альфа");
-            platoon1.CreatePlatoon();
+            platoon1.CreatePlatoon(random);
 
             var platoon2 = new Platoon("Браво");
-            platoon2.CreatePlatoon();
+            platoon2.CreatePlatoon(random);
 
             var logger = new BattleLogger();
 
@@ -194,10 +195,12 @@ namespace Task10War
 
     class Program
     {
+        static private Random _random = new Random();
+
         static void Main(string[] args)
         {
             Map map = new Map();
-            map.StartPlay();
+            map.StartPlay(new Random());
 
             Console.ReadLine();
         }
