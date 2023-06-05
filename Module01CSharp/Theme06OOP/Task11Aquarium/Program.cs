@@ -1,160 +1,230 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Task11Aquarium
 {
     public abstract class Fish
     {
-        protected Fish(string name, int age)
+        private bool IsKilled; 
+        
+        protected Fish(string name, int age, int maxAge)
         {
             Name = name;
             Age = age;
-            IsDead = false;
+            MaxAge = maxAge;
+            IsKilled = false;
         }
 
         public string Name { get; private set; }
         public int Age { get; private set; }
-        public bool IsDead { get; private set; }
+        public int MaxAge { get; private set; }
 
-        public void EncreaseAge() => Age++;
+        public string GetInfoDead()
+        {
+            if(IsKilled)
+            {
+                return $"Рыба {Name} была убита в возрасте {Age} года";
+            }
+            else if(Age == MaxAge)
+            {
+                return $"Рыба {Name} умерла от старости в {Age} года";
+            }
+            else
+            {
+                return $"Рыба {Name} жива {Age} года";
+            }
+        }
 
-        public void Die() => IsDead = true;
+        public bool IsAlive()
+        {
+            if(Age < MaxAge && IsKilled == false)
+            {
+                return true;
+            }
+
+            return false;
+        }
+        
+        public void EnlargeAge()
+        {
+            if (IsAlive())
+            {
+                Age++;
+            }
+        }
+
+        public void Kill() => IsKilled = true;
+
+        public abstract Fish Clone();
     }
 
     public class Nemo : Fish
     {
-        public Nemo(string name, int age) : base(name, age) { }
+        public Nemo(string name, int age, int maxAge) : base(name, age, maxAge) { }
+
+        public override Fish Clone() => new Nemo(Name, 0, MaxAge);
     }
 
     public class Dory : Fish
     {
-        public Dory(string name, int age) : base(name, age) { }
+        public Dory(string name, int age, int maxAge) : base(name, age, maxAge) { }
+
+        public override Fish Clone() => new Dory(Name, 0, MaxAge);
     }
 
     public class Marlin : Fish
     {
-        public Marlin(string name, int age) : base(name, age) { }
+        public Marlin(string name, int age, int maxAge) : base(name, age, maxAge) { }
+
+        public override Fish Clone() => new Marlin(Name, 0, MaxAge);
     }
 
     public class Aquarium
     {
-        private readonly List<Fish> _fishList;
-        private readonly int _maxFishCount;
-        private readonly int _maxFishAge = 10;
-        private readonly int _addFishDelayMs = 2000;
+        private static Aquarium instance;
 
-        public Aquarium(int maxFishCount)
+        private readonly List<Fish> _fishes;
+        private readonly int _maxFishCount;
+
+        private Aquarium(int maxFishCount)
         {
             _maxFishCount = maxFishCount;
-            _fishList = new List<Fish>();
+            _fishes = new List<Fish>();
+        }
+
+        public static Aquarium GetInstance(int fishCount)
+        {
+            if (instance == null)
+            {
+                instance = new Aquarium(fishCount);
+            }
+
+            return instance;
         }
 
         public void Work()
         {
-            while (true)
+            bool isWork = true;
+
+            while (isWork)
             {
                 Console.Clear();
 
                 PrintAquariumState();
                 UpdateFishAges();
+                AddFish();
+                CheckUserMenuChoices(isWork);
 
+                int вelayMs = 2000;
+                Thread.Sleep(вelayMs);
+
+            }
+        }
+
+        private void CheckUserMenuChoices(bool isWork)
+        {
+            const char CommandExit = 'E';
+            const char CommandKillFish = 'K';
+
+            Console.WriteLine($"\nНажмите [{CommandExit}] для выхода, или [{CommandKillFish}] для убийтсва рыбы");
+
+            if (Console.KeyAvailable)
+            {
+                ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true);
+
+                char command = char.ToUpper(keyInfo.KeyChar);
+
+                if (command == CommandExit)
+                {
+                    isWork = false;
+                }
+
+                if (command == CommandKillFish)
+                {
+                    KillFish();
+                }
+            }
+        }
+
+        private void KillFish()
+        {
+            Console.Write("Введите номер рыбы для убийства: ");
+
+            string input = Console.ReadLine();
+
+            if (Int32.TryParse(input, out int fishIndex) && fishIndex <= _fishes.Count && fishIndex > 0)
+            {
+                fishIndex--;
+
+                _fishes[fishIndex].Kill();
+            }
+            else
+            {
+                Console.WriteLine("Введен некорректный номер");
+            }
+        }
+
+        private void AddFish()
+        {
+            if (_fishes.Count < _maxFishCount)
+            {
                 var newFish = CreateRandomFish();
-
-                AddFish(newFish);
-
-                System.Threading.Thread.Sleep(_addFishDelayMs);
-            }
-        }
-
-        private void AddFish(Fish fish)
-        {
-            if (_fishList.Count < _maxFishCount)
-            {
-                _fishList.Add(fish);
-            }
-            else
-            {
-                Console.WriteLine("Аквариум полон, больше нельзя добавлять рыб.");
-            }
-        }
-
-        private void RemoveFish(Fish fish)
-        {
-            if (_fishList.Contains(fish))
-            {
-                _fishList.Remove(fish);
-            }
-            else
-            {
-                Console.WriteLine("Рыба не найдена в аквариуме.");
+         
+                _fishes.Add(newFish);
             }
         }
 
         private void UpdateFishAges()
         {
-            for (int i = _fishList.Count - 1; i >= 0; i--)
+            Console.WriteLine("\nНекролог:");
+            
+            for (int i = _fishes.Count - 1; i >= 0; i--)
             {
-                var fish = _fishList[i];
+                var fish = _fishes[i];
 
-                if (fish.IsDead) continue;
+                fish.EnlargeAge();
 
-                fish.EncreaseAge();
+                if(fish.IsAlive() == false)
+                {        
+                    _fishes.RemoveAt(i);
 
-                if (fish.Age < _maxFishAge) continue;
+                    Console.WriteLine($"{fish.GetInfoDead()} и была удалена из аквариума.");
 
-                fish.Die();
-                RemoveFish(fish);
-
-                Console.WriteLine($"Рыба {fish.Name} умерла от старости и была удалена из аквариума.");
+                    int showInfoDelayMs = 2500;
+                    Thread.Sleep(showInfoDelayMs);
+                }
             }
         }
 
         private void PrintAquariumState()
         {
-            Console.WriteLine($"Аквариум содержит {_fishList.Count} рыб:");
+            Console.WriteLine($"Аквариум содержит {_fishes.Count}/{_maxFishCount} рыб:");
 
-            foreach (var fish in _fishList)
+            for (int i = 0; i < _fishes.Count; i++)
             {
-                var status = fish.IsDead ? "мертва" : $"{fish.Age} лет";
-                Console.WriteLine($"Рыба {fish.Name} {status}");
+                int id = i + 1;
+                
+                var status = _fishes[i].IsAlive() ? $"{_fishes[i].Age} года из {_fishes[i].MaxAge}" : "мертва";
+                
+                Console.WriteLine($"[{id}] Рыба {_fishes[i].Name} {status}");
             }
         }
 
         private Fish CreateRandomFish()
         {
-            const string TypeNemo = "Nemo";
-            const string TypeDory = "Dory";
-            const string TypeMarlin = "Marlin";
-
             const int StartAge = 0;
 
-            List<string> fishTypes = new List<string> { TypeNemo, TypeDory, TypeMarlin };
+            List<Fish> fishTypes = new List<Fish>
+            { 
+                new Nemo("Немо", StartAge, 2),
+                new Dory("Дори", StartAge, 3),
+                new Marlin("Марлин", StartAge, 4)
+            };
 
             Random random = new Random();
 
-            string fishType = fishTypes[random.Next(fishTypes.Count)];
-
-            string name = String.Empty;
-
-            Fish newFish = null;
-
-            switch (fishType)
-            {
-                case TypeNemo:
-                    name = "Немо";
-                    newFish = new Nemo(name, StartAge);
-                    break;
-                case TypeDory:
-                    name = "Дори";
-                    newFish = new Dory(name, StartAge);
-                    break;
-                case TypeMarlin:
-                    name = "Марлин";
-                    newFish = new Marlin(name, StartAge);
-                    break;
-            }
-
-            return newFish;
+            return fishTypes[random.Next(fishTypes.Count)].Clone();
         }
     }
 
@@ -162,8 +232,8 @@ namespace Task11Aquarium
     {
         public static void Main()
         {
-            const int maxFishCount = 5;
-            var aquarium = new Aquarium(maxFishCount);
+            const int maxFishCount = 8;
+            Aquarium aquarium = Aquarium.GetInstance(maxFishCount);
             aquarium.Work();
         }
     }
