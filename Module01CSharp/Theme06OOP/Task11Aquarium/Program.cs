@@ -6,8 +6,8 @@ namespace Task11Aquarium
 {
     public abstract class Fish
     {
-        private bool IsKilled; 
-        
+        private bool IsKilled;
+
         protected Fish(string name, int age, int maxAge)
         {
             Name = name;
@@ -22,11 +22,11 @@ namespace Task11Aquarium
 
         public string GetInfoDead()
         {
-            if(IsKilled)
+            if (IsKilled)
             {
                 return $"Рыба {Name} была убита в возрасте {Age} года";
             }
-            else if(Age == MaxAge)
+            else if (Age == MaxAge)
             {
                 return $"Рыба {Name} умерла от старости в {Age} года";
             }
@@ -36,19 +36,11 @@ namespace Task11Aquarium
             }
         }
 
-        public bool IsAlive()
-        {
-            if(Age < MaxAge && IsKilled == false)
-            {
-                return true;
-            }
-
-            return false;
-        }
+        public bool IsAlive { get =>  Age < MaxAge && IsKilled == false; private set { } }
         
         public void EnlargeAge()
         {
-            if (IsAlive())
+            if (IsAlive)
             {
                 Age++;
             }
@@ -105,20 +97,30 @@ namespace Task11Aquarium
 
         public void Work()
         {
-            bool isWork = true;
+            const int StartAge = 0;
 
+            List<Fish> fishTypes = new List<Fish>
+            { 
+                new Nemo("Немо", StartAge, 2),
+                new Dory("Дори", StartAge, 3),
+                new Marlin("Марлин", StartAge, 4)
+            };
+            
+            int delayMs = 2000;
+
+            bool isWork = true;
+            
             while (isWork)
             {
                 Console.Clear();
 
-                PrintAquariumState();
+                PrintFishInfo();
                 UpdateFishAges();
-                AddFish();
+                RemoveDeadFish();
+                AddFish(fishTypes);
                 CheckUserMenuChoices(isWork);
 
-                int вelayMs = 2000;
-                Thread.Sleep(вelayMs);
-
+                Thread.Sleep(delayMs);
             }
         }
 
@@ -165,11 +167,11 @@ namespace Task11Aquarium
             }
         }
 
-        private void AddFish()
+        private void AddFish(List<Fish> fishTypes)
         {
             if (_fishes.Count < _maxFishCount)
             {
-                var newFish = CreateRandomFish();
+                var newFish = CreateRandomFish(fishTypes);
          
                 _fishes.Add(newFish);
             }
@@ -181,11 +183,17 @@ namespace Task11Aquarium
             
             for (int i = _fishes.Count - 1; i >= 0; i--)
             {
-                var fish = _fishes[i];
+                _fishes[i].EnlargeAge();
+            }
+        }
 
-                fish.EnlargeAge();
+        private void RemoveDeadFish()
+        {
+            for (int i = _fishes.Count - 1; i >= 0; i--)
+            {
+                Fish fish = _fishes[i];
 
-                if(fish.IsAlive() == false)
+                if (fish.IsAlive == false)
                 {        
                     _fishes.RemoveAt(i);
 
@@ -195,33 +203,24 @@ namespace Task11Aquarium
                     Thread.Sleep(showInfoDelayMs);
                 }
             }
+
+            
         }
 
-        private void PrintAquariumState()
+        private void PrintFishInfo()
         {
             Console.WriteLine($"Аквариум содержит {_fishes.Count}/{_maxFishCount} рыб:");
 
             for (int i = 0; i < _fishes.Count; i++)
             {
-                int id = i + 1;
+                int id = i + 1; 
                 
-                var status = _fishes[i].IsAlive() ? $"{_fishes[i].Age} года из {_fishes[i].MaxAge}" : "мертва";
-                
-                Console.WriteLine($"[{id}] Рыба {_fishes[i].Name} {status}");
+                Console.WriteLine($"[{id}] Рыба {_fishes[i].Name} {_fishes[i].Age} года из {_fishes[i].MaxAge}");
             }
         }
 
-        private Fish CreateRandomFish()
+        private Fish CreateRandomFish(List<Fish> fishTypes)
         {
-            const int StartAge = 0;
-
-            List<Fish> fishTypes = new List<Fish>
-            { 
-                new Nemo("Немо", StartAge, 2),
-                new Dory("Дори", StartAge, 3),
-                new Marlin("Марлин", StartAge, 4)
-            };
-
             Random random = new Random();
 
             return fishTypes[random.Next(fishTypes.Count)].Clone();
