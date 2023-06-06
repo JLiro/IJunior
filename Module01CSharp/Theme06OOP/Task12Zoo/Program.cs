@@ -3,141 +3,128 @@ using System.Collections.Generic;
 
 namespace Task12Zoo
 {
-    public interface IAnimal
+    public abstract class Animal
     {
-        string Gender { get; }
+        public string Gender { get; }
+        public string Name { get; }
+
+        public abstract string Sound { get; }
+
+        protected Animal(string gender, string name)
+        {
+            Gender = gender;
+            Name = name;
+        }
+    }
+
+    public interface IReadOnlyEnclosure
+    {
         string Name { get; }
-        string MakeSound();
+        IReadOnlyList<Animal> Animals { get; }
+        void SetAnimals(IReadOnlyList<Animal> animals);
     }
 
-    public interface IEnclosure
+    public class Lion : Animal
     {
-        string Name { get; }
-        IReadOnlyList<IAnimal> Animals { get; }
+        public Lion(string gender, string name) : base(gender, name) { }
+
+        public override string Sound => "рычит";
     }
 
-    public class Lion : IAnimal
+    public class Tiger : Animal
     {
-        public Lion(string gender, string name)
+        public Tiger(string gender, string name) : base(gender, name) { }
+
+        public override string Sound => "рычит";
+    }
+
+    public class Zebra : Animal
+    {
+        public Zebra(string gender, string name) : base(gender, name) { }
+
+        public override string Sound => "издает звуковые сигналы";
+    }
+
+    public class Giraffe : Animal
+    {
+        public Giraffe(string gender, string name) : base(gender, name) { }
+
+        public override string Sound => "издает звуковые сигналы";
+    }
+
+    public class Enclosure : IReadOnlyEnclosure
+    {
+        public string Name { get; }
+        public IReadOnlyList<Animal> Animals { get; private set; }
+
+        public Enclosure(string name)
         {
-            Gender = gender;
             Name = name;
+            Animals = new List<Animal>();
         }
 
-        public string Gender { get; private set; }
-        public string Name { get; private set; }
-
-        public string MakeSound() => $"рычит";
-    }
-
-    public class Tiger : IAnimal
-    {
-        public Tiger(string gender, string name)
+        public void SetAnimals(IReadOnlyList<Animal> animals)
         {
-            Gender = gender;
-            Name = name;
+            ((List<Animal>)Animals).Clear();
+            ((List<Animal>)Animals).AddRange(animals);
         }
-
-        public string Gender { get; private set; }
-        public string Name { get; private set; }
-
-        public string MakeSound() => $"рычит";
-    }
-
-    public class Zebra : IAnimal
-    {
-        public Zebra(string gender, string name)
-        {
-            Gender = gender;
-            Name = name;
-        }
-
-        public string Gender { get; private set; }
-        public string Name { get; private set; }
-
-        public string MakeSound() => $"издает звуковые сигналы";
-    }
-
-    public class Giraffe : IAnimal
-    {
-        public Giraffe(string gender, string name)
-        {
-            Gender = gender;
-            Name = name;
-        }
-
-        public string Gender { get; private set; }
-        public string Name { get; private set; }
-
-        public string MakeSound() => $"издает звуковые сигналы";
-    }
-
-    public class LionEnclosure : IEnclosure
-    {
-        public IReadOnlyList<IAnimal> Animals { get; private set; } = new List<IAnimal> { new Lion("Мужской", "Лев 1"), new Lion("Женский", "Лев 2") };
-        public string Name { get; private set; } = "Вольер 1";
-    }
-
-    public class TigerEnclosure : IEnclosure
-    {
-        public IReadOnlyList<IAnimal> Animals { get; private set; } = new List<IAnimal> { new Tiger("Мужской", "Тигр 1"), new Tiger("Женский", "Тигр 2") };
-        public string Name { get; private set; } = "Вольер 2";
-    }
-
-    public class ZebraEnclosure : IEnclosure
-    {
-        public IReadOnlyList<IAnimal> Animals { get; private set; } = new List<IAnimal> { new Zebra("Мужской", "Зебра 1"), new Zebra("Женский", "Зебра 2") };
-        public string Name { get; private set; } = "Вольер 3";
-    }
-
-    public class GiraffeEnclosure : IEnclosure
-    {
-        public IReadOnlyList<IAnimal> Animals { get; private set; } = new List<IAnimal> { new Giraffe("Мужской", "Жираф 1"), new Giraffe("Женский", "Жираф 2") };
-        public string Name { get; private set; } = "Вольер 4";
     }
 
     public class Zoo
     {
-        private IReadOnlyList<IEnclosure> enclosures = new List<IEnclosure>
+        private List<IReadOnlyEnclosure> _enclosures;
+
+        public Zoo()
         {
-            new LionEnclosure(),
-            new TigerEnclosure(),
-            new ZebraEnclosure(),
-            new GiraffeEnclosure()
-        };
+            _enclosures = new List<IReadOnlyEnclosure>
+            {
+                new Enclosure("Вольер 1"),
+                new Enclosure("Вольер 2"),
+                new Enclosure("Вольер 3"),
+                new Enclosure("Вольер 4")
+            };
 
-        public Zoo() { }
+            _enclosures[0].SetAnimals(new List<Animal> { new Lion("Мужской", "Лев 1"), new Lion("Женский", "Лев 2") });
+            _enclosures[1].SetAnimals(new List<Animal> { new Tiger("Мужской", "Тигр 1"), new Tiger("Женский", "Тигр 2") });
+            _enclosures[2].SetAnimals(new List<Animal> { new Zebra("Мужской", "Зебра 1"), new Zebra("Женский", "Зебра 2") });
+            _enclosures[3].SetAnimals(new List<Animal> { new Giraffe("Мужской", "Жираф 1"), new Giraffe("Женский", "Жираф 2") });
+        }
 
-        public IReadOnlyList<IEnclosure> Enclosures { get { return enclosures; } private set { enclosures = value; } }
+        public IReadOnlyList<IReadOnlyEnclosure> Enclosures => _enclosures;
     }
 
     public class MainMenu
     {
         public void SelectEnclosure()
         {
-            const string ExitCommand = "E";
+            string exitCommand = "E";
 
             Zoo zoo = new Zoo();
 
-            while (true)
+            bool isWork = true;
+
+            while (isWork)
             {
                 Console.Clear();
 
                 Console.WriteLine("Выберите вольер:");
 
-                ShowEnclosure(zoo.Enclosures);
+                ShowEnclosures(zoo.Enclosures);
 
-                Console.Write("\nДля выхода введите E на англ. раскладке\n> ");
+                Console.Write($"\nДля выхода введите {exitCommand} на англ. раскладке\n> ");
 
                 string input = Console.ReadLine();
 
-                if (input.ToUpper() == ExitCommand) break;
+                if (input.ToUpper() == exitCommand)
+                {
+                    isWork = false;
+                }
 
                 ApproachEnclosure(input, zoo.Enclosures);
             }
         }
 
-        private void ShowEnclosure(IReadOnlyList<IEnclosure> enclosures)
+        private void ShowEnclosures(IReadOnlyList<IReadOnlyEnclosure> enclosures)
         {
             for (int i = 0; i < enclosures.Count; i++)
             {
@@ -147,17 +134,19 @@ namespace Task12Zoo
             }
         }
 
-        private void ApproachEnclosure(string input, IReadOnlyList<IEnclosure> enclosures)
+        private void ApproachEnclosure(string input, IReadOnlyList<IReadOnlyEnclosure> enclosures)
         {
-            if (int.TryParse(input, out int selectedIndex) && selectedIndex > 0 && selectedIndex <= enclosures.Count)
+            if (int.TryParse(input, out int enclosureId) && enclosureId > 0 && enclosureId <= enclosures.Count)
             {
-                IEnclosure selectedEnclosure = enclosures[selectedIndex - 1];
+                int index = enclosureId - 1;
 
-                Console.WriteLine($"\nВы выбрали {selectedEnclosure.Name}. В вольере обитает {selectedEnclosure.Animals.Count} животных:");
+                IReadOnlyEnclosure enclosure = enclosures[index];
 
-                foreach (IAnimal animal in selectedEnclosure.Animals)
+                Console.WriteLine($"\nВы выбрали {enclosure.Name}. В вольере обитает {enclosure.Animals.Count} животных:");
+
+                foreach (Animal animal in enclosure.Animals)
                 {
-                    Console.WriteLine($"Имя: {animal.Name} ({animal.Gender}). Звук: {animal.MakeSound()}");
+                    Console.WriteLine($"Имя: {animal.Name} ({animal.Gender}). Звук: {animal.Sound}");
                 }
 
                 Console.WriteLine("\nДля возврата к выбору вольеров нажмите любую клавишу");
@@ -165,14 +154,14 @@ namespace Task12Zoo
             }
             else
             {
-                Console.WriteLine("Неправильный ввод. Попрравьте еще раз.");
+                Console.WriteLine("Неправильный ввод. Поправьте еще раз.");
             }
         }
     }
 
     public class Program
     {
-        public static void Main(string[] args)
+        public static void Main()
         {
             MainMenu mainMenu = new MainMenu();
             mainMenu.SelectEnclosure();
