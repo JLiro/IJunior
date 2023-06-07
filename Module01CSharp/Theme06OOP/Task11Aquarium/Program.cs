@@ -18,7 +18,8 @@ namespace Task11Aquarium
         }
 
         public string Name { get; private set; }
-        public int MaxAge;
+        public int MaxAge { get; private set; }
+        public bool IsAlive => _age < MaxAge && _isKilled == false;
 
         public string GetInfoDead()
         {
@@ -36,7 +37,6 @@ namespace Task11Aquarium
             }
         }
 
-        public bool IsAlive => _age < MaxAge && _isKilled == false;
         
         public void EnlargeAge()
         {
