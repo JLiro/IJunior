@@ -6,47 +6,47 @@ namespace Task11Aquarium
 {
     public abstract class Fish
     {
-        private bool IsKilled;
+        private bool _isKilled;
+        private int  _age;
 
         protected Fish(string name, int age, int maxAge)
         {
             Name = name;
-            Age = age;
+            _age = age;
             MaxAge = maxAge;
-            IsKilled = false;
+            _isKilled = false;
         }
 
         public string Name { get; private set; }
-        public int Age { get; private set; }
-        public int MaxAge { get; private set; }
+        public int MaxAge;
 
         public string GetInfoDead()
         {
-            if (IsKilled)
+            if (_isKilled)
             {
-                return $"Рыба {Name} была убита в возрасте {Age} года";
+                return $"Рыба {Name} была убита в возрасте {_age} года";
             }
-            else if (Age == MaxAge)
+            else if (_age == MaxAge)
             {
-                return $"Рыба {Name} умерла от старости в {Age} года";
+                return $"Рыба {Name} умерла от старости в {_age} года";
             }
             else
             {
-                return $"Рыба {Name} жива {Age} года";
+                return $"Рыба {Name} живёт {_age} года из {MaxAge}";
             }
         }
 
-        public bool IsAlive { get =>  Age < MaxAge && IsKilled == false; private set { } }
+        public bool IsAlive => _age < MaxAge && _isKilled == false;
         
         public void EnlargeAge()
         {
             if (IsAlive)
             {
-                Age++;
+                _age++;
             }
         }
 
-        public void Kill() => IsKilled = true;
+        public void Kill() => _isKilled = true;
 
         public abstract Fish Clone();
     }
@@ -99,6 +99,8 @@ namespace Task11Aquarium
         {
             const int StartAge = 0;
 
+            Console.CursorVisible = false;
+
             List<Fish> fishTypes = new List<Fish>
             { 
                 new Nemo("Немо", StartAge, 2),
@@ -106,7 +108,7 @@ namespace Task11Aquarium
                 new Marlin("Марлин", StartAge, 4)
             };
             
-            int delayMs = 2000;
+            int delayMs = 4000;
 
             bool isWork = true;
             
@@ -114,8 +116,8 @@ namespace Task11Aquarium
             {
                 Console.Clear();
 
-                PrintFishInfo();
                 UpdateFishAges();
+                PrintFishInfo();
                 RemoveDeadFish();
                 AddFish(fishTypes);
                 CheckUserMenuChoices(isWork);
@@ -129,7 +131,7 @@ namespace Task11Aquarium
             const char CommandExit = 'E';
             const char CommandKillFish = 'K';
 
-            Console.WriteLine($"\nНажмите [{CommandExit}] для выхода, или [{CommandKillFish}] для убийтсва рыбы");
+            Console.WriteLine($"\nНажмите (на англ. раскладке) [{CommandExit}] для выхода, или [{CommandKillFish}] для убийтсва рыбы");
 
             if (Console.KeyAvailable)
             {
@@ -179,8 +181,6 @@ namespace Task11Aquarium
 
         private void UpdateFishAges()
         {
-            Console.WriteLine("\nНекролог:");
-            
             for (int i = _fishes.Count - 1; i >= 0; i--)
             {
                 _fishes[i].EnlargeAge();
@@ -189,6 +189,8 @@ namespace Task11Aquarium
 
         private void RemoveDeadFish()
         {
+            Console.WriteLine("\nОчищение аквариума:");
+
             for (int i = _fishes.Count - 1; i >= 0; i--)
             {
                 Fish fish = _fishes[i];
@@ -197,14 +199,9 @@ namespace Task11Aquarium
                 {        
                     _fishes.RemoveAt(i);
 
-                    Console.WriteLine($"{fish.GetInfoDead()} и была удалена из аквариума.");
-
-                    int showInfoDelayMs = 2500;
-                    Thread.Sleep(showInfoDelayMs);
+                    Console.WriteLine($"Рыба {fish.Name} была удалена из аквариума.");
                 }
             }
-
-            
         }
 
         private void PrintFishInfo()
@@ -215,15 +212,15 @@ namespace Task11Aquarium
             {
                 int id = i + 1; 
                 
-                Console.WriteLine($"[{id}] Рыба {_fishes[i].Name} {_fishes[i].Age} года из {_fishes[i].MaxAge}");
+                Console.WriteLine($"[{id}] {_fishes[i].GetInfoDead()}");
             }
         }
 
         private Fish CreateRandomFish(List<Fish> fishTypes)
         {
-            Random random = new Random();
+            int id = new Random().Next(fishTypes.Count);
 
-            return fishTypes[random.Next(fishTypes.Count)].Clone();
+            return fishTypes[id].Clone();
         }
     }
 

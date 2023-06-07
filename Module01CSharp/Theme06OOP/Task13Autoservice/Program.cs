@@ -3,302 +3,157 @@ using System.Collections.Generic;
 
 namespace Task13Autoservice
 {
-    using System;
-    using System.Collections.Generic;
+    public interface IPart
+    {
+        string Name { get; }
+        decimal Price { get; }
+    }
 
-    // класс Деталь
-    public class Detail
+    public interface IRepair
+    {
+        string Name { get; }
+        IPart Part { get; }
+        decimal LaborCost { get; }
+        decimal TotalCost { get; }
+    }
+
+    public interface ICustomer
+    {
+        string Name { get; }
+        ICar Car { get; }
+    }
+
+    public interface ICar
+    {
+        string Model { get; }
+        IList<IRepair> Repairs { get; }
+    }
+
+    public abstract class Part : IPart
     {
         public string Name { get; }
-        public double Price { get; }
+        public decimal Price { get; }
 
-        public Detail(string name, double price)
+        protected Part(string name, decimal price)
         {
             Name = name;
             Price = price;
         }
     }
 
-    // класс Ремонт
-    public class Repair
+    public class Starter : Part
     {
-        public Detail Detail { get; }
-        public double RepairPrice { get; }
+        public Starter() : base("Starter", new Random().Next(200, 600)) { }
+    }
 
-        public Repair(Detail detail, double repairPrice)
+    public class BrakePads : Part
+    {
+        public BrakePads() : base("Engine", new Random().Next(150, 300)) { }
+    }
+
+    public class FrontSuspension : Part
+    {
+        public FrontSuspension() : base("FrontSuspension", new Random().Next(500, 1000)) { }
+    }
+
+    public class OilPump : Part
+    {
+        public OilPump() : base("OilPump", new Random().Next(300, 600)) { }
+    }
+
+    public class Alternator : Part
+    {
+        public Alternator() : base("Alternator", new Random().Next(300, 700)) { }
+    }
+
+    public class Repair : IRepair
+    {
+        public string Name { get; }
+        public IPart Part { get; }
+        public decimal LaborCost { get; }
+        public decimal TotalCost => Part.Price + LaborCost;
+
+        public Repair(string name, IPart part, decimal laborCost)
         {
-            Detail = detail;
-            RepairPrice = repairPrice;
+            Name = name;
+            Part = part;
+            LaborCost = laborCost;
         }
     }
 
-    // интерфейс для фабрики Ремонтов
-    public interface IRepairFactory
+    public class Customer : ICustomer
     {
-        Repair CreateRepair(string detailName, double repairPrice);
-        Detail CreateDetail(string name);
-    }
+        public string Name { get; }
+        public ICar Car { get; }
 
-    // класс фабрики Ремонтов
-    public class RepairFactory : IRepairFactory
-    {
-        public Repair CreateRepair(string detailName, double repairPrice)
+        public Customer(string name, ICar car)
         {
-            var detail = CreateDetail(detailName);
-            return new Repair(detail, repairPrice);
-        }
-
-        public Detail CreateDetail(string name)
-        {
-            return new Detail(name, 0);
+            Name = name;
+            Car = car;
         }
     }
 
-    // класс СкладДеталей (Одиночка)
-    public sealed class DetailStorage
+    public class Car : ICar
     {
-        private static DetailStorage instance = null;
-        private Dictionary<string, int> details = new Dictionary<string, int>();
+        public string Model { get; }
+        public IList<IRepair> Repairs { get; }
 
-        private DetailStorage() { }
-
-        public static DetailStorage Instance
+        public Car(string model, IList<IRepair> repairs)
         {
-            get
+            Model = model;
+            Repairs = repairs;
+        }
+    }
+
+    public class AutoService
+    {
+        private decimal balance;
+        private IDictionary<Type, int> partsInventory;
+        private IList<ICustomer> customers;
+
+        public AutoService(decimal balance, IDictionary<Type, int> partsInventory)
+        {
+            this.balance = balance;
+            this.partsInventory = partsInventory;
+            customers = new List<ICustomer>();
+        }
+
+        public bool RepairCar(ICustomer customer)
+        {
+            // Проверяем наличие всех необходимых деталей на складе
+            foreach (var repair in customer.Car.Repairs)
             {
-                if (instance == null)
+                if (!partsInventory.ContainsKey(repair.Part.GetType()) || partsInventory[repair.Part.GetType()] == 0)
                 {
-                    instance = new DetailStorage();
+                    Console.WriteLine($"Для ремонта {repair.Name} необходима деталь {repair.Part.Name}, которой нет на складе.");
+                    return false;
                 }
-                return instance;
             }
-        }
 
-        public void AddDetail(Detail detail, int quantity)
-        {
-            if (!details.ContainsKey(detail.Name))
+            // Вычитаем детали со склада и увеличиваем баланс
+            foreach (var repair in customer.Car.Repairs)
             {
-                details.Add(detail.Name, quantity);
+                partsInventory[repair.Part.GetType()]--;
+                balance += repair.TotalCost - repair.Part.Price;
             }
-            else
-            {
-                details[detail.Name] += quantity;
-            }
-        }
 
-        public bool GetDetail(string detailName)
-        {
-            if (details.ContainsKey(detailName) && details[detailName] > 0)
-            {
-                details[detailName]--;
-                return true;
-            }
-            return false;
-        }
-
-        public int GetQuantity(string detailName)
-        {
-            return details.ContainsKey(detailName) ? details[detailName] : 0;
-        }
-    }
-
-    // интерфейс для поставщика деталей
-    public interface IDetailProvider
-    {
-        bool ProvideDetail(string detailName);
-    }
-
-    // класс поставщика деталей (Стратегия)
-    public abstract class DetailProvider : IDetailProvider
-    {
-        protected IDetailProvider nextProvider;
-
-        public void SetNextProvider(IDetailProvider provider)
-        {
-            nextProvider = provider;
-        }
-
-        public abstract bool ProvideDetail(string detailName);
-    }
-
-    // класс поставщика деталей со склада
-    public class DetailProviderFromStorage : DetailProvider
-    {
-        private DetailStorage storage;
-
-        public DetailProviderFromStorage(DetailStorage storage)
-        {
-            this.storage = storage;
-        }
-
-        public override bool ProvideDetail(string detailName)
-        {
-            if (storage.GetDetail(detailName))
-            {
-                return true;
-            }
-            else if (nextProvider != null)
-            {
-                return nextProvider.ProvideDetail(detailName);
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
-
-    // класс поставщика деталей от внешнего поставщика
-    public class DetailProviderFromSupplier : DetailProvider
-    {
-        private DetailSupplier supplier;
-
-        public DetailProviderFromSupplier(DetailSupplier supplier)
-        {
-            this.supplier = supplier;
-        }
-
-        public override bool ProvideDetail(string detailName)
-        {
-            if (supplier.OrderDetail(detailName))
-            {
-                return true;
-            }
-            else if (nextProvider != null)
-            {
-                return nextProvider.ProvideDetail(detailName);
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
-
-    // класс поставщика деталей (Цепочка обязанностей)
-    public abstract class DetailSupplier
-    {
-        protected DetailSupplier nextSupplier;
-
-        public void SetNextSupplier(DetailSupplier supplier)
-        {
-            nextSupplier = supplier;
-        }
-
-        public abstract bool OrderDetail(string detailName);
-    }
-
-    // класс поставщика деталей со склада
-    public class DetailSupplierFromWarehouse : DetailSupplier
-    {
-        private DetailStorage storage;
-
-        public DetailSupplierFromWarehouse(DetailStorage storage)
-        {
-            this.storage = storage;
-        }
-
-        public override bool OrderDetail(string detailName)
-        {
-            if (storage.GetQuantity(detailName) > 0)
-            {
-                return true;
-            }
-            else if (nextSupplier != null)
-            {
-                return nextSupplier.OrderDetail(detailName);
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
-
-    // класс поставщика деталей от внешнего поставщика
-    public class DetailSupplierFromExternal : DetailSupplier
-    {
-        public override bool OrderDetail(string detailName)
-        {
-            // код для заказа детали у внешнего поставщика
+            // Добавляем клиента и возвращаем успешность ремонта
+            customers.Add(customer);
             return true;
         }
-    }
 
-    // класс РемонтныйЦех
-    public class RepairShop
-    {
-        private IRepairFactory repairFactory;
-        private DetailStorage detailStorage;
-        private IDetailProvider detailProvider;
-        private DetailSupplier detailSupplier;
-
-        public RepairShop()
+        public void PrintBalance()
         {
-            repairFactory = new RepairFactory();
-            detailStorage = DetailStorage.Instance;
-            detailProvider = new DetailProviderFromStorage(detailStorage);
-            detailSupplier = new DetailSupplierFromWarehouse(detailStorage);
-            detailSupplier.SetNextSupplier(new DetailSupplierFromExternal());
+            Console.WriteLine($"Баланс: {balance}");
         }
 
-        public (bool, double) ProcessRepair(string detailName, double repairPrice)
+        public void PrintInventory()
         {
-            // создаем объект ремонта
-            var repair = repairFactory.CreateRepair(detailName, repairPrice);
-
-            // ищем деталь на складе
-            if (!detailProvider.ProvideDetail(detailName))
+            Console.WriteLine("Детали на складе:");
+            foreach (var part in partsInventory)
             {
-                // если деталь не найдена, заказываем у поставщика
-                if (!detailSupplier.OrderDetail(detailName))
-                {
-                    // если деталь не удалось заказать, отказываем клиенту и выплачиваем штраф
-                    return (false, repair.RepairPrice * 2);
-                }
+                Console.WriteLine($"{part.Key.Name}: {part.Value}");
             }
-
-            // выполняем ремонт
-            var success = PerformRepair(repair);
-
-            // если ремонт не удался, возмещаем ущерб клиенту
-            if (!success)
-            {
-                return (false, repair.RepairPrice * 2);
-            }
-
-            // если ремонт удался, добавляем выплату за ремонт в баланс автосервиса
-            return (true, repair.RepairPrice);
-        }
-
-        private bool PerformRepair(Repair repair)
-        {
-            // сохраняем состояние ремонта перед заменой деталей
-            var currentState = SaveCurrentState();
-
-            // выполняем ремонт
-            try
-            {
-                // код для выполнения ремонта
-                return true;
-            }
-            catch (Exception ex)
-            {
-                // в случае ошибки восстанавливаем предыдущее состояние ремонта
-                RestorePreviousState(currentState);
-                return false;
-            }
-        }
-
-        private object SaveCurrentState()
-        {
-            // код для сохранения текущего состояния ремонта
-            return null;
-        }
-
-        private void RestorePreviousState(object state)
-        {
-            // код для восстановления предыдущего состояния ремонта
         }
     }
 
@@ -306,35 +161,52 @@ namespace Task13Autoservice
     {
         static void Main(string[] args)
         {
-            // создаем объект ремонтного цеха
-            var repairShop = new RepairShop();
-
-            // запускаем программу
-            while (true)
+            // Создаем склад деталей
+            var partsInventory = new Dictionary<Type, int>
             {
-                Console.WriteLine("Введите название детали:");
-                var detailName = Console.ReadLine();
+                { typeof(Starter), 2 },
+                { typeof(BrakePads), 1 },
+                { typeof(FrontSuspension), 1 },
+                { typeof(OilPump), 1 },
+                { typeof(Alternator), 1 }
+            };
 
-                Console.WriteLine("Введите стоимость ремонта:");
-                var repairPrice = double.Parse(Console.ReadLine());
+            // Создаем автосервис
+            var autoService = new AutoService(10000, partsInventory);
 
-                var result = repairShop.ProcessRepair(detailName, repairPrice);
+            // Создаем клиента с автомобилем
+            var car = new Car("Toyota Camry", new List<IRepair>
+            {
+                new Repair("Замена", new BrakePads(), 2000),
+                new Repair("Замена", new FrontSuspension(), 1000)
+            });
 
-                if (result.Item1)
-                {
-                    Console.WriteLine("Ремонт выполнен успешно. Стоимость ремонта: " + result.Item2);
-                }
-                else
-                {
-                    Console.WriteLine("Ремонт не выполнен. Стоимость штрафа: " + result.Item2);
-                }
+            var customer = new Customer("Иван", car);
 
-                Console.WriteLine("Желаете продолжить работу программы? (y/n)");
-                if (Console.ReadLine().ToLower() != "y")
-                {
-                    break;
-                }
+            string output = string.Empty;
+
+            foreach (var repair in customer.Car.Repairs)
+            {
+                output += "\n" + repair.Part.Name;
             }
+            
+            Console.WriteLine($"{customer.Name} приехал чинить:{output}");
+
+            // Пытаемся починить автомобиль
+            if (autoService.RepairCar(customer))
+            {
+                Console.WriteLine("Автомобиль починен успешно!");
+            }
+            else
+            {
+                Console.WriteLine("Не удалось починить автомобиль.");
+            }
+
+            // Печатаем баланс и склад деталей
+            autoService.PrintBalance();
+            autoService.PrintInventory();
+
+            Console.ReadKey();
         }
     }
 }
