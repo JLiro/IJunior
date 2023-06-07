@@ -37,7 +37,6 @@ namespace Task11Aquarium
             }
         }
 
-        
         public void EnlargeAge()
         {
             if (IsAlive)
