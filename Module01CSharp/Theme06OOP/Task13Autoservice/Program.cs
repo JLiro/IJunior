@@ -3,208 +3,365 @@ using System.Collections.Generic;
 
 namespace Task13Autoservice
 {
-    public interface IPart
+    public abstract class Detail
     {
-        string Name { get; }
-        decimal Price { get; }
-    }
+        public readonly string Name;
+        public readonly int Price;
+        public readonly double Wear;
 
-    public interface IRepair
-    {
-        string Name { get; }
-        IPart Part { get; }
-        decimal LaborCost { get; }
-        decimal TotalCost { get; }
-    }
-
-    public interface ICustomer
-    {
-        string Name { get; }
-        ICar Car { get; }
-    }
-
-    public interface ICar
-    {
-        string Model { get; }
-        IList<IRepair> Repairs { get; }
-    }
-
-    public abstract class Part : IPart
-    {
-        public string Name { get; }
-        public decimal Price { get; }
-
-        protected Part(string name, decimal price)
+        public Detail(string name, int productPrice, int laborPrice, double wear)
         {
             Name = name;
-            Price = price;
+            Price = productPrice + laborPrice;
+            Wear = wear;
         }
     }
 
-    public class Starter : Part
+    public class Starter : Detail
     {
-        public Starter() : base("Starter", new Random().Next(200, 600)) { }
+        public Starter(double wear) : base("Starter", new Random().Next(200, 600), new Random().Next(50, 250), wear) { }
     }
 
-    public class BrakePads : Part
+    public class BrakePads : Detail
     {
-        public BrakePads() : base("Engine", new Random().Next(150, 300)) { }
+        public BrakePads(double wear) : base("Engine", new Random().Next(150, 300), new Random().Next(50, 250), wear) { }
     }
 
-    public class FrontSuspension : Part
+    public class FrontSuspension : Detail
     {
-        public FrontSuspension() : base("FrontSuspension", new Random().Next(500, 1000)) { }
+        public FrontSuspension(double wear) : base("FrontSuspension", new Random().Next(500, 1000), new Random().Next(50, 250), wear) { }
     }
 
-    public class OilPump : Part
+    public class Car
     {
-        public OilPump() : base("OilPump", new Random().Next(300, 600)) { }
-    }
-
-    public class Alternator : Part
-    {
-        public Alternator() : base("Alternator", new Random().Next(300, 700)) { }
-    }
-
-    public class Repair : IRepair
-    {
-        public string Name { get; }
-        public IPart Part { get; }
-        public decimal LaborCost { get; }
-        public decimal TotalCost => Part.Price + LaborCost;
-
-        public Repair(string name, IPart part, decimal laborCost)
+        public Car(double starterWear, double brakePadsWear, double frontSuspensionWear)
         {
-            Name = name;
-            Part = part;
-            LaborCost = laborCost;
-        }
-    }
-
-    public class Customer : ICustomer
-    {
-        public string Name { get; }
-        public ICar Car { get; }
-
-        public Customer(string name, ICar car)
-        {
-            Name = name;
-            Car = car;
-        }
-    }
-
-    public class Car : ICar
-    {
-        public string Model { get; }
-        public IList<IRepair> Repairs { get; }
-
-        public Car(string model, IList<IRepair> repairs)
-        {
-            Model = model;
-            Repairs = repairs;
-        }
-    }
-
-    public class AutoService
-    {
-        private decimal balance;
-        private IDictionary<Type, int> partsInventory;
-        private IList<ICustomer> customers;
-
-        public AutoService(decimal balance, IDictionary<Type, int> partsInventory)
-        {
-            this.balance = balance;
-            this.partsInventory = partsInventory;
-            customers = new List<ICustomer>();
-        }
-
-        public bool RepairCar(ICustomer customer)
-        {
-            // Проверяем наличие всех необходимых деталей на складе
-            foreach (var repair in customer.Car.Repairs)
-            {
-                if (!partsInventory.ContainsKey(repair.Part.GetType()) || partsInventory[repair.Part.GetType()] == 0)
+            Details = new List<Detail>
                 {
-                    Console.WriteLine($"Для ремонта {repair.Name} необходима деталь {repair.Part.Name}, которой нет на складе.");
-                    return false;
+                    new Starter(starterWear),
+                    new BrakePads(brakePadsWear),
+                    new FrontSuspension(frontSuspensionWear)
+                };
+        }
+
+        public List<Detail> Details { get; private set; }
+
+        public void TakeDetail(Detail newDetail)
+        {
+            for (int i = 0; i < Details.Count; i++)
+            {
+                if (Details[i] == newDetail)
+                {
+                    Details[i] = newDetail;
+
+                    Console.WriteLine($"Замена {Details[i].Name} прошла успешно!");
+                }
+            }
+        }
+
+        public List<Detail> GetWornDetails()
+        {
+            List<Detail> wornDetails = new List<Detail>();
+
+            double allowableWear = 0.25;
+
+            foreach (Detail detail in Details)
+            {
+                if (detail.Wear < allowableWear)
+                {
+                    wornDetails.Add(detail);
+                    Console.WriteLine($"{detail.Name} нуждается в ремонте");
                 }
             }
 
-            // Вычитаем детали со склада и увеличиваем баланс
-            foreach (var repair in customer.Car.Repairs)
+            if (wornDetails.Count < 1)
             {
-                partsInventory[repair.Part.GetType()]--;
-                balance += repair.TotalCost - repair.Part.Price;
+                Console.WriteLine("Машина не нуждается в ремонте");
             }
 
-            // Добавляем клиента и возвращаем успешность ремонта
-            customers.Add(customer);
+            return wornDetails;
+        }
+    }
+
+    public class MoneyAccount
+    {
+        public int _balance { get; private set; }
+
+        public MoneyAccount(int balance) => _balance = balance;
+
+        public void Deposit(int amount) => _balance += amount;
+
+        public bool CheckSufficientFunds(int amount)
+        {
+            if (_balance < 0)
+            {
+                Console.WriteLine("Невозможно уменьшить баланс на отрицательное число");
+                return false;
+            }
+
+            if (_balance < amount)
+            {
+                Console.WriteLine("Невозможно уменьшить баланс. Недостаточно средств");
+                return false;
+            }
+
             return true;
         }
 
-        public void PrintBalance()
+        public int Withdraw(int amount)
         {
-            Console.WriteLine($"Баланс: {balance}");
+            _balance -= amount;
+
+            return amount;
         }
 
-        public void PrintInventory()
+        public string Info() => _balance.ToString();
+    }
+
+    public abstract class Human
+    {
+        public string Name { get; protected set; }
+        public Car ThisСar { get; protected set; }
+
+        public void GetCar(Car car) => ThisСar = car;
+    }
+
+    public class Customer : Human
+    {
+        private readonly MoneyAccount _moneyAccount;
+
+        public Customer(string name, int balance, Car car)
         {
-            Console.WriteLine("Детали на складе:");
-            foreach (var part in partsInventory)
+            Name = name;
+            _moneyAccount = new MoneyAccount(balance);
+            ThisСar = car;
+        }
+
+        public int GiveMoney(int totalPrice) => _moneyAccount.Withdraw(totalPrice);
+
+        public void GetMoney(int totalPrice) => _moneyAccount.Deposit(totalPrice);
+
+        public string GetBalance() => _moneyAccount.Info();
+
+        public bool CheckSufficientFunds(int totalPrice) => _moneyAccount.CheckSufficientFunds(totalPrice);
+    }
+
+    class CarMechanic : Human
+    {
+        public void ReplaceDetail(DetailsStorage detailsStorage, Detail detail)
+        {
+            ThisСar.TakeDetail(detailsStorage.GetDetail(detail));
+        }
+
+        public List<Detail> IdentifyWornDetails()
+        {
+            List<Detail> wornDetails = null;
+
+            if (ThisСar != null)
             {
-                Console.WriteLine($"{part.Key.Name}: {part.Value}");
+                wornDetails = ThisСar.GetWornDetails();
             }
+
+            return wornDetails;
+        }
+    }
+
+    class DetailsStorage
+    {
+        private List<Detail> _details = new List<Detail>();
+
+        public DetailsStorage(int starterCount, int brakePadsCount, int frontSuspensionCount)
+        {
+            double maxWear = 1;
+
+            for (int i = 0; i < starterCount; i++)
+            {
+                _details.Add(new Starter(maxWear));
+            }
+
+            for (int i = 0; i < brakePadsCount; i++)
+            {
+                _details.Add(new BrakePads(maxWear));
+            }
+
+            for (int i = 0; i < frontSuspensionCount; i++)
+            {
+                _details.Add(new FrontSuspension(maxWear));
+            }
+        }
+
+        public bool CheckDetailsAvailability(Detail requestedDetail, out int count)
+        {
+            int detailsCount = 0;
+
+            foreach (Detail detail in _details)
+            {
+                if (detail.GetType() == requestedDetail.GetType())
+                {
+                    detailsCount++;
+                }
+            }
+
+            count = detailsCount;
+
+            return detailsCount > 0;
+        }
+
+        public Detail GetDetail(Detail requestedDetail)
+        {
+            Detail foundDetail = null;
+
+            foreach (Detail detail in _details)
+            {
+                if (detail.GetType() == requestedDetail.GetType())
+                {
+                    foundDetail = detail;
+                    _details.Remove(detail);
+                    break;
+                }
+            }
+
+            return foundDetail;
+        }
+    }
+
+    class CarService
+    {
+        private DetailsStorage _detailsStorage;
+        private MoneyAccount _moneyAccount;
+        private CarMechanic _carMechanic;
+        private Queue<Customer> _customers;
+
+        public CarService(Queue<Customer> customers, int balance)
+        {
+            _detailsStorage = new DetailsStorage(new Random().Next(10), new Random().Next(10), new Random().Next(10));
+            _moneyAccount = new MoneyAccount(balance);
+            _carMechanic = new CarMechanic();
+            _customers = customers;
+        }
+
+        public void ServeCustomer()
+        {
+            foreach (var customer in _customers)
+            {
+                Console.WriteLine("---// Баланс автосервиса: " + _moneyAccount.Info());
+
+                Console.WriteLine($"{customer.Name} [{customer.GetBalance()}$] приехал в автомастерскую");
+                _carMechanic.GetCar(customer.ThisСar);
+                Console.WriteLine("Машина передана автомеханнику для диагностики неполадок\nРезультат диагностики:");
+
+                foreach (Detail detail in _carMechanic.IdentifyWornDetails())
+                {
+                    CalculateCost(detail, out int totalPrice);
+
+                    if (CheckTransactionDirection(totalPrice))
+                    {
+                        if (customer.CheckSufficientFunds(totalPrice))
+                        {
+                            _moneyAccount.Deposit(customer.GiveMoney(totalPrice));
+                            Console.WriteLine($"Клиент оплатил замену {detail.Name}: -{detail.Price}");
+
+                            _carMechanic.ReplaceDetail(_detailsStorage, detail);
+                            Console.WriteLine("Деталь заменена");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"У клиента недостаточно средств для оплаты замены детали {detail.Price}");
+                        }
+                    }
+                    else
+                    {
+                        customer.GetMoney(_moneyAccount.Withdraw(Math.Abs(totalPrice)));
+                        Console.WriteLine($"К сожалению, на складе не оказалось нужной детали. Клиенту начислено {Math.Abs(totalPrice)}$ в качесвте компенсации");
+                    }
+                }
+
+                customer.GetCar(_carMechanic.ThisСar);
+                Console.WriteLine($"Машина возвращена автовладельцу [{customer.GetBalance()}$]\n");
+            }
+        }
+
+        private bool CheckTransactionDirection(int totalPrice) => totalPrice > 0;
+
+        private void CalculateCost(Detail detail, out int totalPrice)
+        {
+            int fineAmount = 100;
+            totalPrice = 0;
+
+            if (_detailsStorage.CheckDetailsAvailability(detail, out int detailsCountInStorage) == true)
+            {
+                Console.WriteLine($"На скаладе {detailsCountInStorage} {detail.Name}. Замена обойдётся в {detail.Price}$");
+
+                totalPrice += detail.Price;
+            }
+            else
+            {
+                Console.WriteLine($"На складе нет {detail.Name}. Мы сожалеем и выплатим Вам {fineAmount}$");
+
+                totalPrice -= fineAmount;
+            }
+        }
+    }
+
+    class Street
+    {
+        private static Street instance = null;
+
+        private Street() => GenerateCustomers(new Random());
+
+        public static Street GetInstance()
+        {
+            if (instance == null)
+            {
+                instance = new Street();
+            }
+
+            return instance;
+        }
+
+        public void Work(Random random)
+        {
+            int maxBalance = 10000;
+
+            CarService _carService = new CarService(GenerateCustomers(random), random.Next(maxBalance));
+            _carService.ServeCustomer();
+        }
+
+        private Queue<Customer> GenerateCustomers(Random random)
+        {
+            Queue<Customer> customers = new Queue<Customer>();
+
+            int customersMaxCount = 10;
+
+            int customersCount = random.Next(customersMaxCount);
+
+            int maxBalance = 2500;
+
+            List<Car> carTypes = new List<Car>
+                {
+                    new Car(0.90, 0.72, 0.12),
+                    new Car(0.30, 0.64, 0.28),
+                    new Car(0.02, 0.02, 0.86),
+                    new Car(0.11, 0.56, 0.24),
+                };
+
+            for (int i = 0; i < customersCount; i++)
+            {
+                int id = i + 1;
+
+                customers.Enqueue(new Customer($"Водитель {id}", random.Next(maxBalance), carTypes[random.Next(carTypes.Count)]));
+            }
+
+            return customers;
         }
     }
 
     internal class Program
     {
-        static void Main(string[] args)
+        public static void Main()
         {
-            // Создаем склад деталей
-            var partsInventory = new Dictionary<Type, int>
-            {
-                { typeof(Starter), 2 },
-                { typeof(BrakePads), 1 },
-                { typeof(FrontSuspension), 1 },
-                { typeof(OilPump), 1 },
-                { typeof(Alternator), 1 }
-            };
-
-            // Создаем автосервис
-            var autoService = new AutoService(10000, partsInventory);
-
-            // Создаем клиента с автомобилем
-            var car = new Car("Toyota Camry", new List<IRepair>
-            {
-                new Repair("Замена", new BrakePads(), 2000),
-                new Repair("Замена", new FrontSuspension(), 1000)
-            });
-
-            var customer = new Customer("Иван", car);
-
-            string output = string.Empty;
-
-            foreach (var repair in customer.Car.Repairs)
-            {
-                output += "\n" + repair.Part.Name;
-            }
-            
-            Console.WriteLine($"{customer.Name} приехал чинить:{output}");
-
-            // Пытаемся починить автомобиль
-            if (autoService.RepairCar(customer))
-            {
-                Console.WriteLine("Автомобиль починен успешно!");
-            }
-            else
-            {
-                Console.WriteLine("Не удалось починить автомобиль.");
-            }
-
-            // Печатаем баланс и склад деталей
-            autoService.PrintBalance();
-            autoService.PrintInventory();
+            Street street = Street.GetInstance();
+            street.Work(new Random());
 
             Console.ReadKey();
         }
