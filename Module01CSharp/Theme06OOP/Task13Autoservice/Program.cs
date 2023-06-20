@@ -272,7 +272,7 @@ namespace Task13Autoservice
                     else
                     {
                         customer.TakeMoney(_moneyAccount.Withdraw(Math.Abs(totalPrice)));
-                        Console.WriteLine($"К сожалению, на складе не оказалось нужной детали. Клиенту начислено {Math.Abs(totalPrice)}$ в качесвте компенсации");
+                        Console.WriteLine($"К сожалению, на складе не оказалось нужной детали. Клиенту начислено {Math.Abs(totalPrice)}$ в качестве компенсации");
                     }
                 }
 
