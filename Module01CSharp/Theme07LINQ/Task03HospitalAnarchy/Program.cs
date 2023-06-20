@@ -13,25 +13,25 @@ namespace Task03HospitalAnarchy
             Disease = disease;
         }
 
-        public string Name { get; set; }
-        public int Age { get; set; }
-        public string Disease { get; set; }
+        public string Name { get; private set; }
+        public int Age { get; private set; }
+        public string Disease { get; private set; }
     }
 
     class Hospital
     {
-        private List<Patient> _patients = new List<Patient>()
+        private readonly List<Patient> _patients = new List<Patient>()
         {
-        new Patient("Джон Смит", 30, "Грипп"),
-        new Patient("Мэри Джонсон", 45, "Рак"),
-        new Patient("Дэвид Ли", 25, "Грипп"),
-        new Patient("Сара Браун", 50, "Болезнь сердца"),
-        new Patient("Майкл Дэвис", 38, "Рак"),
-        new Patient("Эмили Уилсон", 42, "Грипп"),
-        new Patient("Дэниел Тейлор", 35, "Болезнь сердца"),
-        new Patient("Оливия Мартинес", 28, "Грипп"),
-        new Patient("Джейкоб Хернандес", 48, "Рак"),
-        new Patient("София Ли", 31, "Болезнь сердца")
+            new Patient("Джон Смит", 30, "Грипп"),
+            new Patient("Мэри Джонсон", 45, "Рак"),
+            new Patient("Дэвид Ли", 25, "Грипп"),
+            new Patient("Сара Браун", 50, "Болезнь сердца"),
+            new Patient("Майкл Дэвис", 38, "Рак"),
+            new Patient("Эмили Уилсон", 42, "Грипп"),
+            new Patient("Дэниел Тейлор", 35, "Болезнь сердца"),
+            new Patient("Оливия Мартинес", 28, "Грипп"),
+            new Patient("Джейкоб Хернандес", 48, "Рак"),
+            new Patient("София Ли", 31, "Болезнь сердца")
         };
 
         public void Menu()
@@ -42,7 +42,8 @@ namespace Task03HospitalAnarchy
             const string CommandExit = "4";
 
             bool exit = false;
-            while (!exit)
+
+            while (exit == false)
             {
                 Console.Clear();
 
@@ -59,27 +60,17 @@ namespace Task03HospitalAnarchy
                 {
                     case CommandSortByName:
                         Console.WriteLine("\nПациенты остортированы по имени:");
-                        SortByName();
-                        
-                        foreach (var patient in _patients)
-                        {
-                            Console.WriteLine("{0}, {1} лет, имеет заболивание {2}", patient.Name, patient.Age, patient.Disease);
-                        }
+                        SortPatientsByName();
                         break;
 
                     case CommandSortByAge:
                         Console.WriteLine("\nПациенты остортированы по возрасту:");
-                        SortByAge();
-
-                        foreach (var patient in _patients)
-                        {
-                            Console.WriteLine("{0}, {1} лет, имеет заболивание {2}", patient.Name, patient.Age, patient.Disease);
-                        }
+                        SortPatientsByAge();
                         break;
 
                     case CommandPrintPatientsWithDisease:
                         Console.Write("Введите название заболевания: ");
-                        PrintPatientsWithDisease(Console.ReadLine());
+                        SortPatientsByDisease(Console.ReadLine());
                         break;
 
                     case CommandExit:
@@ -87,7 +78,7 @@ namespace Task03HospitalAnarchy
                         break;
 
                     default:
-                        Console.WriteLine("Invalid choice.");
+                        Console.WriteLine("Неверный выбор");
                         break;
                 }
 
@@ -96,24 +87,34 @@ namespace Task03HospitalAnarchy
             }
         }
 
-        private void SortByName()
+        private void SortPatientsByName()
         {
-            _patients.Sort((p1, p2) => p1.Name.CompareTo(p2.Name));
+            var filteredPatients = _patients.OrderBy(patient => patient.Name);
+
+            PrintPatients(filteredPatients);
         }
 
-        private void SortByAge()
+        private void SortPatientsByAge()
         {
-            _patients.Sort((p1, p2) => p1.Age.CompareTo(p2.Age));
+            var filteredPatients = _patients.OrderBy(patient => patient.Age);
+
+            PrintPatients(filteredPatients);
         }
 
-        private void PrintPatientsWithDisease(string disease)
+        private void SortPatientsByDisease(string disease)
         {
-            var patientsWithDisease = _patients.Where(p => p.Disease == disease);
+            var filteredPatients = _patients.Where(patient => patient.Disease == disease);
+
             Console.WriteLine($"\nПациенты с заболеванием {disease}:");
 
-            foreach (var patient in patientsWithDisease)
+            PrintPatients(filteredPatients);
+        }
+
+        private void PrintPatients(IEnumerable<Patient> patients)
+        {
+            foreach (var patient in patients)
             {
-                Console.WriteLine("{0}, {1} лет, имеет заболивание {2}", patient.Name, patient.Age, patient.Disease);
+                Console.WriteLine("{0}, {1} лет, имеет заболевание {2}", patient.Name, patient.Age, patient.Disease);
             }
         }
     }
