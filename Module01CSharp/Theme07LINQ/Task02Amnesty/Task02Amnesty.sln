@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Task02Amnesty", "Task02Amnesty.csproj", "{89B1B033-BA57-4C04-871B-72E7477DC3EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{89B1B033-BA57-4C04-871B-72E7477DC3EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89B1B033-BA57-4C04-871B-72E7477DC3EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89B1B033-BA57-4C04-871B-72E7477DC3EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89B1B033-BA57-4C04-871B-72E7477DC3EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {194DB346-FE2B-4BE1-8BD4-6CF24AEF17AA}
+	EndGlobalSection
+EndGlobal

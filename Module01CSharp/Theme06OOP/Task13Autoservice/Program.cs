@@ -34,9 +34,11 @@ namespace Task13Autoservice
 
     public class Car
     {
+        private List<Detail> _details;
+
         public Car(double starterWear, double brakePadsWear, double frontSuspensionWear)
         {
-            Details = new List<Detail>
+            _details = new List<Detail>
                 {
                     new Starter(starterWear),
                     new BrakePads(brakePadsWear),
@@ -44,17 +46,15 @@ namespace Task13Autoservice
                 };
         }
 
-        public List<Detail> Details { get; private set; }
-
         public void TakeDetail(Detail newDetail)
         {
-            for (int i = 0; i < Details.Count; i++)
+            for (int i = 0; i < _details.Count; i++)
             {
-                if (Details[i] == newDetail)
+                if (_details[i] == newDetail)
                 {
-                    Details[i] = newDetail;
+                    _details[i] = newDetail;
 
-                    Console.WriteLine($"Замена {Details[i].Name} прошла успешно!");
+                    Console.WriteLine($"Замена {_details[i].Name} прошла успешно!");
                 }
             }
         }
@@ -65,7 +65,7 @@ namespace Task13Autoservice
 
             double allowableWear = 0.25;
 
-            foreach (Detail detail in Details)
+            foreach (Detail detail in _details)
             {
                 if (detail.Wear < allowableWear)
                 {
@@ -85,7 +85,7 @@ namespace Task13Autoservice
 
     public class MoneyAccount
     {
-        public int _balance { get; private set; }
+        private int _balance;
 
         public MoneyAccount(int balance) => _balance = balance;
 
@@ -115,7 +115,7 @@ namespace Task13Autoservice
             return amount;
         }
 
-        public string Info() => _balance.ToString();
+        public string GetInfo() => _balance.ToString();
     }
 
     public abstract class Human
@@ -139,9 +139,9 @@ namespace Task13Autoservice
 
         public int GiveMoney(int totalPrice) => _moneyAccount.Withdraw(totalPrice);
 
-        public void GetMoney(int totalPrice) => _moneyAccount.Deposit(totalPrice);
+        public void TakeMoney(int totalPrice) => _moneyAccount.Deposit(totalPrice);
 
-        public string GetBalance() => _moneyAccount.Info();
+        public string GetBalance() => _moneyAccount.GetInfo();
 
         public bool CheckSufficientFunds(int totalPrice) => _moneyAccount.CheckSufficientFunds(totalPrice);
     }
@@ -244,7 +244,7 @@ namespace Task13Autoservice
         {
             foreach (var customer in _customers)
             {
-                Console.WriteLine("---// Баланс автосервиса: " + _moneyAccount.Info());
+                Console.WriteLine("---// Баланс автосервиса: " + _moneyAccount.GetInfo());
 
                 Console.WriteLine($"{customer.Name} [{customer.GetBalance()}$] приехал в автомастерскую");
                 _carMechanic.GetCar(customer.ThisСar);
@@ -271,7 +271,7 @@ namespace Task13Autoservice
                     }
                     else
                     {
-                        customer.GetMoney(_moneyAccount.Withdraw(Math.Abs(totalPrice)));
+                        customer.TakeMoney(_moneyAccount.Withdraw(Math.Abs(totalPrice)));
                         Console.WriteLine($"К сожалению, на складе не оказалось нужной детали. Клиенту начислено {Math.Abs(totalPrice)}$ в качесвте компенсации");
                     }
                 }
@@ -323,8 +323,8 @@ namespace Task13Autoservice
         {
             int maxBalance = 10000;
 
-            CarService _carService = new CarService(GenerateCustomers(random), random.Next(maxBalance));
-            _carService.ServeCustomer();
+            CarService carService = new CarService(GenerateCustomers(random), random.Next(maxBalance));
+            carService.ServeCustomer();
         }
 
         private Queue<Customer> GenerateCustomers(Random random)
@@ -338,12 +338,12 @@ namespace Task13Autoservice
             int maxBalance = 2500;
 
             List<Car> carTypes = new List<Car>
-                {
-                    new Car(0.90, 0.72, 0.12),
-                    new Car(0.30, 0.64, 0.28),
-                    new Car(0.02, 0.02, 0.86),
-                    new Car(0.11, 0.56, 0.24),
-                };
+            {
+                new Car(0.90, 0.72, 0.12),
+                new Car(0.30, 0.64, 0.28),
+                new Car(0.02, 0.02, 0.86),
+                new Car(0.11, 0.56, 0.24),
+            };
 
             for (int i = 0; i < customersCount; i++)
             {
