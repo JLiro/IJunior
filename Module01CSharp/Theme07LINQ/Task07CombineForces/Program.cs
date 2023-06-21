@@ -16,8 +16,8 @@ namespace Task06WeaponReport
 
     public class Database
     {
-        private readonly List<Soldier> _firstUnitSoldiers;
-        private readonly List<Soldier> _secondUnitSoldiers;
+        private List<Soldier> _firstUnitSoldiers;
+        private List<Soldier> _secondUnitSoldiers;
 
         public Database()
         {
@@ -54,18 +54,20 @@ namespace Task06WeaponReport
             Console.WriteLine("\nВторой отряд:");
             PrintSoldiers(_secondUnitSoldiers);
 
-            Console.Write($"\nОбновленный второй отряд ");
-            PrintSoldiersByLastName();
+            MoveSoldiersByLastNameToSecondUnit();
+
+            Console.WriteLine($"\nОбновленный второй отряд:");
+            PrintSoldiers(_secondUnitSoldiers);
         }
 
-        private void PrintSoldiersByLastName()
+        private void MoveSoldiersByLastNameToSecondUnit()
         {
             string firstLetter = "Б";
 
-            _secondUnitSoldiers.AddRange(_firstUnitSoldiers.Where(soldier => soldier.LastName.StartsWith(firstLetter)).ToList());
-
-            Console.WriteLine("(перенесены бойцы на букву [{0}]:", firstLetter);
-            PrintSoldiers(_secondUnitSoldiers);
+            var soldiersToMove = _firstUnitSoldiers.Where(soldier => soldier.LastName.StartsWith(firstLetter));
+            
+            _firstUnitSoldiers  = _firstUnitSoldiers.Except(soldiersToMove).ToList();
+            _secondUnitSoldiers = _secondUnitSoldiers.Concat(soldiersToMove).ToList();
         }
 
         private void PrintSoldiers(IEnumerable<Soldier> soldiers)

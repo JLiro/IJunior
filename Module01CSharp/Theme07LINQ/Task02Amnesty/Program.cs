@@ -32,16 +32,17 @@ namespace Task02Amnesty
             new Prisoner("Kim Min-ji", "Антиправительственное")
         };
 
-        public void ShowPrisoners()
+        public void ShowLog()
         {
             Console.WriteLine("До амнистии:");
-            ShowPrisonersBeforeAmnesty();
+            ShowPrisoners();
 
             Console.WriteLine("\nПосле амнистии:");
-            ShowPrisonersAfterAmnesty();
+            Amnesty();
+            ShowPrisoners();
         }
 
-        private void ShowPrisonersBeforeAmnesty()
+        private void ShowPrisoners()
         {
             foreach (var prisoner in Prisoners)
             {
@@ -49,14 +50,11 @@ namespace Task02Amnesty
             }
         }
 
-        private void ShowPrisonersAfterAmnesty()
+        private void Amnesty()
         {
-            var filteredPrisoners = Prisoners.Where(prisoner => prisoner.CrimeType != "Антиправительственное").Select(prisoner => prisoner.Name);
+            string crimeType = "Антиправительственное";
 
-            foreach (var creminal in filteredPrisoners)
-            {
-                Console.WriteLine(creminal);
-            }
+            Prisoners.RemoveAll(prisoner => prisoner.CrimeType == crimeType);
         }
     }
     internal class Program
@@ -64,7 +62,7 @@ namespace Task02Amnesty
         static void Main(string[] args)
         {
             DataBase dataBase = new DataBase();
-            dataBase.ShowPrisoners();
+            dataBase.ShowLog();
         }
     }
 }

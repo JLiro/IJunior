@@ -37,7 +37,7 @@ namespace Task03HospitalAnarchy
         public void Menu()
         {
             const string CommandSortByName = "1";
-            const string CommandSortByAge  = "2";
+            const string CommandSortByAge = "2";
             const string CommandPrintPatientsWithDisease = "3";
             const string CommandExit = "4";
 
@@ -50,7 +50,7 @@ namespace Task03HospitalAnarchy
                 Console.WriteLine("Выберите действие:");
                 Console.WriteLine("1. Сортировка пациентов по имени");
                 Console.WriteLine("2. Сортировать пациентов по возрасту");
-                Console.WriteLine("3. Печать пациентов с определенным заболеванием");
+                Console.WriteLine("3. Вывести пациентов с определенным заболеванием");
                 Console.WriteLine("4. Выход");
 
                 Console.Write("\n> ");
@@ -60,17 +60,20 @@ namespace Task03HospitalAnarchy
                 {
                     case CommandSortByName:
                         Console.WriteLine("\nПациенты остортированы по имени:");
-                        SortPatientsByName();
+                        PrintPatients(GetSortPatientsByName());
                         break;
 
                     case CommandSortByAge:
                         Console.WriteLine("\nПациенты остортированы по возрасту:");
-                        SortPatientsByAge();
+                        PrintPatients(GetSortPatientsByAge());
                         break;
 
                     case CommandPrintPatientsWithDisease:
                         Console.Write("Введите название заболевания: ");
-                        SortPatientsByDisease(Console.ReadLine());
+                        string disease = Console.ReadLine();
+
+                        Console.WriteLine($"\nПациенты с заболеванием {disease}:");
+                        PrintPatients(GetPatientsWithDisease(disease));
                         break;
 
                     case CommandExit:
@@ -87,27 +90,19 @@ namespace Task03HospitalAnarchy
             }
         }
 
-        private void SortPatientsByName()
+        private IEnumerable<Patient> GetSortPatientsByName()
         {
-            var filteredPatients = _patients.OrderBy(patient => patient.Name);
-
-            PrintPatients(filteredPatients);
+            return _patients.OrderBy(patient => patient.Name);
         }
 
-        private void SortPatientsByAge()
+        private IEnumerable<Patient> GetSortPatientsByAge()
         {
-            var filteredPatients = _patients.OrderBy(patient => patient.Age);
-
-            PrintPatients(filteredPatients);
+            return _patients.OrderBy(patient => patient.Age);
         }
 
-        private void SortPatientsByDisease(string disease)
+        private IEnumerable<Patient> GetPatientsWithDisease(string disease)
         {
-            var filteredPatients = _patients.Where(patient => patient.Disease == disease);
-
-            Console.WriteLine($"\nПациенты с заболеванием {disease}:");
-
-            PrintPatients(filteredPatients);
+            return _patients.Where(patient => patient.Disease == disease);
         }
 
         private void PrintPatients(IEnumerable<Patient> patients)

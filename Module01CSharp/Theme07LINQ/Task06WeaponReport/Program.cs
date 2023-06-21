@@ -44,17 +44,19 @@ namespace Task06WeaponReport
         public void PrintSoldiersInfo()
         {
             Console.WriteLine("Список всех солдат:");
+            PrintSoldiers(GetQuerySoldiers());
+        }
 
-            var soldiersInfo = _soldiers.Select(soldier => new { BasicInfo = soldier.Name + " " + soldier.Rank });
-
-            PrintSoldiers(soldiersInfo);
+        private IEnumerable<dynamic> GetQuerySoldiers()
+        {
+            return _soldiers.Select(soldier => new { soldier.Name, soldier.Rank });
         }
 
         private void PrintSoldiers(IEnumerable<dynamic> soldiers)
         {
             foreach (var soldier in soldiers)
             {
-                Console.WriteLine(soldier.BasicInfo);
+                Console.WriteLine(soldier.Name + " " + soldier.Rank);
             }
         }
     }

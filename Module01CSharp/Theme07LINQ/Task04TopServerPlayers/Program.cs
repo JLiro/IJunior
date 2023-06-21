@@ -45,28 +45,20 @@ namespace Task04TopServerPlayers
             PrintPlayers(_players);
 
             Console.WriteLine("\nСписок топ 3 игроков отсортированных по уровню:");
-            SortTopPlayersByLevel();
+            PrintPlayers(GetTopPlayersByLevel(3));
 
             Console.WriteLine("\nСписок топ 3 игроков отсортированных по силе:");
-            SortTopPlayersByStrength();
+            PrintPlayers(GetTopPlayersByStrength(3));
         }
 
-        private void SortTopPlayersByLevel()
+        private IEnumerable<Player> GetTopPlayersByLevel(int count)
         {
-            int topPlayersCount = 3;
-
-            var filteredPlayers = _players.OrderByDescending(patient => patient.Level).Take(topPlayersCount);
-
-            PrintPlayers(filteredPlayers);
+            return _players.OrderByDescending(player => player.Level).Take(count);
         }
 
-        private void SortTopPlayersByStrength()
+        private IEnumerable<Player> GetTopPlayersByStrength(int count)
         {
-            int topPlayersCount = 3;
-
-            var filteredPlayers = _players.OrderByDescending(patient => patient.Strength).Take(topPlayersCount);
-
-            PrintPlayers(filteredPlayers);
+            return _players.OrderByDescending(player => player.Strength).Take(count);
         }
 
         private void PrintPlayers(IEnumerable<Player> players)
