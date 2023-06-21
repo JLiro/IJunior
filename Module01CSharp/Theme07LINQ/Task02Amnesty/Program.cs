@@ -54,7 +54,7 @@ namespace Task02Amnesty
         {
             string crimeType = "Антиправительственное";
 
-            Prisoners.RemoveAll(prisoner => prisoner.CrimeType == crimeType);
+            Prisoners = Prisoners.Where(prisoner => prisoner.CrimeType != crimeType).ToList();
         }
     }
     internal class Program
