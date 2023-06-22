@@ -18,19 +18,24 @@ namespace Task02Amnesty
 
     public class DataBase
     {
-        private List<Prisoner> Prisoners = new List<Prisoner>
+        private List<Prisoner> _prisoners;
+
+        public DataBase()
         {
-            new Prisoner("John Smith", "Кража"),
-            new Prisoner("Anna Johnson", "Антиправительственное"),
-            new Prisoner("Ivan Petrov", "Убийство"),
-            new Prisoner("Maria Garcia", "Убийство"),
-            new Prisoner("Mohammed Ahmed", "Кража"),
-            new Prisoner("Hiroshi Nakamura", "Антиправительственное"),
-            new Prisoner("Chen Wei", "Убийство"),
-            new Prisoner("Ludmila Ivanova", "Антиправительственное"),
-            new Prisoner("Abdul Rahman", "Кража"),
-            new Prisoner("Kim Min-ji", "Антиправительственное")
-        };
+            _prisoners = new List<Prisoner>
+            {
+                new Prisoner("John Smith", "Кража"),
+                new Prisoner("Anna Johnson", "Антиправительственное"),
+                new Prisoner("Ivan Petrov", "Убийство"),
+                new Prisoner("Maria Garcia", "Убийство"),
+                new Prisoner("Mohammed Ahmed", "Кража"),
+                new Prisoner("Hiroshi Nakamura", "Антиправительственное"),
+                new Prisoner("Chen Wei", "Убийство"),
+                new Prisoner("Ludmila Ivanova", "Антиправительственное"),
+                new Prisoner("Abdul Rahman", "Кража"),
+                new Prisoner("Kim Min-ji", "Антиправительственное")
+            };
+        }
 
         public void ShowLog()
         {
@@ -44,7 +49,7 @@ namespace Task02Amnesty
 
         private void ShowPrisoners()
         {
-            foreach (var prisoner in Prisoners)
+            foreach (var prisoner in _prisoners)
             {
                 Console.WriteLine(prisoner.Name);
             }
@@ -54,7 +59,7 @@ namespace Task02Amnesty
         {
             string crimeType = "Антиправительственное";
 
-            Prisoners = Prisoners.Where(prisoner => prisoner.CrimeType != crimeType).ToList();
+            _prisoners = _prisoners.Where(prisoner => prisoner.CrimeType != crimeType).ToList();
         }
     }
     internal class Program
