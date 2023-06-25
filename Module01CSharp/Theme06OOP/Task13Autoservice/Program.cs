@@ -149,7 +149,9 @@ namespace Task13Autoservice
         public Detail Detail { get; private set; }
         public int Count { get; private set; }
 
-        public bool TryTakeDetail() => (Count-- > 0) ? true : false;
+        public bool TryTakeDetail() => Count > 0;
+
+        public void TakeDetail() => Count--;
     }
 
     class DetailsStorage
@@ -173,6 +175,7 @@ namespace Task13Autoservice
             {
                 if (cell.Detail.GetType() == requestedDetail.GetType() && cell.TryTakeDetail())
                 {
+                    cell.TakeDetail();
                     foundDetail = cell.Detail;
                     break;
                 }
