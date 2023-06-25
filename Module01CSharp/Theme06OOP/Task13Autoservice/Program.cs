@@ -180,7 +180,7 @@ namespace Task13Autoservice
                     break;
                 }
             }
-
+            Console.WriteLine();
             return foundDetail;
         }
     }
