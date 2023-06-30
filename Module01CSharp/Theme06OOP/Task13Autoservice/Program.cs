@@ -135,7 +135,7 @@ namespace Task13Autoservice
 
         public int GetBalance() => _moneyAccount.Balance;
 
-        public bool CheckSufficientFunds(int totalPrice) => _moneyAccount.IsBalanceValidBeforeDecrease() && _moneyAccount.EnsureSufficientBalanceForWithdrawal(totalPrice);
+        public bool CanMakePayment(int totalPrice) => _moneyAccount.IsBalanceValidBeforeDecrease() && _moneyAccount.EnsureSufficientBalanceForWithdrawal(totalPrice);
     }
 
     public class Cell
@@ -149,7 +149,7 @@ namespace Task13Autoservice
         public Detail Detail { get; private set; }
         public int Count { get; private set; }
 
-        public bool TryTakeDetail() => Count > 0;
+        public bool IsSufficientDetailQuantity() => Count > 0;
 
         public void TakeDetail() => Count--;
     }
@@ -173,7 +173,7 @@ namespace Task13Autoservice
 
             foreach (Cell cell in _details)
             {
-                if (cell.Detail.GetType() == requestedDetail.GetType() && cell.TryTakeDetail())
+                if (cell.Detail.GetType() == requestedDetail.GetType() && cell.IsSufficientDetailQuantity())
                 {
                     cell.TakeDetail();
                     foundDetail = cell.Detail;
@@ -217,7 +217,7 @@ namespace Task13Autoservice
                     
                     if (newDetail != null)
                     {
-                        if (customer.CheckSufficientFunds(totalPrice))
+                        if (customer.CanMakePayment(totalPrice))
                         {
                             _moneyAccount.Add(totalPrice);
                             customer.GiveMoney(totalPrice);
