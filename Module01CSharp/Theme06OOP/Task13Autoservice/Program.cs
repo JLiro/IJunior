@@ -83,7 +83,6 @@ namespace Task13Autoservice
 
     public class MoneyAccount
     {
-
         public MoneyAccount(int balance) => Balance = balance;
 
         public int Balance { get; private set; }

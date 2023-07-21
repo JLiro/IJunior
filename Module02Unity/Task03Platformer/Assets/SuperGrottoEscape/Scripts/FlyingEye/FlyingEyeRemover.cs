@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class FlyingEyeRemover : MonoBehaviour
 {
-    [SerializeField] private GameObject _allEnemy;
-    [SerializeField] private float      _coolDown;
+    [SerializeField] private FlyingEyesDaddy _allEnemy;
+    [SerializeField] private float _coolDown;
 
     private void Start()
     {
