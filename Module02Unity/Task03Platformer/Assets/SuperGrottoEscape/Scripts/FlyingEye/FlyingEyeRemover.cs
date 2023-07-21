@@ -3,27 +3,24 @@ using UnityEngine;
 
 public class FlyingEyeRemover : MonoBehaviour
 {
-    [SerializeField] private float _timeToRemoveAllEnemy;
-
-    private Coroutine _corutine;
+    [SerializeField] private GameObject _allEnemy;
+    [SerializeField] private float      _coolDown;
 
     private void Start()
     {
-        _corutine = StartCoroutine(Instantiated());
+        StartCoroutine(Destroing());
     }
 
-    private IEnumerator Instantiated()
+    private IEnumerator Destroing()
     {
-        yield return new WaitForSeconds(_timeToRemoveAllEnemy);
+        WaitForSeconds waitForSecond = new WaitForSeconds(_coolDown);
+        int childCount = _allEnemy.transform.childCount;
 
-        foreach (GameObject flyingEye in FindObjectsOfType<GameObject>())
+        for (int i = childCount - 1; i >= 0; i--)
         {
-            if (flyingEye.GetComponent<FlyingEye>() != null)
-            {
-                Destroy(flyingEye);
-            }
-        }
+            Destroy(_allEnemy.transform.GetChild(i).gameObject);
 
-        StopCoroutine(_corutine);
+            yield return waitForSecond;
+        }
     }
 }

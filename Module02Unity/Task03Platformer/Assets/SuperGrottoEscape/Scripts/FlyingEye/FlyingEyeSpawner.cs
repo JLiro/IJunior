@@ -3,9 +3,10 @@ using UnityEngine;
 
 public class FlyingEyeSpawner : MonoBehaviour
 {
-    [SerializeField] private FlyingEye _prefab;
-    [SerializeField] private Transform _pointsParent;
-    [SerializeField] private float     _coolDown;
+    [SerializeField] private GameObject _allEnemy;
+    [SerializeField] private Transform  _pointsParent;
+    [SerializeField] private FlyingEye  _prefab;
+    [SerializeField] private float      _coolDown;
 
     private Transform[] _points;
 
@@ -27,7 +28,7 @@ public class FlyingEyeSpawner : MonoBehaviour
 
         for (int i = 0; i < _points.Length; i++)
         {
-            Instantiate(_prefab, _points[i].position, Quaternion.identity);
+            Instantiate(_prefab, _points[i].position, Quaternion.identity).transform.SetParent(_allEnemy.transform);
 
             yield return waitForSecond;
         }
