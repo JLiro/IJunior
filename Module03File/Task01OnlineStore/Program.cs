@@ -68,11 +68,9 @@ namespace OnlineShop
             _items = new Dictionary<Good, int>();
         }
 
-        public delegate bool IsGoodsAvailableDelegate(int quantityToAdd);
-
-        public void Add(Good good, int quantity, IsGoodsAvailableDelegate isGoodsAvailable)
+        public void Add(Good good, int quantity, Warehouse warehouse)
         {
-            if (isGoodsAvailable(quantity))
+            if (warehouse.IsGoodsAvailable(quantity))
             {
                 _items[good] = quantity;
             }
@@ -146,8 +144,8 @@ namespace OnlineShop
             int quantityToAdd2 = 3;
             int quantityToAdd3 = 9;
 
-            _cart.Add(iPhone12, quantityToAdd1, _warehouse.IsGoodsAvailable);
-            _cart.Add(iPhone11, quantityToAdd2, _warehouse.IsGoodsAvailable);
+            _cart.Add(iPhone12, quantityToAdd1, _warehouse);
+            _cart.Add(iPhone11, quantityToAdd2, _warehouse);
 
             Console.WriteLine();
             _cart.DisplayCartItems();
@@ -156,7 +154,7 @@ namespace OnlineShop
             Console.WriteLine(_cart.Order());
             Console.WriteLine();
 
-            _cart.Add(iPhone12, quantityToAdd3, _warehouse.IsGoodsAvailable);
+            _cart.Add(iPhone12, quantityToAdd3, _warehouse);
 
             Console.ReadLine();
         }
