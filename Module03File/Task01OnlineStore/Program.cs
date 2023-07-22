@@ -56,7 +56,7 @@ namespace OnlineShop
             }
         }
 
-        public bool IsGoodsAvailable(int quantityToAdd) => quantityToAdd <= _goods.Count;
+        public bool IsGoodsAvailable(Good good, int quantityToAdd) => quantityToAdd <= _goods.Count && _goods.ContainsKey(good);
     }
 
     class Cart
@@ -70,7 +70,7 @@ namespace OnlineShop
 
         public void Add(Good good, int quantity, Warehouse warehouse)
         {
-            if (warehouse.IsGoodsAvailable(quantity))
+            if (warehouse.IsGoodsAvailable(good, quantity))
             {
                 _items[good] = quantity;
             }
