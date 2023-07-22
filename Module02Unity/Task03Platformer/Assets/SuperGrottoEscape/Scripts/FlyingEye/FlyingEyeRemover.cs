@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class FlyingEyeRemover : MonoBehaviour
 {
-    [SerializeField] private FlyingEyeSpawner _allEnemy;
+    [SerializeField] private FlyingEyeSpawner _enemyParent;
     [SerializeField] private float _coolDown;
 
     private void Start()
@@ -14,11 +14,12 @@ public class FlyingEyeRemover : MonoBehaviour
     private IEnumerator Destroing()
     {
         WaitForSeconds waitForSecond = new WaitForSeconds(_coolDown);
-        int childCount = _allEnemy.transform.childCount;
+
+        int childCount = _enemyParent.transform.childCount;
 
         for (int i = childCount - 1; i >= 0; i--)
         {
-            Destroy(_allEnemy.transform.GetChild(i).gameObject);
+            Destroy(_enemyParent.transform.GetChild(i).gameObject);
 
             yield return waitForSecond;
         }

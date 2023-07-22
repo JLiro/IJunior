@@ -27,7 +27,7 @@ public class FlyingEyeSpawner : MonoBehaviour
 
         for (int i = 0; i < _points.Length; i++)
         {
-            Instantiate(_prefab, _points[i].position, Quaternion.identity).transform.SetParent(this.gameObject.transform);
+            Instantiate(_prefab, _points[i].position, Quaternion.identity).transform.SetParent(transform);
 
             yield return waitForSecond;
         }
