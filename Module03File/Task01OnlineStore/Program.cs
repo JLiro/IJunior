@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Task01OnlineStore
+namespace OnlineShop
 {
-    interface IProduct
-    {
-        string Name { get; }
-    }
-
-    class Good : IProduct
+    class Good
     {
         public string Name { get; }
 
@@ -20,35 +15,22 @@ namespace Task01OnlineStore
 
     class Warehouse
     {
-        private Dictionary<IProduct, int> _goods;
+        private Dictionary<Good, int> _goods;
 
         public Warehouse()
         {
-            _goods = new Dictionary<IProduct, int>();
+            _goods = new Dictionary<Good, int>();
         }
 
-        public void AddGoods(IProduct product, int quantity)
+        public void Deliver(Good good, int quantity)
         {
-            if (_goods.ContainsKey(product))
+            if (_goods.ContainsKey(good))
             {
-                _goods[product] += quantity;
+                _goods[good] += quantity;
             }
             else
             {
-                _goods.Add(product, quantity);
-            }
-        }
-
-        public void RemoveGoods(IProduct product, int quantity)
-        {
-            if (_goods.ContainsKey(product))
-            {
-                _goods[product] -= quantity;
-
-                if (_goods[product] <= 0)
-                {
-                    _goods.Remove(product);
-                }
+                _goods.Add(good, quantity);
             }
         }
 
@@ -62,80 +44,86 @@ namespace Task01OnlineStore
             }
         }
 
-        public int GetQuantity(IProduct product)
+        public int GetQuantity(Good good)
         {
-            if (_goods.ContainsKey(product))
+            if (_goods.ContainsKey(good))
             {
-                return _goods[product];
+                return _goods[good];
             }
             else
             {
                 return 0;
             }
         }
+
+        public bool IsGoodsAvailable(int quantityToAdd) => quantityToAdd <= _goods.Count;
     }
 
     class Cart
     {
-        private Dictionary<IProduct, int> _items;
+        private Dictionary<Good, int> _items;
 
         public Cart()
         {
-            _items = new Dictionary<IProduct, int>();
+            _items = new Dictionary<Good, int>();
         }
 
-        public void AddToCart(IProduct product, int quantity, Warehouse warehouse)
+        public delegate bool IsGoodsAvailableDelegate(int quantityToAdd);
+
+        public void Add(Good good, int quantity, IsGoodsAvailableDelegate isGoodsAvailable)
         {
-            int availableQuantity = warehouse.GetQuantity(product);
-
-            if (quantity <= availableQuantity)
+            if (isGoodsAvailable(quantity))
             {
-                if (_items.ContainsKey(product))
-                {
-                    _items[product] += quantity;
-                }
-                else
-                {
-                    _items.Add(product, quantity);
-                }
-
-                warehouse.RemoveGoods(product, quantity);
+                _items[good] = quantity;
             }
             else
             {
-                Console.WriteLine($"Ошибка: Недостаточно товаров на складе. Доступное количество: {availableQuantity}");
+                Console.WriteLine("Ошибка: Недостаточно товара на складе");
             }
-        }
-
-        public void Order(Warehouse warehouse)
-        {
-            foreach (var item in _items)
-            {
-                warehouse.AddGoods(item.Key, item.Value);
-            }
-
-            _items.Clear();
-
-            Console.WriteLine("\nСгенерирована ссылка на платеж\n");
         }
 
         public void DisplayCartItems()
         {
-            Console.WriteLine("\nТовары в корзине:");
+            Console.WriteLine("Товары в корзине:");
 
             foreach (var item in _items)
             {
                 Console.WriteLine($"{item.Key.Name}: {item.Value}");
             }
         }
+
+        public string Order()
+        {
+            _items.Clear();
+
+            return GeneratePaylink();
+        }
+
+        private string GeneratePaylink()
+        {
+            const string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            Random random = new Random();
+
+            int paylinkLength = 10;
+
+            char[] paylinkChars = new char[paylinkLength];
+
+            for (int i = 0; i < paylinkChars.Length; i++)
+            {
+                paylinkChars[i] = characters[random.Next(characters.Length)];
+            }
+
+            return new string(paylinkChars);
+        }
     }
 
-    class Store
+    class Shop
     {
         private Warehouse _warehouse;
         private Cart _cart;
 
-        public Store()
+        public Shop()
         {
             _warehouse = new Warehouse();
             _cart = new Cart();
@@ -143,22 +131,32 @@ namespace Task01OnlineStore
 
         public void Work()
         {
-            IProduct iPhone12 = new Good("IPhone 12");
-            IProduct iPhone11 = new Good("IPhone 11");
+            Good iPhone12 = new Good("IPhone 12");
+            Good iPhone11 = new Good("IPhone 11");
 
-            _warehouse.AddGoods(iPhone12, 10);
-            _warehouse.AddGoods(iPhone11, 1);
-            _warehouse.DisplayGoods();
-
-            _cart.AddToCart(iPhone12, 4, _warehouse);
-            _cart.AddToCart(iPhone11, 3, _warehouse);
-            _cart.AddToCart(iPhone12, 9, _warehouse);
-            _cart.DisplayCartItems();
-
-            _cart.Order(_warehouse);
+            int iPhone12Quantity = 10;
+            int iPhone11Quantity = 1;
+            _warehouse.Deliver(iPhone12, iPhone12Quantity);
+            _warehouse.Deliver(iPhone11, iPhone11Quantity);
 
             _warehouse.DisplayGoods();
+            Console.WriteLine();
+
+            int quantityToAdd1 = 4;
+            int quantityToAdd2 = 3;
+            int quantityToAdd3 = 9;
+
+            _cart.Add(iPhone12, quantityToAdd1, _warehouse.IsGoodsAvailable);
+            _cart.Add(iPhone11, quantityToAdd2, _warehouse.IsGoodsAvailable);
+
+            Console.WriteLine();
             _cart.DisplayCartItems();
+            Console.WriteLine();
+
+            Console.WriteLine(_cart.Order());
+            Console.WriteLine();
+
+            _cart.Add(iPhone12, quantityToAdd3, _warehouse.IsGoodsAvailable);
 
             Console.ReadLine();
         }
@@ -168,8 +166,8 @@ namespace Task01OnlineStore
     {
         static void Main(string[] args)
         {
-            Store store = new Store();
-            store.Work();
+            Shop shop = new Shop();
+            shop.Work();
         }
     }
 }
