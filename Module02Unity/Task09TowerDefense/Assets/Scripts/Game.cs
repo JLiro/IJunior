@@ -5,18 +5,15 @@ public class Game : MonoBehaviour
     [SerializeField] private Vector2Int _boardSize;
     [SerializeField] private Board  _board;
 
-    [SerializeField] private Camera _camera;
-
     [SerializeField] private TileContentFactory _contentFactory;
 
     [SerializeField] private EnemyFactory _enemyFactory;
     [SerializeField, Range(0.1f, 10f)] private float _spawnSpeed;
 
     private float _spawnProgress;
+    private float _maxSpawnProgress = 1f;
 
     private EnemyCollection _enemies = new EnemyCollection();
-
-    private Ray TouchRay => _camera.ScreenPointToRay(Input.mousePosition);
 
     private void Start()
     {
@@ -25,25 +22,18 @@ public class Game : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetMouseButtonDown(0))
-        {
-            HandleLeftTouch();
-        }
-        else if(Input.GetMouseButtonDown(1))
-        {
-            HandleRightTouch();
-        }
-
         _spawnProgress += _spawnSpeed * Time.deltaTime;
 
-        while (_spawnProgress >= 1f)
+        while (_spawnProgress >= _maxSpawnProgress)
         {
-            _spawnProgress -= 1f;
+            _spawnProgress -= _maxSpawnProgress;
             SpawnEnemy();
         }
 
         _enemies.GameUpdate();
+
         Physics.SyncTransforms();
+
         _board.GameUpdate();
     }
 
@@ -53,39 +43,5 @@ public class Game : MonoBehaviour
         Enemy enemy = _enemyFactory.Get();
         enemy.SpawnOn(spawnPoint);
         _enemies.Add(enemy);
-    }
-
-    private void HandleLeftTouch()
-    {
-        Tile tile = _board.GetTile(TouchRay);
-
-        if (tile != null)
-        {
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                _board.ToggleTower(tile);
-            }
-            else
-            {
-                _board.ToggleWall(tile);
-            }
-        }
-    }
-
-    private void HandleRightTouch()
-    {
-        Tile tile = _board.GetTile(TouchRay);
-
-        if (tile != null)
-        {
-            if(Input.GetKey(KeyCode.LeftShift))
-            {
-                _board.ToggleDestination(tile);
-            }
-            else
-            {
-                _board.ToggleSpawnPoint(tile);
-            }
-        }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Board : MonoBehaviour
@@ -6,7 +7,7 @@ public class Board : MonoBehaviour
     [SerializeField] private Transform _ground;
     [SerializeField] private Tile _tilePrefab;
 
-    private Vector2 _size;
+    private Vector2 _gridSize;
     private Tile[] _tiles;
     private Queue<Tile> _searchFrontier = new Queue<Tile>();
     private TileContentFactory _contentFactory;
@@ -15,54 +16,123 @@ public class Board : MonoBehaviour
 
     public int SpawnPointCount => _spawnPoint.Count;
 
-    public void Initialize(Vector2 size, TileContentFactory contentFactory)
+    public void Initialize(Vector2 gridSize, TileContentFactory contentFactory)
     {
-        _size = size;
-        _ground.localScale = new Vector3(size.x, size.y, 1f);
-        Vector2 offset = new Vector2((size.x - 1) * 0.5f, ((size.y - 1) * 0.5f));
-        _tiles = new Tile[(int)(size.x * size.y)];
+        float scaleZ = 1f;
+        float tileHeight = 0f;
+        int tileIndexOffset = 1;
+        int bitMask = 1;
+        int centerTileIndex = 2;
+        int firstTileIndex = 0;
+        float half = 0.5f;
+
+        _gridSize = gridSize;
+        _ground.localScale = new Vector3(gridSize.x, gridSize.y, scaleZ);
+
+        Vector2 gridCenterOffset = (gridSize - Vector2.one) * half;
+
+        _tiles = new Tile[(int)(gridSize.x * gridSize.y)];
         _contentFactory = contentFactory;
 
-        for (int tilesCount = 0, y = 0; y < size.y; y++)
+        CreateTiles(gridSize, tileHeight, gridCenterOffset);
+        SetTileNeighbors(gridSize, tileIndexOffset);
+        SetTileAlternatives(bitMask);
+        SetTileContent(TileContentType.Empty);
+        ToggleDestinationAndSpawnPoint(centerTileIndex, firstTileIndex);
+    }
+
+    private void CreateTiles(Vector2 gridSize, float tileHeight, Vector2 gridCenterOffset)
+    {
+        for (int tileIndex = 0, y = 0; y < gridSize.y; y++)
         {
-            for (int x = 0; x < size.x; x++, tilesCount++)
+            for (int x = 0; x < gridSize.x; x++, tileIndex++)
             {
-                Tile tile = _tiles[tilesCount] = Instantiate(_tilePrefab);
-                tile.transform.SetParent(transform, false);
-                tile.transform.localPosition = new Vector3(x - offset.x, 0f, y - offset.y);
-
-                if (x > 0)
-                {
-                    Tile.MakeEastWestNeighbors(tile, _tiles[tilesCount - 1]);
-                }
-                if (y > 0)
-                {
-                    Tile.MakeNorthSouthNeighbors(tile, _tiles[tilesCount - (int)(size.x)]);
-                }
-
-                tile.IsAlternative = (x & 1) == 0;
-                if ((y & 1) == 0)
-                {
-                    tile.IsAlternative = tile.IsAlternative == false;
-                }
-
-                tile.Content = _contentFactory.Get(TileContentType.Empty);
+                Tile tile = Instantiate(_tilePrefab, transform);
+                tile.transform.localPosition = new Vector3(x, tileHeight, y) - new Vector3(gridCenterOffset.x, 0, gridCenterOffset.y);
+                _tiles[tileIndex] = tile;
             }
         }
+    }
 
-        ToggleDestination(_tiles[_tiles.Length / 2]);
-        ToggleSpawnPoint(_tiles[0]);
+    private void SetTileNeighbors(Vector2 gridSize, int tileIndexOffset)
+    {
+        for (int tileIndex = 0, y = 0; y < gridSize.y; y++)
+        {
+            for (int x = 0; x < gridSize.x; x++, tileIndex++)
+            {
+                if (x > 0)
+                {
+                    Tile.MakeEastWestNeighbors(_tiles[tileIndex], _tiles[tileIndex - tileIndexOffset]);
+                }
+
+                if (y > 0)
+                {
+                    Tile.MakeNorthSouthNeighbors(_tiles[tileIndex], _tiles[tileIndex - (int)(gridSize.x)]);
+                }
+            }
+        }
+    }
+
+    private void SetTileAlternatives(int bitMask)
+    {
+        for (int tileIndex = 0, y = 0; y < _gridSize.y; y++)
+        {
+            for (int x = 0; x < _gridSize.x; x++, tileIndex++)
+            {
+                Tile tile = _tiles[tileIndex];
+                tile.IsAlternative = (x & bitMask) == 0;
+                if ((y & bitMask) == 0)
+                {
+                    tile.IsAlternative = !tile.IsAlternative;
+                }
+            }
+        }
+    }
+
+    private void SetTileContent(TileContentType contentType)
+    {
+        foreach (Tile tile in _tiles)
+        {
+            tile.Content = _contentFactory.Get(contentType);
+        }
+    }
+
+    private void ToggleDestinationAndSpawnPoint(int centerTileIndex, int firstTileIndex)
+    {
+        ToggleDestination(_tiles[_tiles.Length / centerTileIndex]);
+        ToggleSpawnPoint(_tiles[firstTileIndex]);
     }
 
     public void GameUpdate()
     {
-        for (int i = 0; i < _contentToUpdate.Count; i++)
+        foreach (var content in _contentToUpdate)
         {
-            _contentToUpdate[i].GameUpdate();
+            content.GameUpdate();
         }
     }
 
     public bool FindPaths()
+    {
+        InitializeTiles();
+
+        if (_searchFrontier.Count == 0)
+        {
+            return false;
+        }
+
+        ExpandPaths();
+
+        if (AllTilesHavePath() == false)
+        {
+            return false;
+        }
+
+        ShowPaths();
+
+        return true;
+    }
+
+    private void InitializeTiles()
     {
         foreach (var tile in _tiles)
         {
@@ -76,50 +146,38 @@ public class Board : MonoBehaviour
                 tile.ClearPath();
             }
         }
+    }
 
-        if (_searchFrontier.Count == 0)
-        {
-            return false;
-        }
-
+    private void ExpandPaths()
+    {
         while (_searchFrontier.Count > 0)
         {
             Tile tile = _searchFrontier.Dequeue();
-
             if (tile != null)
             {
-                if (tile.IsAlternative)
+                var paths = tile.IsAlternative ?
+                    new[] { tile.GrowPathNorth(), tile.GrowPathSouth(), tile.GrowPathEast(), tile.GrowPathWest() } :
+                    new[] { tile.GrowPathWest(), tile.GrowPathEast(), tile.GrowPathSouth(), tile.GrowPathNorth() };
+
+                foreach (var path in paths)
                 {
-                    _searchFrontier.Enqueue(tile.GrowPathNorth());
-                    _searchFrontier.Enqueue(tile.GrowPathSouth());
-                    _searchFrontier.Enqueue(tile.GrowPathEast());
-                    _searchFrontier.Enqueue(tile.GrowPathWest());
-                }
-                else
-                {
-                    _searchFrontier.Enqueue(tile.GrowPathWest());
-                    _searchFrontier.Enqueue(tile.GrowPathEast());
-                    _searchFrontier.Enqueue(tile.GrowPathSouth());
-                    _searchFrontier.Enqueue(tile.GrowPathNorth());
+                    _searchFrontier.Enqueue(path);
                 }
             }
         }
+    }
 
-        foreach (var tile in _tiles)
-        {
-            if (tile.HasPath == false)
-            {
-                return false;
-            }
-        }
+    private bool AllTilesHavePath() => _tiles.All(tile => tile.HasPath);
 
+    private void ShowPaths()
+    {
         foreach (var tile in _tiles)
         {
             tile.ShowPath();
         }
-
-        return true;
     }
+
+
     public void ToggleDestination(Tile tile)
     {
         if (tile.Content.Type == TileContentType.Destination)
@@ -207,24 +265,22 @@ public class Board : MonoBehaviour
     public Tile GetTile(Ray ray)
     {
         RaycastHit hit;
-        int defouldLayerMask = 1;
+        int defaultLayerMask = 1;
+        float coordinateOffset = .5f;
 
-        if (Physics.Raycast(ray, out hit, float.MaxValue, defouldLayerMask))
+        if (Physics.Raycast(ray, out hit, float.MaxValue, defaultLayerMask))
         {
-            int x = (int)(hit.point.x + _size.x * .5f);
-            int y = (int)(hit.point.z + _size.y * .5f);
+            int x = (int)(hit.point.x + _gridSize.x * coordinateOffset);
+            int y = (int)(hit.point.z + _gridSize.y * coordinateOffset);
 
-            if (x >= 0 && x < _size.x && y >= 0 && y < _size.y)
+            if (x >= 0 && x < _gridSize.x && y >= 0 && y < _gridSize.y)
             {
-                return _tiles[x + y * (int)_size.x];
+                return _tiles[x + y * (int)_gridSize.x];
             }
         }
 
         return null;
     }
 
-    public Tile GetSpawnPoint(int index)
-    {
-        return _spawnPoint[index];
-    }
+    public Tile GetSpawnPoint(int index) => _spawnPoint[index];
 }

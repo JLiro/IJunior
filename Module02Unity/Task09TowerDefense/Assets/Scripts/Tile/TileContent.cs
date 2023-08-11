@@ -16,8 +16,5 @@ public class TileContent : MonoBehaviour
         OriginFactory.Reclaim(this);
     }
 
-    public virtual void GameUpdate()
-    {
-
-    }
+    public virtual void GameUpdate() { }
 }

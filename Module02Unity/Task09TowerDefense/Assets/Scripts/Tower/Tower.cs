@@ -32,6 +32,8 @@ public class Tower : TileContent
 
     private void Shoot()
     {
+        float beamOffset = .5f;
+
         var point = _target.Position;
 
         _turret.LookAt(point);
@@ -40,7 +42,7 @@ public class Tower : TileContent
         var distance = Vector3.Distance(_turret.position, point);
         _laserBeamScale.z = distance;
         _laserBeam.localScale = _laserBeamScale;
-        _laserBeam.localPosition = _turret.localPosition + .5f * distance * _laserBeam.forward;
+        _laserBeam.localPosition = _turret.localPosition + beamOffset * distance * _laserBeam.forward;
 
         _target.Enemy.TakeDamage(_damagePerSecond * Time.deltaTime);
     }
