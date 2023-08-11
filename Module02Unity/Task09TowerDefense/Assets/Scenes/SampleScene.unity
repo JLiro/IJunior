@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 437896061}
   - component: {fileID: 437896060}
+  - component: {fileID: 437896062}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -154,7 +155,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _boardSize: {x: 11, y: 11}
   _board: {fileID: 744999772}
-  _camera: {fileID: 963194227}
   _contentFactory: {fileID: 11400000, guid: def5da4fcbf893c43bfeea3abca6d366, type: 2}
   _enemyFactory: {fileID: 11400000, guid: 53ab92e57afe94a46b7640ef41e5ae51, type: 2}
   _spawnSpeed: 1
@@ -173,6 +173,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &437896062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 437896059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fb1e1a9b48da86409afcf8942199d3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _board: {fileID: 744999772}
+  _camera: {fileID: 963194227}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
