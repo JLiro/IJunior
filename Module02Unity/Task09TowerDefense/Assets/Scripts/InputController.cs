@@ -7,7 +7,7 @@ public class InputController : MonoBehaviour
 
     private Ray TouchRay => _camera.ScreenPointToRay(Input.mousePosition);
 
-    void Update()
+    private void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
